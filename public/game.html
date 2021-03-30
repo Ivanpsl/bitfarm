@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>Juego - FarmChain</title>
+    <!-- Bootstrap css-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <!-- bootstrap javascript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+    
+    <script type="text/javascript">
+        function pageLoaded(){
+            // alert("Hola mundo");
+            var canvas = document.getElementById("testcanvas");
+            var context = canvas.getContext("2d");
+
+            // context.fillRect(200,10,100,100);
+            // context.fillRect(50,70,90,30);
+            
+            // context.strokeRect(110,10,50,50);
+            // context.strokeRect(30,10,50,50);
+
+            // context.clearRect(210,20,30,20);
+            // context.clearRect(260,20,30,20);
+
+            //Triangulo 
+            context.beginPath();
+            context.moveTo(10,120);
+            context.lineTo(10,180);
+            context.lineTo(110,150);
+            context.fill();
+
+            //otra forma
+            context.beginPath();
+            context.moveTo(140,160);
+            context.lineTo(140,220);
+            context.lineTo(140,220);
+            context.lineTo(40,190);
+            context.closePath();
+            context.stroke();
+
+            context.beginPath();
+            context.arc(100,300,30,0,2*Math.PI,true);
+            context.fill();
+
+            context.beginPath();
+            context.arc(200,300,25,0,3/2*Math.PI,false);
+            context.stroke();
+
+        }
+    </script>
+</head>
+    <body onload="pageLoaded();">
+        <canvas width="1080" height="720" id="testcanvas" style="border-radius: 25; border: 1px solid rgb(245, 112, 59);">
+            Your browser does not support HTML5 Canvas. Please use another browser.
+            
+            El navegador que esta usando no soporta HTML5 Canvas. Por favor usa otro navegador
+        </canvas>
+    </body>
+
+</html>
