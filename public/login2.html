@@ -12,8 +12,9 @@
         background: #FDAA64;
         background: linear-gradient(to right,#f59f59,#f5c834e5)
       }
-      .pr-form {
+      .form-login {
         border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+
       }
 
       .btn-primary, .bg-primary {
@@ -60,38 +61,14 @@
             <div class="text-end"> 
               <img src="images/gratis-png-logo-tractor-agricultura-john-deere-farm-tambien-te-gustara.png" width="48" alt="">
             </div>
-            <h2 class="fw-bold text-center py-5 pb-3">Bienvenido a FarmChain</h2>
+            <h2 class="fw-bold text-center py-5">Bienvenido a FarmChain</h2>
           
-
-
-            <!-- Enter -->
-            <div class="form-enter pr-form mb-2 p-5 " id ="log" >
-              <h5 class="text-center pb-3 ">Unirse o iniciar una partida sin registrarse</h5>
-              <form class="" action ="/game" method="get" > 
-                <div class="row g-2 pb-2 mx-auto">
-                    <input type="user" id="userName" class="form-control form-control" name="user" placeholder="Nombre para mostrar">
-                </div>
-              
-                <div class="d-grid col-12 mx-auto">
-                  <input type="submit" class="btn btn-outline-secondary" onClick="CreateMatch();" value ="Crear partida"></input>
-                  <button class="btn btn-primary my-1">Unirse a una partida</button>
-                </div> 
-              </form>
-                <div class="my-3">
-                  <span>¿Tienes ya una cuenta? <a href="#" onClick="ShowSingUp();">Iniciar sesión</a></span>
-                  <br>
-                  <span><a href="#">Recuperar contraseña</a></span>
-                </div>
-            
-            </div>
-
-
-             <!-- LOGIN -->
-            <div class="form-login pr-form mb-2 p-5 nodisplay" id ="log" >
+            <!-- LOGIN -->
+            <div class="form-login mb-2 p-5" id ="log" >
               <form action ="#"> 
                 <div class="mb-4"> 
                   <label form="email" class="form-label">Correo electrónico</label>
-                  <input type="emai" class="form-control" name="email">
+                  <input type="email" class="form-control" name="email">
                 </div>
                 <div class="mb-4"> 
                   <label form="password" class="form-label">Contraseña</label>
@@ -113,7 +90,7 @@
             </div>
 
             <!--Registro-->
-            <div class="form-login pr-form mb-0 pt-0 pb-0 p-5 nodisplay " id ="reg" >
+            <div class="form-login mb-0 pt-0 pb-0 p-5 nodisplay " id ="reg" >
             <form class="singup" action ="#" oninput='password2.setCustomValidity(password.value != password2.value ? "Las contraseñas no coinciden." : "")'> 
                 <div class="mb-4"> 
                   <label form="email" class="form-label">Correo electrónico</label>
@@ -139,11 +116,7 @@
                 </div>
               </form> 
             </div>
-
-
-
-
-            <!--info-->
+            
               <div class="container w-100 my5 pt-1">
                 <div class="row text-center">
                   <div class="col-12"> Más información</div>
@@ -165,9 +138,6 @@
                 <br>
               </div>
        
-
-
-            
           </div>
         </div> 
     </div> 
@@ -190,11 +160,6 @@
           login.classList.remove("nodisplay");
 
         }
-        function CreateMatch(){
-          document.cookie = document.getElementById("userName").value;
-          
-        }
-
   </script>
 </body>
 </html>

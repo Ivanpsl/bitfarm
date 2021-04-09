@@ -6,9 +6,12 @@ var router = express.Router();
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
+router.get('/login', function(req, res, next) {
+  res.redirect('/server/login.html')
+});
 
 router.get('/game', function(req,res,next){
-  res.redirect('/server/game.html')
+  res.redirect('/server/lobby.html')
 })
 
 module.exports = router;
