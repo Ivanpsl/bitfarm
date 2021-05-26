@@ -1,0 +1,15 @@
+{
+    "WebServer" : {
+        "run_server" : true,
+        "host" : "localhost",
+        "port" : 3000,
+        "logger" : "dev"
+    },
+    "Blockchain" : {
+        "run_node" : true,
+        "node_port" : 4005,
+        "node_host" : "http://localhost:",
+        "logger" : ">>>>> [P2P] :method :url :status",
+        "nodes_request_target" : "https://localhost:3000/nodes"
+    }
+}

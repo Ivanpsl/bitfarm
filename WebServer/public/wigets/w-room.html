@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <link rel="stylesheet" href="./stylesheets/room.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src='./js/roomManager.js'></script>
+
+
+</head>
+<body>
+
+    <div id="widget-chat" class="row ">
+        <div id="room-section">
+            <div class="room-header row" >
+                <span class="col-md-9 text-start name-container"><h5>Sala 1</h5></span>
+                <span class="float-end col-auto token-container text-muted ms-auto"><h5>ID: 123123</h5></span>
+
+            </div>
+            <div id="room-container" class="row" >
+                <div id="player-container" class="player-container col-4 g-0">
+                    <div class="player-drawer g-0">
+                        <img class="profile-image" src='https://64.media.tumblr.com/867447a52725fd3372358cb0446def20/tumblr_pihjgvRkNZ1xmnkzyo2_250.png' alt="Profile pic" >
+                        <div class="player-text">
+                            <h6>Twingastur </h6> 
+                            <p class="player-status text-muted">Esperando</p>
+                        </div>
+                    </div> 
+                    <hr>
+                
+                </div>
+                <div id="chat-container" class="col-8 chat-container"  >
+                  
+                  <div class="row g-0">
+                    <div class="col-md-3 offset-md-9">
+                        <div class="chat-bubble chat-bubble-right">
+                            <h6 class="right-author text-muted text-start lh-1 pxy-0 mxy-0">Autor:</h6>
+                            <p class="chat-msg text-wrap fw-light lh-1 text-start pxy-0 mxy-0">Ya hola</p>
+                        </div>
+                    </div>
+                    <div class="row g-0">
+                        <div class="col-md-3">
+                            
+                            <div class="chat-bubble chat-bubble-left">
+                                <h6 class="left-author text-muted text-start lh-1 pxy-0 mxy-0">Autor:</h6>
+                               <p class="chat-msg text-wrap fw-light lh-1 text-start pxy-0 mxy-0">Z Ahora bajo</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                </div>
+               
+            </div>
+            <div id="actions-container" class="row actions-container" >
+                <div class="col-4 player-actions">
+                    <button class="btn btn-secondary mx-0 px-2 py-1 " onclick= "openLobby();">
+                        <span id="update-icon" class="icon bi bi-x-circle"></span>
+                        Desconectar
+                    </button>
+                   <button class="btn btn-primary mx-0 px-2 py-1" onclick= "privateMatch();">
+                    <span id="update-icon" class="bi bi-check"></span>    
+                    Estoy listo
+                    </button>
+                </div>
+                <div class="col-8 chat-actions">
+                    <div class="col-12">
+                        <!-- <form class="form-actions" > -->
+                            <input type="text" id="chat-input" placeholder="Escribe tu mensaje" required>
+                            <!-- <button class="btn btn-outline-secondary mx-0 px-3 py-1" onclick= "privateMatch();"> -->
+                            <i id="update-icon2" class="material-icons" onclick="sendMessage();" type="submit"  >send</i>
+                            <!-- </button> -->
+                        <!-- </form> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>Opciones</div>
+    </div>
+        
+    <script>
+        window.history.pushState("", "", "./lobby.html?w=room");
+        initRoom();
+        $(document).ready(function(){
+                var input = document.getElementById("chat-input");
+
+                // Execute a function when the user releases a key on the keyboard
+                input.addEventListener("keyup", function(event) {
+                    // Number 13 is the "Enter" key on the keyboard
+                    if (event.keyCode === 13) {
+                        // Cancel the default action, if needed
+                        event.preventDefault();
+                        // Trigger the button element with a click
+                        document.getElementById("update-icon2").click();
+                    }
+            }); 
+        });
+    </script>
+</body>
+</html>
