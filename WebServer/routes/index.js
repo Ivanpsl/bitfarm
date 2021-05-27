@@ -1,6 +1,5 @@
 const axios = require('axios')
 
-
 module.exports = function (app,gameService) {
 
   app.get('/identificarse', function(req, res, next) {
@@ -11,7 +10,7 @@ module.exports = function (app,gameService) {
     res.redirect('/game/login.html')
   });
 
-
+ 
   app.post('/nodes', function (req, res,next) {
     var service = app.get('gameService');
     var nodes = service.getNodes();

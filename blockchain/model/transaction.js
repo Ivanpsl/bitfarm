@@ -1,11 +1,11 @@
 const cryptoUtils = require('../utils/cryptoUtils')
-
+const SHA256 = require('crypto-js/sha256');
 class Transaction{
     constructor(sender, data){
         this.sender = sender;
         // this.receiver = receiver; // receptor no es necesario ?
         this.data = data;
-        this.timestamp = new Date();
+        this.timestamp = + new Date();
         this.signature = null;
     }
 
@@ -13,7 +13,7 @@ class Transaction{
         return SHA256(this.sender + this.data + this.timestamp).toString();
     }
 
-    signTransaction(publicKey, privateKey) {
+    async signTransaction(publicKey, privateKey) {
         if (publicKey === this.sender) {
             const hash = this.calculateHash();
             this.signature = cryptoUtils.singData(privateKey,hash);
@@ -31,13 +31,16 @@ class Transaction{
 
     getInfo(){
         const { sender,receiver, data,timestamp } = this;
-        return { sender,receiver, data,timestamp };
+        return { 
+            sender : sender,receiver : receiver, transactionData : data, timestamp: timestamp };
     }
+    
+    
     parseTransaction(transaction){
         this.sender = transaction.sender;
-        this.receiver = transaction.receiver;
-        this.data = transaction.amount;
+        this.data = transaction.data;
         this.timestamp = transaction.timestamp;
+        this.signature = transaction.signature;
     }
 }
 

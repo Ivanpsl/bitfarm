@@ -5,7 +5,7 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const expressSession = require('express-session');
 const {error404Handler, errorHandler, headers} = require('./middleware')
-const GameService = require('./modules/gameService')
+const WebService = require('./modules/webService')
 const app = express();
 
 app.use(logger(config.get('WebServer.logger')));
@@ -27,13 +27,13 @@ app.use(errorHandler);
 //Módulo para la encriptación de token en la API.
 app.set('jwt', require('jsonwebtoken'));
 
-const gameService = new GameService(app)
+const webService = new WebService(app)
 
 //Servicio
-app.set('gameService',gameService);
+app.set('gameService',webService);
 
 
 app.use('/game', express.static('./public'));
-require('./routes/index')(app,gameService);
+require('./routes/index')(app,webService);
 
 module.exports = app;

@@ -2,52 +2,88 @@ const axios = require('axios')
 const fs = require('fs');
 
 module.exports = {
+
     /**
      * @param  {} server
      * @param  {} req
      * @param  {} res
      */
     manageSubscriptionRequest : function (server,req,res) {
-        if(req.body.host && req.body.ip && req.body.port){
+        if(req.body.host && req.body.ip && req.body.port)
+        {
             this.log("Nodo "+req.body.host+" solicitando unirse a la red")
-            server.get("nodeService").addNewNode(req.body.host,req.body.ip,req.body.port)
+            const service = server.get("nodeService");
+            service.addNewNode(req.body.host,req.body.ip,req.body.port)
             res.status(202);
-            res.send();
-        }else {
+            res.send(service.getChains());
+        }else 
+        {
             res.status(400);
             res.send("El nodo no se ha suscrito correctamente a la red, falta información sobre el nodo");
         }
     },
-    
 
-    requestChain : async function (server,chainId){
-        axios.get('http://localhost:4000/students',{
-            params: { chain:chainId }
-        }) .then(res => {
-            if(res.status === 202)
-                this.log(`Se ha solicitado correctamente la cadena`)
-        })
-        .catch(error => {
-            if(error.response != null)
-                this.logError(error.response.data)
-            else
-                this.logError("Error desconocido al enviar peticion de suscripción a targetHost\n\t\t\t"+error)
-        })
+    manageNewTransaction : function (server,req,res) {
+        if (req.body.host && req.body.gameIdentifier && req.body.transactionData)
+        {   
+            server.get("nodeService").addNewTransaction(req.body.gameIdentifier,req.body.transactionData);
+            res.status(202);
+            res.send("Transaccion aceptada");
+        }else 
+        {
+            res.status(400);
+            res.send("No ha sido posible añadir la transaccion, falta información.");
+        }
     },
+    manageNewBlock :  function (server,req,res) {
+        if (req.body.host && req.body.gameIdentifier && req.body.blockData)
+        {   
+            server.get("nodeService").addNewTransaction(req.body.gameIdentifier,req.body.blockData);
+            res.status(202);
+            res.send("Transaccion aceptada");
+        }else 
+        {
+            res.status(400);
+            res.send("No ha sido posible añadir la transaccion, falta información.");
+        }
+    },
+    propagateBlock: function(service, gameId, block){
+        var caFile = fs.promises.readFile('./certificates/key.pem');
 
-    
-    propagateTransaction : function(service, transaction, nodes){
-        nodes.forEach(node => {
-            axios.post(targetHost+"/p2p/subscribeNode", {
+        service.subscribedNodes.forEach(node => {
+            axios.post(node.host+"/p2p/block/new", {
                 host: service.getHost(),
-                ip:  "localhost",
-                port:  service._nodePort,
+                gameIdentifier : gameId,
+                blockData : block,
                 ca: caFile,
                 rejectUnhauthorized : false
             })
             .then(res => {
                 if(res.status === 202)
-                    this.log(`Suscripción correcta al nodo ${targetHost}`)
+                    this.log(`Enviado el nuevo bloque al nodo ${node.host} correctamente`)
+            })
+            .catch(error => {
+                if(error.response != null)
+                    this.logError(error.response.data)
+                else
+                    this.logError("Error desconocido al enviar nuevo bloque\n\t\t\t"+error)
+            })
+        });
+    },
+    propagateTransaction : function(service, gameId, transaction){
+        var caFile = fs.promises.readFile('./certificates/key.pem');
+
+        service.subscribedNodes.forEach(node => {
+            axios.post(node.host+"/p2p/transactions/new", {
+                host: service.getHost(),
+                gameIdentifier : gameId,
+                transactionData : transaction,
+                ca: caFile,
+                rejectUnhauthorized : false
+            })
+            .then(res => {
+                if(res.status === 202)
+                    this.log(`Enviada la transaccion al nodo ${node.host} correctamente`)
             })
             .catch(error => {
                 if(error.response != null)
@@ -57,19 +93,19 @@ module.exports = {
             })
         });
     },
+
     /**
      * Envia confirmacion de suscripción a un nodo de la red
      * @param  {} service
      * @param  {} targetHost
      */
     sendSuscriptionToNode : function (service,targetHost) {
-        var caFile = fs.promises.readFile('./certificates/key.pem');
         this.log("Enviando suscripcion a nodo: "+ targetHost+"/subscribeNode")
         axios.post(targetHost+"/p2p/subscribeNode", {
             host: service.getHost(),
             ip:  "localhost",
             port:  service._nodePort,
-            ca: caFile,
+            // ca: caFile,
             rejectUnhauthorized : false
         })
         .then(res => {
@@ -91,7 +127,7 @@ module.exports = {
      */
     subscribeAndRequestNodes: function(service,url) {
         var requestUrl = url
-        var caFile = fs.promises.readFile('./certificates/key.pem');
+       // var caFile = fs.promises.readFile('./certificates/key.pem');
         var thisHost = service.getHost();
 
         this.log("Enviando suscripción al servidor web")
@@ -100,7 +136,7 @@ module.exports = {
             host: thisHost,
             ip:  "localhost",
             port:  service._nodePort,
-            ca: caFile,// fs.readFileSync('./certificates/key.pem')
+            //ca: caFile,// fs.readFileSync('./certificates/key.pem')
             rejectUnhauthorized : false
         })
         .then(res => {
@@ -111,7 +147,7 @@ module.exports = {
             });
         })
         .catch(error => {
-            this.logError("Error tratando de unirse a la red")
+            this.logError("Error tratando de unirse a la red:\n\t\t\t\t"+error)
         })
     },
 

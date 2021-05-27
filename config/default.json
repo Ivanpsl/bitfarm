@@ -5,11 +5,40 @@
         "port" : 3000,
         "logger" : "dev"
     },
+
     "Blockchain" : {
         "run_node" : true,
         "node_port" : 4005,
         "node_host" : "http://localhost:",
         "logger" : ">>>>> [P2P] :method :url :status",
         "nodes_request_target" : "https://localhost:3000/nodes"
+    },
+
+    "Game" : {
+        "max_money" : 30000,
+        "start_money" : 2000,
+        "terrain_per_user" : 2,
+        "time_per_turn" : 60000, 
+        "products" : {
+            "wheat" : {
+                "start_amount" : 10,
+                "productType" : "cereal",
+                "watter_consume_per_week" : 10,
+                "max_health" : 100,
+                "health_loss" : 50
+            }
+        },
+        "buildings" : {
+            "warehouse" :{
+                "money_cost" : 100,
+                "turn_cost" : 2
+            }
+        },
+        "items" : {
+
+        },
+        "action_time" : {
+
+        }
     }
 }

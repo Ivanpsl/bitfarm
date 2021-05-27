@@ -4,8 +4,8 @@ const ec = new elliptic.ec("secp256k1");
 function generateKeyPair() {
     var keyPair = ec.genKeyPair();
     return {
-        public: keyPair.getPublic("hex"),
-        private: keyPair.getPrivate("hex")
+        publicKey: keyPair.getPublic("hex"),
+        privateKey: keyPair.getPrivate("hex")
     };
 }
 

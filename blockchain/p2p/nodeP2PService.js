@@ -33,18 +33,34 @@ module.exports =  class NodeP2PService {
             this.requestSuscriptionToBlockchain();
         });
     }
+    
+    getId(){
+        return this.identifier;
+    }
 
     getHost(){
-        return this._nodeHost + this._nodePort
+        return this._nodeHost + this._nodePort;
     }
 
     getChains(){
         return this.farmChainService.getBlockchains();
     }
-    propagateTransaction(transaction){
-        this.log("Propagando transaccion \n\t\t\t"+transaction.getInfo())
-        p2pController.propagateTransaction(this.subscribedNodes, transaction);
+    
+    propagateTransaction(identifier, transaction){
+        this.log("Propagando transaccion")
+        p2pController.propagateTransaction(this, identifier,transaction);
+    } 
+    propagateNewBlock(identifier, block){
+        this.log("Propagando bloque")
+        p2pController.propagateBlock(this, identifier,block);
     }
+    manageNewBlock(identifier,block){
+        this.farmChainService.processedRecievedBlock(identifier,block);
+    }
+    addNewTransaction(identifier,transactionData){
+        this.farmChainService.addNewTransaction(identifier,transactionData);
+    }
+
     requestSuscriptionToBlockchain(){
         var requestUrl = config.get("Blockchain.nodes_request_target");
         p2pController.subscribeAndRequestNodes(this,requestUrl)
@@ -58,18 +74,15 @@ module.exports =  class NodeP2PService {
 
 
     getNodeInfo(){
-        var blockchainsInfo = []
-        this.farmChainService.getBlockchains().forEach(element => {
-            blockchainsInfo.push(element.getInfo())
-        });
-
+        const chains = this.farmChainService.getBlockchains();
+        
         return {
             id : this.identifier,
             host: this._nodeHost,
             port: this._nodePort,
             num_conected_nodes: this.subscribedNodes.length,
             num_blockchains: this.farmChainService.getBlockchains().length,
-            blockhains_info: JSON.stringify(blockchainsInfo),
+            blockhains_info: chains, //JSON.stringify(blockchainsInfo),
             nodes_info: this.subscribedNodes
         }
     }

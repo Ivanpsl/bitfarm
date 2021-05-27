@@ -4,3 +4,4 @@ class Hall{
         this.money = startMoney;
     }
 }
+module.exports = Hall;

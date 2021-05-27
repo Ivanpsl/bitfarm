@@ -1,17 +1,15 @@
 const Block = require('./block');
-
-
 module.exports = class Blockchain {
 
-    constructor(id,blocks=null){
-        this.id = id;
+    constructor(identifier,blocks=null){
+        this.identifier = identifier;
         this.chain = blocks || [this.startGenesisBlock()];
         this.transactionsPool = [];
     }
 
     getChain(){ return this.chain; }
 
-    getLastBlock() { return this.chain[this.blocks.length-1]; }
+    getLastBlock() { return this.chain[this.chain.length-1]; }
 
     getLength(){ return this.chain.length; }
 
@@ -19,23 +17,30 @@ module.exports = class Blockchain {
 
     getTransactionPoolSize(){ return this.transactionsPool.length; }
 
-    startGenesisBlock(){  return new Block(0,1,0,[]); }
+    startGenesisBlock(){  return new Block(0,"GENESIS",0,[]); }
 
 
     async mineBlock(){
-        const previousBlock = this.lastBlock();
+        console.log("minando bloque")
+        const previousBlock = this.getLastBlock();
                 //TODO: Prueba de trabajo
-        let newBlock = new Block(previousBlock.getIndex()+1, this.transactionsPool, previousBlock.hashValue(), previousBlock.getProof(),this.transactionsPool);
+        let newBlock = new Block(previousBlock.getIndex()+1, this.transactionsPool, previousBlock.getHash());
         this.transactionsPool = [];
         this.chain.push(newBlock);
         return newBlock;
     }
 
+    addNewBlock(block){
+        this.chain.push(newBlock);
+    }
+
 
     addTransaction(transaccion){
         if(transaccion.isValid()){
-            this.transactionsPool.push(new Transaction());
+            this.transactionsPool.push(transaccion);
+
             if(this.transactionsPool.length===5){
+                console.log("minando")
                 this.mineBlock();
             }
             return true;
@@ -58,21 +63,17 @@ module.exports = class Blockchain {
     }
 
     isValidBlock(block, previousBlock){
-        if(!block.isValid()){
+        if(!block.isValid() || previousBlock.getIndex() + 1 !== block.getIndex() 
+        || previousBlock.hashValue() !== block.getPreviousBlockHash()
+        || !block.hash === block.calculateHash()){
             return false;
-        }else if(previousBlock.getIndex() + 1 !== block.getIndex()){
-			return false;
-		}else if (previousBlock.hashValue() !== block.getPreviousBlockHash()){
-			return false;
-		}else if(!block.hash === block.calculateHash()){
-			return false;
-		}
+        }
 		return true;
 	}
 
     parseChain(blocks){
         this.chain = blocks.map(block => {
-            const b = new Block(0,0,0);
+            const b = new Block(0,0,0,0);
             b.parseBlock(block);
             return b;
         });

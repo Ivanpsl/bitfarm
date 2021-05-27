@@ -6,8 +6,8 @@ class Block {
         this.index = index;
         this.previousHash = previousHash;
         this.data = transactions;
-        this.timestamp = new Date();
-        this.nonce = nonce,
+        this.timestamp = + new Date();
+        this.nonce = nonce;
         this.hash = this.calculateHash();
     }
 
@@ -52,7 +52,7 @@ class Block {
             const pT = new Transaction();
             pT.parseTransaction(transaction);
             return pT
-        })
+        });
     }
 
     printTransactions(){
