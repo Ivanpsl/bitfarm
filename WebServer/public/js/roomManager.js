@@ -1,36 +1,39 @@
+var onChatRoom = false
 function initRoom(){
+    onChatRoom = true;
     subscribeChatRoom();
 }
 
 
 function subscribeChatRoom() {
-    console.log("Subscribe")
-    $.ajax({
-        url: URLbase + "/room/subscribeChatRoom",
-        type: "GET",
-        async: true,
-        success: function (response, textStatus, jqXHR) {
-            console.log( JSON.stringify(response));
-            if(jqXHR.status ===200 && response.acceso !=false){
-                manageEvent(response);
-            }
-        },
-        error: function () { 
-            console.error("Se ha perdido la conexión con el servidor: \n","Se ha perdido la conexión con el servidor") 
-        },
-        complete: function(request, status, err) {
-            if (status == "timeout" || status == "success") {
-                console.log(`[${status}] LOG: Normal long-polling timeout or successful poll, continuing.` + JSON.stringify(request));
-                subscribeChatRoom();
-            } else {
-                console.warn("WARN: Server probably offline, retrying in 2 sec.");
-                setTimeout(function() {
+    if (onChatRoom) {
+        console.log("Subscribe")
+        $.ajax({
+            url: URLbase + "/room/subscribeChatRoom",
+            type: "GET",
+            async: true,
+            success: function (response, textStatus, jqXHR) {
+                console.log( JSON.stringify(response));
+                if(jqXHR.status ===200 && response.acceso){
+                    manageEvent(response);
+                }
+            },
+            error: function () { 
+                console.error("Se ha perdido la conexión con el servidor: \n","Se ha perdido la conexión con el servidor") 
+            },
+            complete: function(request, status, err) {
+                if (status == "timeout" || status == "success") {
+                    console.log(`[${status}] LOG: Normal timeot, nueva peticion.` + JSON.stringify(request));
                     subscribeChatRoom();
-                }, 2000);
-            }
-        },
-        // timeout: 60000
-    });
+                } else {
+                    console.warn("WARN: Server probably offline, retrying in 2 sec.");
+                    setTimeout(function() {
+                        subscribeChatRoom();
+                    }, 2000);
+                }
+            },
+        });
+    }
 }
 
 
@@ -57,11 +60,43 @@ function sendMessage(){
     }); 
 }
 
+function startMatch() {
+    $.ajax({
+        url: URLbase + "/game/start",
+        type: "POST",
+        data: {
+            rType : actualRoom.roomType,
+            rId : actualRoom.roomId 
+        },
+        dataType: 'json',
+        success: function (response, textStatus, jqXHR) {
+            if(jqXHR.status ===200){
+                startingGameOnClient(response);
+            }
+        },
+        error: function () {
+            console.error("Se ha perdido la conexión con el servidor: \n","Se ha perdido la conexión con el servidor") 
+        }
+    });
+}
 
+function startingGameOnClient(response) {
+    onChatRoom = false;
+    $("#gamecontainer").load("wigets/w-game.html",function() {
+        console.log(JSON.stringify(response))
+        setGameStatus(response)
+    });
+}
 function manageEvent(event){
     console.log(JSON.stringify(event))
     if(event.eType === "PLAYER_MESSAGE"){
-        AddRoomMessage()
+        AddRoomMessage(event.message)
+    }else if(event.eType === "NEW_PLAYER"){
+        AddRoomPlayer(event.playerInfo)
+    }else if(event.eType === "PLAYER_READY"){
+        
+    }else if(event.eType === "GAME_START"){
+
     }
 }
 
@@ -84,12 +119,8 @@ function UpdateRoomPlayers(players){
     console.log(players)
     removeAllChildNodes(playerList);
     players.forEach(player => AddRoomPlayer(player));
-    // if(players && players.length > 0 ){
-    //     for(let i = 0; i<= players.length-1; i++){
-    //         AddRoomPlayer(players[i]);
-    //     }
-    // }
 }
+
 function AddRoomMessage(mType, msg){
     if(mType === "PLAYER_MESSAGE"){
         AddOtherPlayerMessage(msg.author,msg.msg)

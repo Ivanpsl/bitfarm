@@ -1,6 +1,6 @@
 class Hall{
-    constructor(startMoney){
-        this.account = {publicKey: 0, privateKey: 0};
+    constructor(startMoney,account){
+        this.account = account;
         this.money = startMoney;
     }
 }

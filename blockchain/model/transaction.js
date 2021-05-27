@@ -3,7 +3,7 @@ const SHA256 = require('crypto-js/sha256');
 class Transaction{
     constructor(sender, data){
         this.sender = sender;
-        // this.receiver = receiver; // receptor no es necesario ?
+        //  receptor no es necesario ?- > this.receiver = receiver; //
         this.data = data;
         this.timestamp = + new Date();
         this.signature = null;
@@ -34,7 +34,6 @@ class Transaction{
         return { 
             sender : sender,receiver : receiver, transactionData : data, timestamp: timestamp };
     }
-    
     
     parseTransaction(transaction){
         this.sender = transaction.sender;

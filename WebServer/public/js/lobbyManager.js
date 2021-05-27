@@ -36,13 +36,12 @@ function joinRoomRequest(roomType, roomId) {
         success: function (response, textStatus, jqXHR) {
             if(jqXHR.status ===200){
                 autoUpdateRoomList = false
-                actualRoom = response
+                actualRoom = response.roomInfo
                 $("#gamecontainer").load("wigets/w-room.html",function() {
-                    console.log(response)
-              
-                    UpdateRoomPlayers(response.roomPlayers);
+                    console.log("Añadiendo cookie " +  response.userName)
+                    Cookies.set('userName', response.userName);
+                    UpdateRoomPlayers(response.roomInfo.roomPlayers);
                     // UpdateRoomMessages(response.messages);
-           
                 });
             }
     
@@ -83,12 +82,10 @@ function selectItem(index){
     }else{
         selectedRoomId = null;
         joinBtn.disabled = true;
-    }
-                 
+    } 
 }
 
 function updateRoomList(rooms){
-    gameRooms = [];
     var roomList = document.getElementById('rooms');
     removeAllChildNodes(roomList);
     if(rooms.length>0){
@@ -113,7 +110,7 @@ function updateRoomList(rooms){
     }
 
     document.getElementById("update-icon").classList.remove("nodisplay")
-    document.getElementById("update-spin").classList.add("nodisplay");7
+    document.getElementById("update-spin").classList.add("nodisplay");
 
     if(selectedRoomId != null){
         selectItem(selectedRoomId);
@@ -128,7 +125,7 @@ function removeAllChildNodes(parent) {
 }
 
 function requestUpdate(forceUpdate){
-    if( autoUpdateRoomList == true || forceUpdate == true){
+    if( autoUpdateRoomList || forceUpdate){
         console.log("Actualizando lista de salas")
         var roomList = document.getElementById('rooms');
 

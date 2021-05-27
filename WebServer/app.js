@@ -29,10 +29,10 @@ app.set('jwt', require('jsonwebtoken'));
 const webService = new WebService(app)
 
 //Servicio
-app.set('gameService',webService);
+app.set('webService',webService);
 
 
-app.use('/game', express.static('./public'));
+app.use('/game', express.static('./webServer/public'));
 require('./routes/index')(app,webService);
 
 module.exports = app;

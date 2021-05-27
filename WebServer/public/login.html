@@ -42,7 +42,7 @@
         padding: 15px; */
       }
       .gb-whitesmoke {
-         background: whitesmoke;
+        background: whitesmoke;
       }
       .nodisplay {
         display: none;
@@ -52,13 +52,13 @@
 </head>
 <body>
   
-  <div class="container w-75 mt-5 rounded shadow bgcontainer"> 
+  <div class="container w-65 mt-5 rounded shadow bgcontainer"> 
     
       <div class="row align-items-stretch"> 
         
-        <div class="col bg rounded d-none d-sd-3 d-lg-block col-md-5 col-lg-5 col-xl-6"></div>
+        <div class="col bg rounded d-none d-sd-3 d-lg-block col-md-5 col-lg-5 col-xl-5"></div>
         
-          <div class="col gb-whitesmoke pt-0 pb-2 rounded-end">
+          <div class="col gb-whitesmoke pt-0 px-5 pb-2 rounded-end">
             <div class="text-end"> 
               <img src="images/gratis-png-logo-tractor-agricultura-john-deere-farm-tambien-te-gustara.png" width="48" alt="">
             </div>
@@ -67,11 +67,11 @@
             <div class="msContainer" id="msContainer"></div>
 
             <!-- Enter -->
-            <div class="form-enter pr-form mb-2 p-5 " id ="log" >
+            <div class="form-enter pr-form m-3 mb-2 p-4 " id ="log" >
               <h5 class="text-center pb-3 ">Unirse o iniciar una partida sin registrarse</h5>
               <form class="" action ="/identificarse" method="POST" > 
 
-                <div class="row g-2 pb-2 mx-auto">
+                <div class="row g-2 pb-2 mx-auto ">
                   <div class="input-group has-validation">
                     <span class="input-group-text" id="inputGroupPrepend">@</span>
                     <input type="text" class="form-control"  name="username"  id="user" aria-describedby="inputGroupPrepend" required placeholder="Nombre para mostrar">
@@ -79,23 +79,17 @@
                       Introduzca un nombre.
                     </div>
                   </div>
-                 </div>
+                </div>
             
                 <div class="d-grid col-12 mx-auto">
-                  <!-- <input type="submit" class="btn btn-outline-secondary" onClick="CreateMatch();" value ="Crear partida"></input> -->
                   <button class="btn btn-primary my-1">Entrar</button>
                 </div> 
               </form>
-                <!-- <div class="my-3">
-                  <span>¿Tienes ya una cuenta? <a href="#" onClick="ShowSingUp();">Iniciar sesión</a></span>
-                  <br>
-                  <span><a href="#">Recuperar contraseña</a></span>
-                </div> -->
             
             </div>
 
 
-             <!-- LOGIN -->
+            <!-- LOGIN -->
             <div class="form-login pr-form mb-2 p-5 nodisplay" id ="log" >
               <form action ="#"> 
                 <div class="mb-4"> 
@@ -173,8 +167,6 @@
                 </div>
                 <br>
               </div>
-       
-
 
             
           </div>
@@ -184,44 +176,44 @@
   <!-- <script src="javascript/login.js"></script> -->
   <script type="text/javascript" >
 
-        const params = new URLSearchParams(location.search);
-        console.log(JSON.stringify(params))
-        var mensaje = params.getAll("mensaje");
-        var tipoMensaje = params.get("tipoMensaje");
-    
-        console.log(JSON.stringify(mensaje));
-        if (mensaje.length >0) {
-          console.log("asdasd " + JSON.stringify(mensaje));
-            if (tipoMensaje === "") {
-                tipoMensaje = 'alert-info';
-            }
-            for (let i = 0; i < mensaje.length; i++) {
-                $(".msContainer")
-                    .append("<div class='alert " + tipoMensaje + "'>" + mensaje[i] + " </div>");
-            }
+    const params = new URLSearchParams(location.search);
+    console.log(JSON.stringify(params))
+    var mensaje = params.getAll("mensaje");
+    var tipoMensaje = params.get("tipoMensaje");
+
+    console.log(JSON.stringify(mensaje));
+    if (mensaje.length >0) {
+      console.log("asdasd " + JSON.stringify(mensaje));
+        if (tipoMensaje === "") {
+            tipoMensaje = 'alert-info';
         }
-
-
-         function ShowSingUp(){
-          // alert('You clicked the bottom text');
-          var login = document.getElementById("log");
-          var singup = document.getElementById("reg");
-          login.classList.add("nodisplay");
-          singup.classList.remove("nodisplay");
-
-
-          }
-        function ShowLoging(){
-          var login = document.getElementById("log");
-          var singup = document.getElementById("reg");
-          singup.classList.add("nodisplay");
-          login.classList.remove("nodisplay");
-
+        for (let i = 0; i < mensaje.length; i++) {
+            $(".msContainer")
+                .append("<div class='alert " + tipoMensaje + "'>" + mensaje[i] + " </div>");
         }
-        function CreateMatch(){
-          document.cookie = document.getElementById("userName").value;
-          
-        }
+    }
+
+
+    function ShowSingUp(){
+      // alert('You clicked the bottom text');
+      var login = document.getElementById("log");
+      var singup = document.getElementById("reg");
+      login.classList.add("nodisplay");
+      singup.classList.remove("nodisplay");
+
+
+      }
+    function ShowLoging(){
+      var login = document.getElementById("log");
+      var singup = document.getElementById("reg");
+      singup.classList.add("nodisplay");
+      login.classList.remove("nodisplay");
+
+    }
+    function CreateMatch(){
+      document.cookie = document.getElementById("userName").value;
+      
+    }
 
   </script>
 </body>

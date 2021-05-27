@@ -1,27 +1,36 @@
-const GAME_CONSTANTS = require("../../utils/gameConstants");
+const {GAME_CONSTANTS} = require("../../utils/constants");
 const Hall = require('./hall');
 class Village {
 
-    constructor(identifier,playersInfo,config)
+    constructor(identifier, hallAccount, playersInfo, config)
     {
         this.identifier = identifier;
+        this.gameConfig = config;
+
         this.status = "PLAYING";
         this.turn = 0;
         this.actualEvent = null;
 
-        this.townHall = new Hall();
-        this.players = {};
+        this.townHall = new Hall(config.max_money, hallAccount);
+        this.players = null;
         this.terrains = [];
         this.items = [];
         this.products = [];
+        
+        this.init(playersInfo)
+
     }
 
-    endWeek(){
-        //this.selectRandomEvent();
+    init(playersInfo){
+        
+        this.players = playersInfo
+        ///TODO
+    }
 
+    endTurn(){
+        // TODO: añadir evento aleatorio al nuevo turno y su efecto -> this.selectRandomEvent();
         this.turn +=1
         this.applyEfectsToTerrains();
-        this.applyEffectsToProducts();
     }
 
     applyEfectsToAllTerrains(){
@@ -32,15 +41,12 @@ class Village {
                     this.products[terrain.contentIndex].setStatus(GAME_CONSTANTS.PRODUCT_STATUS_ROTTEN);
                 }else
                 {   
-                    addEffectoToProducts(this.products[terrain.contentIndex]);
+                    this.products[terrain.contentIndex].water -= this.gameConfig.products.get(this.products[terrain.contentIndex].name).watter_consume_per_week;
                 }
             }
         });
     }
 
-    addEffectoToProducts(product){
-        /////
-    }
 
     loadDataFromTransaction(transactionData){
         this.identifier = transactionData.identifier;
@@ -59,7 +65,7 @@ class Village {
             players : this.players,
             status : this.status,
             turn : this.turn,
-            hall : this.hall,
+            hall : this.townHall,
             terrains : this.terrains,
             items : this.items,
             products : this.products,

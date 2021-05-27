@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <link rel="stylesheet" href="./stylesheets/room.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src='./js/gameManager.js'></script>
+
+
+</head>
+<body>
+
+    <div id="widget-game" class="row ">
+        <div id="room-section">
+            <div id ="name-title" class="name-title" ></div>
+            <div class="modal-body">
+                <div class="public">
+                    <label for="public-text-area">Clave publica</label>
+                    <textarea class="form-control" id="public-text-area" rows="3" disabled = true></textarea>
+                </div>
+                <div class="private">
+                    <label for="private-text-area">Clave privada</label>
+                    <textarea class="form-control" id="private-text-area" rows="3" disabled = true></textarea>
+                </div>
+        </div>
+    </div>
+        
+    <script>
+        // window.history.pushState("", "", "./lobby.html?w=room");
+        
+    </script>
+</body>
+</html>

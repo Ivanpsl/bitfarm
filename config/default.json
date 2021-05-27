@@ -18,6 +18,7 @@
         "max_money" : 30000,
         "start_money" : 2000,
         "terrain_per_user" : 2,
+        "start_user_terrains" : 1,
         "time_per_turn" : 60000, 
         "products" : {
             "wheat" : {
@@ -31,11 +32,18 @@
         "buildings" : {
             "warehouse" :{
                 "money_cost" : 100,
-                "turn_cost" : 2
+                "turn_cost" : 2,
+                "effect_type" : "STORAGE",
+                "effect_size" : 20
             }
         },
         "items" : {
-
+            "warehouse" :{
+                "money_cost" : 100,
+                "turn_cost" : 2,
+                "effect_type" : "STORAGE",
+                "effect_size" : 20
+            }
         },
         "action_time" : {
 

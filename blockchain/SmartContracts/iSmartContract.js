@@ -1,11 +1,8 @@
 class ISmartContract {
-    constructor(name){
-        this.name= name;
+    constructor(){
         this.action = null;
     }
-    setAction(action){
-        this.action = action;
-    }
+
     execute(village,blockchain, account){
         return this.action(village,blockchain,account);
     }

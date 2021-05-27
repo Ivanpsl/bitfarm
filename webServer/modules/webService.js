@@ -18,10 +18,6 @@ module.exports = class GameService {
     addPlayer(playerToken,newName){
         var playerId = this.numPlayers + 1; 
         if (this.players[playerId] == null) {
-            var finalName ="Desconocido " + this.numPlayers
-            if(newName!==undefined || newName !==null){
-                finalName = newName
-            }
             var player = { id: playerId, token: playerToken, name:newName }; 
         
             this.players[playerId] =  player
@@ -68,7 +64,7 @@ module.exports = class GameService {
             if(gameRoom && player){
                 gameRoom.addPlayer(player);
                 this.log("RoomInfo " + JSON.stringify(gameRoom.getData()));
-                return {roomInfo: gameRoom.getData(), error:null};
+                return {userName : player.name ,roomInfo: gameRoom.getData(), error:null};
 
             }else{
 
@@ -78,8 +74,13 @@ module.exports = class GameService {
             return {roomInfo: null, error:" No se ha podido unir"}
         }
     }
+
     startGame(roomId){
-        
+        console.log(roomId)
+        var roomData = this.gameRooms[roomId].getData()
+        const blockchainService = this.app.get("blockchainService");
+     
+        return blockchainService.createGame(roomId,roomData.roomPlayers)
     }
 
     addNode(nodeData) {

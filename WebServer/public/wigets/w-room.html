@@ -30,29 +30,18 @@
                 
                 </div>
                 <div id="chat-container" class="col-8 chat-container"  >
-                  
-                  <div class="row g-0">
-                    <div class="col-md-3 offset-md-9">
-                        <div class="chat-bubble chat-bubble-right">
-                            <h6 class="right-author text-muted text-start lh-1 pxy-0 mxy-0">Autor:</h6>
-                            <p class="chat-msg text-wrap fw-light lh-1 text-start pxy-0 mxy-0">Ya hola</p>
-                        </div>
-                    </div>
                     <div class="row g-0">
-                        <div class="col-md-3">
-                            
-                            <div class="chat-bubble chat-bubble-left">
-                                <h6 class="left-author text-muted text-start lh-1 pxy-0 mxy-0">Autor:</h6>
-                               <p class="chat-msg text-wrap fw-light lh-1 text-start pxy-0 mxy-0">Z Ahora bajo</p>
+                        <div class="row g-0">
+                            <div class="col-md-3">
+                                
+                                <div class="chat-bubble chat-bubble-left">
+                                    <h6 class="left-author text-muted text-start lh-1 pxy-0 mxy-0">Autor:</h6>
+                                    <p class="chat-msg text-wrap fw-light lh-1 text-start pxy-0 mxy-0">Hola</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-
-
-                </div>
-               
             </div>
             <div id="actions-container" class="row actions-container" >
                 <div class="col-4 player-actions">
@@ -60,19 +49,15 @@
                         <span id="update-icon" class="icon bi bi-x-circle"></span>
                         Desconectar
                     </button>
-                   <button class="btn btn-primary mx-0 px-2 py-1" onclick= "privateMatch();">
+                    <button class="btn btn-primary mx-0 px-2 py-1" onclick= "startMatch();">
                     <span id="update-icon" class="bi bi-check"></span>    
                     Estoy listo
                     </button>
                 </div>
                 <div class="col-8 chat-actions">
                     <div class="col-12">
-                        <!-- <form class="form-actions" > -->
                             <input type="text" id="chat-input" placeholder="Escribe tu mensaje" required>
-                            <!-- <button class="btn btn-outline-secondary mx-0 px-3 py-1" onclick= "privateMatch();"> -->
                             <i id="update-icon2" class="material-icons" onclick="sendMessage();" type="submit"  >send</i>
-                            <!-- </button> -->
-                        <!-- </form> -->
                     </div>
                 </div>
             </div>
@@ -81,7 +66,7 @@
     </div>
         
     <script>
-        window.history.pushState("", "", "./lobby.html?w=room");
+        // window.history.pushState("", "", "./lobby.html?w=room");
         initRoom();
         $(document).ready(function(){
                 var input = document.getElementById("chat-input");

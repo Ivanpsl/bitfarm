@@ -39,7 +39,7 @@ module.exports = {
     manageNewBlock :  function (server,req,res) {
         if (req.body.host && req.body.gameIdentifier && req.body.blockData)
         {   
-            server.get("nodeService").addNewTransaction(req.body.gameIdentifier,req.body.blockData);
+            server.get("nodeService").manageNewBlock(req.body.gameIdentifier,req.body.blockData);
             res.status(202);
             res.send("Transaccion aceptada");
         }else 
@@ -90,7 +90,7 @@ module.exports = {
                 if(error.response != null)
                     this.logError(error.response.data)
                 else
-                    this.logError("Error desconocido al enviar peticion de suscripción a targetHost\n\t\t\t"+error)
+                    this.logError("Error desconocido al enviar una transacción\n\t\t\t"+error)
             })
         });
     },
@@ -128,7 +128,6 @@ module.exports = {
      */
     subscribeAndRequestNodes: function(service,url) {
         var requestUrl = url
-       // var caFile = fs.promises.readFile('./certificates/key.pem');
         var thisHost = service.getHost();
 
         this.log("Enviando suscripción al servidor web")
@@ -141,7 +140,6 @@ module.exports = {
             rejectUnhauthorized : false
         })
         .then(res => {
-            // this.log(res.data)
             res.data.forEach(newNode => {
                 this.sendSuscriptionToNode(service,newNode.host);
                 service.addNewNode(newNode.host,newNode.ip,newNode.port);

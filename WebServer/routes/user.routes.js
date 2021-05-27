@@ -41,9 +41,9 @@ module.exports = function (app,gameService) {
     })
 
     app.get('/roomList', function(req,res,next){
-        var gm = gameService;
-        var rooms = gm.getRoomsData();
-        res.status(201).send(JSON.stringify(rooms));
+        var gs = gameService;
+        var rooms = gs.getRoomsData();
+        res.status(201).send(rooms);
         res.end();
     });
 

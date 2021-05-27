@@ -1,13 +1,10 @@
-const GAME_CONSTANTS = require("../../utils/gameConstants");
-
+const {GAME_CONSTANTS} = require("../utils/constants");
+const ISmartContract = require("./iSmartContract")
 class PlantSmartContract extends ISmartContract{
-<<<<<<< HEAD
 
-=======
->>>>>>> master
-    constructor(name){
-        super(name);
-        super.setAction(this.plantProduct);
+    constructor(){
+        super();
+        this.action = this.plantProduct;
     }
 
     plantProduct(village, account, actionData){
@@ -20,11 +17,13 @@ class PlantSmartContract extends ISmartContract{
                     village.products[actionData.productIndex].state = GAME_CONSTANTS.PRODUCT_STATUS_PLANTED;
 
                     return village;
+            }else{
+                throw new Error(`El usuario no es propietario del producto o del terreno.`);
             }
+        }else{
+            throw new Error(`Datos incorrectos`);
         }
-        return null;
     }
-
 }
 
 module.exports = PlantSmartContract;

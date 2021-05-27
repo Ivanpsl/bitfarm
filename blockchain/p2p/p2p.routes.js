@@ -1,6 +1,5 @@
 
 const express = require("express");
-// const p2pController = require('./nodeP2PController')
 
 module.exports = function (server, nodeP2PController) {
     const router = express.Router();
@@ -13,7 +12,6 @@ module.exports = function (server, nodeP2PController) {
         var nodeInfo =  server.get("nodeService").getNodeInfo();
         res.send(nodeInfo);
     });
-
 
     router.get('/chains',function (req,res){
         var noderService = server.get("nodeService");
