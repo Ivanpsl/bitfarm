@@ -57,6 +57,7 @@ module.exports =  class NodeP2PService {
     manageNewBlock(identifier,block){
         this.farmChainService.processedRecievedBlock(identifier,block);
     }
+
     addNewTransaction(identifier,transactionData){
         this.farmChainService.addNewTransaction(identifier,transactionData);
     }

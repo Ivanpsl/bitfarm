@@ -15,6 +15,7 @@ module.exports = {
             const service = server.get("nodeService");
             service.addNewNode(req.body.host,req.body.ip,req.body.port)
             res.status(202);
+
             res.send(service.getChains());
         }else 
         {
@@ -49,12 +50,12 @@ module.exports = {
     },
     propagateBlock: function(service, gameId, block){
         var caFile = fs.promises.readFile('./certificates/key.pem');
-
         service.subscribedNodes.forEach(node => {
             axios.post(node.host+"/p2p/block/new", {
                 host: service.getHost(),
                 gameIdentifier : gameId,
                 blockData : block,
+
                 ca: caFile,
                 rejectUnhauthorized : false
             })

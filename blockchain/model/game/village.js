@@ -18,6 +18,7 @@ class Village {
 
     endWeek(){
         //this.selectRandomEvent();
+
         this.turn +=1
         this.applyEfectsToTerrains();
         this.applyEffectsToProducts();

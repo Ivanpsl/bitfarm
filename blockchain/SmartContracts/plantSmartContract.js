@@ -1,6 +1,10 @@
 const GAME_CONSTANTS = require("../../utils/gameConstants");
 
 class PlantSmartContract extends ISmartContract{
+<<<<<<< HEAD
+
+=======
+>>>>>>> master
     constructor(name){
         super(name);
         super.setAction(this.plantProduct);

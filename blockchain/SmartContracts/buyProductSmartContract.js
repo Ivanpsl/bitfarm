@@ -1,8 +1,10 @@
 const GAME_CONSTANTS = require("../../utils/gameConstants");
 
 class BuyProductSmartContract extends ISmartContract{
+
     constructor(name){
         super(name)
+
         super.setAction(this.buyProduct);
     }
 

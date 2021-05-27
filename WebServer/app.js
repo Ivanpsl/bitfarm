@@ -21,7 +21,6 @@ app.use(expressSession({
 }));
 
 app.use(headers);
-// app.use(error404Handler);
 app.use(errorHandler);
 
 //Módulo para la encriptación de token en la API.
