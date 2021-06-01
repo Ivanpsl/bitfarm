@@ -1,19 +1,15 @@
-const Room = require('./model/room');
 
-module.exports = class GameService {
+const RoomService = require('./roomService');
+
+module.exports = class WebService {
     constructor(app){
         this.app = app;
         this.players = [];
         this.numPlayers = 0;
-        this.gameRooms = [];
-        this.textChats = {};
         this.textNumers = 0;
         this.nodes = [];
-        // this.addNode({host:"testNode", ip:"testIp", port:"testPort"})
-        for (var i=0; i<20; i++){
-            this.gameRooms.push(new Room(i,null));
-        }
-        this.gameRooms[6].roomStatus = "running";
+        this.roomService = new RoomService(app);
+
     }
     addPlayer(playerToken,newName){
         var playerId = this.numPlayers + 1; 
@@ -44,43 +40,27 @@ module.exports = class GameService {
     }
 
     getRoom(roomId){
-        return this.gameRooms[roomId];
+        return this.roomService.getRoom(roomId);
     }   
 
     getRoomsData(){
-        var data = [];
-        for(let i=0; i<this.gameRooms.length; i++){
-            data[i] = this.gameRooms[i].getData();
-        }
-
-        return data;
+        return this.roomService.getRoomsData();
     }
 
     joinRoom(playerId,roomId){
-        if(this.gameRooms[roomId] !== null){
-            var player= this.players[playerId];
-            var gameRoom = this.gameRooms[roomId];
-            console.log(gameRoom + "    " + JSON.stringify(this.players))
-            if(gameRoom && player){
-                gameRoom.addPlayer(player);
-                this.log("RoomInfo " + JSON.stringify(gameRoom.getData()));
-                return {userName : player.name ,roomInfo: gameRoom.getData(), error:null};
-
-            }else{
-
-                return {roomInfo: null, error:" No se ha podido unir"}
-            }
+        if(this.players[playerId]) {
+            return this.roomService.joinRoom(playerId,roomId);
         }else{
-            return {roomInfo: null, error:" No se ha podido unir"}
-        }
+            this.log(`Jugador con ID ${playerId} no se ha localizado intentando unirse a ${roomId}`);
+            throw Error(`Jugador ${playerId} no localizado.`)
+        }   
+    }
+    exitRoom(playerId,roomId){
+        this.roomService.removePlayerById(playerId,roomId);
     }
 
     startGame(roomId){
-        console.log(roomId)
-        var roomData = this.gameRooms[roomId].getData()
-        const blockchainService = this.app.get("blockchainService");
-     
-        return blockchainService.createGame(roomId,roomData.roomPlayers)
+        this.roomService.staerGame(roomId);
     }
 
     addNode(nodeData) {

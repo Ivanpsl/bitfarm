@@ -1,0 +1,5 @@
+var game = {
+    
+    identifier : "",
+
+}

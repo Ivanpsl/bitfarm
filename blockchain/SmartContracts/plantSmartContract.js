@@ -1,4 +1,4 @@
-const {GAME_CONSTANTS} = require("../utils/constants");
+const {GAME_CONSTANTS} = require("../../common/constants");
 const ISmartContract = require("./iSmartContract")
 class PlantSmartContract extends ISmartContract{
 

@@ -2,12 +2,14 @@ const { ROOM_STATUS_EMPTY, ROOM_STATUS_WAITING, ROOM_STATUS_RUNNING, ETYPE_PLAYE
 
 module.exports = class Room {
 
-    constructor(roomId,owner,roomType)
+    constructor(roomId,roomType, owner=null)
     {
         this.roomId = roomId;
         this.roomType = roomType;
-        if(owner !==null)
+        if(owner !==null){
             this.ownerId = owner.id;
+            this.players.push(owner);
+        }
         else this.ownerId = null;
         this.players = [];
         this.roomStatus = "empty"
@@ -30,10 +32,22 @@ module.exports = class Room {
             this.roomStatus = "waiting";
         }
     }
+    removePlayerById(playerId){
+        const player = this.getPlayerById(playerId)
+        var idx = arr.indexOf(player);
+        if (idx != -1) arr.splice(idx, 1);
+        this.removeListener(playerId);
+
+        this.log("Eliminado jugador con id: "+ playerId);
+    }
 
     addListener(playerId, listener){
         var player = this.getPlayerById(playerId);
         player.listener = listener;
+    }
+    removeListener(playerId){
+        var player = this.getPlayerById(playerId);
+        player.listener = null;
     }
     
     sendUserMessage(sourceId, msg){

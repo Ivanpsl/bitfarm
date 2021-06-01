@@ -1,4 +1,4 @@
-const {BLOCKCHAIN_CONSTANTS} = require("../utils/constants");
+const {BLOCKCHAIN_CONSTANTS} = require("../../common/constants");
 
 const PlantSmartContract = require("./plantSmartContract")
 const BuyProductSmartContract = require("./buyProductSmartContract");

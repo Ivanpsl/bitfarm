@@ -43,7 +43,7 @@ function sendMessage(){
     var text = $("#chat-input").val();
     console.log(text)
     $.ajax({
-        url: URLbase + "/room/send",
+        url: URLbase + "/room/sendMessage",
         type: "POST",
         data: {
             rId : actualRoom.roomId ,
