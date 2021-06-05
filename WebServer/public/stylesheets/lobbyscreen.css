@@ -55,7 +55,7 @@
     border-radius: 5px;
 
 }
-.running {
+.RUNNING {
     background-color: rgba(255, 8, 8, 0.767);
     color: #414040;
     cursor: not-allowed;
@@ -65,13 +65,13 @@
     color: #414040;
     cursor: not-allowed;
 }
-.waiting {
+.WAITING {
     /* color:lightgreen; */
     background-color: rgba(26, 172, 13, 0.699);
     color: #414040;
 
 }
-.empty {
+.EMPTY {
     background-color: rgba(19, 247, 255, 0.699);
     color: #414040;
 }

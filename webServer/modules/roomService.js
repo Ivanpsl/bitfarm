@@ -7,7 +7,7 @@ module.exports = class RoomService {
         this.gameRooms = [];
         this.textChats = {};
         this.textNumers = 0;
-        initPublicRooms()
+        this.initPublicRooms()
     }
     
     initPublicRooms(){
@@ -33,9 +33,16 @@ module.exports = class RoomService {
             // return {roomInfo: null, error:" No se ha podido unir"};
         }
     }
-    exitRoomById(playerId,roomId){
+    exitRoom(playerId,roomId){
         if(this.gameRooms[roomId] !== null){
             this.gameRooms[roomId].removePlayerById(playerId);
+        }else{
+            throw Error(`Sala ${roomId} no encontrada `);
+        }
+    }
+    setPlayeStatus(playerId,roomId,status){
+        if(this.gameRooms[roomId] !== null){
+            this.gameRooms[roomId].setPlayerStatus(playerId,status);
         }else{
             throw Error(`Sala ${roomId} no encontrada `);
         }

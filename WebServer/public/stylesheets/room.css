@@ -23,6 +23,7 @@
 #room-container {
     background: rgba(255, 255, 255, 0.822);
     min-height: 400px;
+
 }
 .room-header {
     background: #eee;
@@ -51,7 +52,6 @@
 }
 
 .chat-container {
- 
     background: rgba(255, 255, 255, 0.822);
     overflow-y: auto;
     overflow-x: hidden;
@@ -59,6 +59,7 @@
     border: 1px;
     border-style: solid;
     border-color: rgba(219, 216, 216, 0.712);
+    max-height: 500px;
 }
 
 

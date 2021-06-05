@@ -1,4 +1,4 @@
-const { GAME_TERRAIN_STATUS_EMPTY , GAME_TERRAIN_STATUS_PLANTED , GAME_TERRAIN_STATUS_CONSTRUCTION } = require("../../utils/constants")
+const { GAME_TERRAIN_STATUS_EMPTY , GAME_TERRAIN_STATUS_PLANTED , GAME_TERRAIN_STATUS_CONSTRUCTION } = require("../../../common/constants");
 class Terrain {
     constructor(index)
     {

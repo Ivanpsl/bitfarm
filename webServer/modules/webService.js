@@ -1,4 +1,3 @@
-
 const RoomService = require('./roomService');
 
 module.exports = class WebService {
@@ -14,7 +13,7 @@ module.exports = class WebService {
     addPlayer(playerToken,newName){
         var playerId = this.numPlayers + 1; 
         if (this.players[playerId] == null) {
-            var player = { id: playerId, token: playerToken, name:newName }; 
+            var player = { id: playerId, token: playerToken, name:newName, isReady: false }; 
         
             this.players[playerId] =  player
             this.numPlayers++;
@@ -49,18 +48,23 @@ module.exports = class WebService {
 
     joinRoom(playerId,roomId){
         if(this.players[playerId]) {
-            return this.roomService.joinRoom(playerId,roomId);
+            return this.roomService.joinRoom(this.players[playerId],roomId);
         }else{
             this.log(`Jugador con ID ${playerId} no se ha localizado intentando unirse a ${roomId}`);
             throw Error(`Jugador ${playerId} no localizado.`)
         }   
     }
     exitRoom(playerId,roomId){
-        this.roomService.removePlayerById(playerId,roomId);
+        if(this.players[playerId]) {
+            return this.roomService.exitRoom(playerId,roomId);
+        }else{
+            this.log(`Jugador con ID ${playerId} saliendo de ${roomId}`);
+            throw Error(`Jugador ${playerId} no localizado.`)
+        }   
     }
 
     startGame(roomId){
-        this.roomService.staerGame(roomId);
+        this.roomService.startGame(roomId);
     }
 
     addNode(nodeData) {
@@ -75,4 +79,6 @@ module.exports = class WebService {
     log(text){
         console.log("\x1b[1m\x1b[32m%s\x1b[0m","[WebService] "+ text)
     }
+    logError(msg){console.error("\x1b[1m\x1b[32m%s\x1b[0m\x1b[31m\x1b[1m[ERROR] %s\x1b[0m","[WebService] ",msg);}
+
 };

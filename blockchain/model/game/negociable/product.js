@@ -1,4 +1,4 @@
-const GAME_CONSTANTS = require("../../utils/gameConstants");
+const GAME_CONSTANTS =  require("../../../common/constants");
 
 class Product {
     constructor(index,name, maxHealth){

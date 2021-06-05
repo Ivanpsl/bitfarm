@@ -4,7 +4,6 @@
 
     <link rel="stylesheet" href="./stylesheets/room.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <script src='./js/roomManager.js'></script>
 
 
 </head>
@@ -45,11 +44,11 @@
             </div>
             <div id="actions-container" class="row actions-container" >
                 <div class="col-4 player-actions">
-                    <button class="btn btn-secondary mx-0 px-2 py-1 " onclick= "openLobby();">
+                    <button class="btn btn-secondary mx-0 px-2 py-1 " onclick= "room.exitChatRoom();">
                         <span id="update-icon" class="icon bi bi-x-circle"></span>
                         Desconectar
                     </button>
-                    <button class="btn btn-primary mx-0 px-2 py-1" onclick= "startMatch();">
+                    <button class="btn btn-primary mx-0 px-2 py-1" onclick= "room.startMatch();">
                     <span id="update-icon" class="bi bi-check"></span>    
                     Estoy listo
                     </button>
@@ -57,28 +56,26 @@
                 <div class="col-8 chat-actions">
                     <div class="col-12">
                             <input type="text" id="chat-input" placeholder="Escribe tu mensaje" required>
-                            <i id="update-icon2" class="material-icons" onclick="sendMessage();" type="submit"  >send</i>
+                            <i id="send-icon" class="material-icons" onclick="room.sendMessage();" type="submit"  >send</i>
                     </div>
                 </div>
             </div>
         </div>
-        <div>Opciones</div>
     </div>
         
     <script>
         // window.history.pushState("", "", "./lobby.html?w=room");
-        initRoom();
         $(document).ready(function(){
                 var input = document.getElementById("chat-input");
 
-                // Execute a function when the user releases a key on the keyboard
+                // Ejecuta la funcion cuando se suelta la tecla
                 input.addEventListener("keyup", function(event) {
-                    // Number 13 is the "Enter" key on the keyboard
+                    // 13 => intro
                     if (event.keyCode === 13) {
-                        // Cancel the default action, if needed
+                        //Cancela la opcion por defecto
                         event.preventDefault();
-                        // Trigger the button element with a click
-                        document.getElementById("update-icon2").click();
+                        // click
+                        document.getElementById("send-icon").click();
                     }
             }); 
         });
