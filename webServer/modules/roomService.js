@@ -16,6 +16,10 @@ module.exports = class RoomService {
         }
     }
 
+    getRoom(roomId){
+        return this.gameRooms.find(room => {return room.roomId == roomId});
+    }
+    
     createRoom(owner){
         const identifier = uuidv4();
         const newRoom = new Room(identifier,ROOM_CONSTANTS.ROOM_TYPE_PRIVATE,owner);
@@ -24,7 +28,7 @@ module.exports = class RoomService {
 
     joinRoom(player,roomId){
         if(this.roomExist(roomId)){
-            var gameRoom = this.gameRooms[roomId];
+            var gameRoom = this.getRoom(roomId);
             
             gameRoom.addPlayer(player);
             this.log("RoomInfo " + JSON.stringify(gameRoom.getData()));
@@ -36,14 +40,14 @@ module.exports = class RoomService {
     }
     exitRoom(playerId,roomId){
         if(this.roomExist(roomId)){
-            this.gameRooms[roomId].removePlayerById(playerId);
+            this.getRoom(roomId).removePlayerById(playerId);
         }else{
             throw Error(`Sala ${roomId} no encontrada `);
         }
     }
     setPlayeStatus(playerId,roomId,status){
         if(this.roomExist(roomId)){
-            this.gameRooms[roomId].setPlayerStatus(playerId,status);
+            this.getRoom(roomId).setPlayerStatus(playerId,status);
         }else{
             throw Error(`Sala ${roomId} no encontrada `);
         }
@@ -51,31 +55,27 @@ module.exports = class RoomService {
 
     setRunningStatus(roomId){
         if(this.roomExist(roomId)){
-            this.gameRooms[roomId].startGame();
+            this.getRoom(roomId).startGame();
         }else{
             throw Error(`Sala ${roomId} no encontrada `);
         }
     }
 
     getRoomPlayers(roomId){
-        var roomData = this.gameRooms[roomId].getData();
+        var roomData = this.getRoom(roomId).getData();
         return roomData.roomPlayers;
     }
-    getRoom(roomId){
-        return this.gameRooms[roomId];
-    }
-    
+
     getRoomsData(){
         var data = [];
-        for(let i=0; i<this.gameRooms.length; i++){
-            data[i] = this.gameRooms[i].getData();
-        }
-
+        this.gameRooms.forEach(gameRoom => {
+            data.push(gameRoom.getData())
+        });
         return data;
     }
 
     roomExist(roomId){
-        return (this.gameRooms[roomId] !== null)
+        return (this.getRoom(roomId) !== null)
     }
     
     log(text){ console.log("\x1b[1m\x1b[32m%s\x1b[0m","[RoomService] "+ text); }

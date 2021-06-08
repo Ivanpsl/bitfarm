@@ -8,33 +8,8 @@ module.exports = class WebService {
         this.roomService = new RoomService(app);
         this.gameService = new GameEventsService(app);
     }
-    // addPlayer(playerToken,newName){
-    //     var playerId = this.players.length; 
-    //     if (this.players[playerId] == null) {
-    //         var player = { id: playerId, token: playerToken, name:newName, isReady: false }; 
-        
-    //         this.players[playerId] =  player
-    //         this.log(`Se ha registrado a un nuevo jugador correctamente. [${playerId}] ${newName} `)
-    //         return player;
-    //     }else{
-    //         return null;
-    //     }
-    // }
 
-    // removePlayer(id){
-    //     this.players[id] = null;
-    // }
-    // getAllPlayers(){ return players;} 
-
-    // getPlayer(id){
-    //     return this.players[id];
-    // }
-    
-    // updateName(id,name){
-    //     this.players[id].name = name;
-    // }
-
-    getRoom(roomId){
+    getRoom(roomId){ 
         return this.roomService.getRoom(roomId);
     }   
 
@@ -43,24 +18,17 @@ module.exports = class WebService {
     }
 
     joinRoom(playerId,userName,roomId){
-        // if(this.players[playerId]) {
-        //     return this.roomService.joinRoom(this.players[playerId],roomId);
-        // }else{
-        //     this.log(`Jugador con ID ${playerId} no se ha localizado intentando unirse a ${roomId}`);
-        //     throw Error(`Jugador ${playerId} no localizado.`)
-        // }   
-
         var player = {id: playerId, name:userName, isReady: false}
         return this.roomService.joinRoom(player,roomId);
     }
     
     exitRoom(playerId,roomId){
-        // if(this.players[playerId]) {
             return this.roomService.exitRoom(playerId,roomId);
-        // }else{
-        //     this.log(`Jugador con ID ${playerId} saliendo de ${roomId}`);
-        //     throw Error(`Jugador ${playerId} no localizado.`)
-        // }   
+    }
+    setReadyStatus(playerId,roomId,status){
+        var room = this.getRoom(roomId);
+        if (room) room.setPlayerStatus(playerId, status);
+        else throw new Error("Sala no identificada");
     }
 
     startGame(roomId){
@@ -79,6 +47,7 @@ module.exports = class WebService {
     exitGame(gameId,userId){
         this.gameService.clientExit(gameId,userId);
     }
+    
 
     addNode(nodeData) {
         this.log("Registrando nodo: "+nodeData.host)

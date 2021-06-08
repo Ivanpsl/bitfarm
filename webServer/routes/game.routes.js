@@ -5,7 +5,7 @@ module.exports = function (app,webService) {
         if (game) res.send(JSON.stringify(game))
     });
 
-
+    
 
     app.post("/game/action", ActionHandler);
     app.get('/game/suscribe', ssEventHandler);
@@ -25,19 +25,6 @@ function ssEventHandler(req, res) {
     req.session.inGame = true;
     response.writeHead(200, headers);
     
-    // const data = `data: ${JSON.stringify(facts)}\n\n`;
-
-    // response.write(data);
-
-    // const clientId = Date.now();
-
-    // const newClient = {
-    //     id: clientId,
-    //     response
-    // };
-
-    // clients.push(newClient);
-
     webService.joinGame(gameId, userId, res);
 
 

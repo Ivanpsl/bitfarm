@@ -1,7 +1,6 @@
 const {ROOM_CONSTANTS} = require('../../../common/constants');
 
 module.exports = class Room {
-
     constructor(roomId,roomType, owner=null)
     {
         this.roomId = roomId;
@@ -24,8 +23,9 @@ module.exports = class Room {
         });
     }   
     setPlayerStatus(playerId,status){
-        this.getPlayerById(playerId).isReady=status;
-        this.sendEventToAll(playerId,ROOM_CONSTANTS.EVENT_PLAYER_CHANGE_STATUS, { isReady: status });
+        var player = this.getPlayerById(playerId);
+        player.isReady=status
+        this.sendEventToAll(-1,ROOM_CONSTANTS.EVENT_PLAYER_CHANGE_STATUS, { player : {id:player.id, name: player.name}, isReady: status });
     }
     addPlayer(player){
         console.log("Añadiendo jugador a sala: " + player.id + "    " + player.name);
@@ -59,25 +59,18 @@ module.exports = class Room {
     addListener(playerId, listener){
         console.log("Añadiendo listener")
         if(this.status !==  ROOM_CONSTANTS.STATUS_RUNNING){
-            var player = this.getPlayerById(playerId);
-            if(player){
-                //this.listeners.push({id:player.id, listener: listener })
-                this.listeners[player.id] = {id:player.id, listener: listener };
-            }
+            console.log("añadiendo listener "+ playerId);
+
+            if(this.listeners.find(playerListener=> playerListener.id===playerId))
+            {
+                this.listeners.find(playerListener=> playerListener.id===playerId).listener = listener;
+            }else this.listeners.push({id:playerId, listener: listener });
+
+            console.log("Listeners "+this.listeners.length)
         }
     }
     removeListener(playerId){
-        // var playerListener = this.listeners.find(listener => {
-        //     if(listener.id === playerId) return true
-        // });
-
-        // if(playerListener){
-        //     var idx = this.listeners.indexOf(playerListener);
-        //     if (idx != -1) this.listeners.splice(idx, 1);
-        // }
-        if(this.listeners[playerId]){
-            this.listeners[playerId] = null;
-        }
+        this.listeners.filter(playerListener => playerListener.id !== playerId);
     }
     
     addMessage(playerId, msg){
@@ -88,16 +81,15 @@ module.exports = class Room {
     }
 
     sendEventToAll(sourceId,eventType, dta){
-        console.log("Enviando evento: " + eventType);
-        console.log(this.playerListeners);
+        console.log("> Enviando evento: " + eventType);
+        console.log("-> Listeners: " + this.listeners.length);
         for(let playerListener of this.listeners){
             if(playerListener && playerListener.listener && playerListener.id != sourceId){
-                console.log("Enviado a " + playerListener.id);
-                console.log("Enviado a " + playerListener.id);
+                console.log("-->> Enviado a " + playerListener.id);
                 const event = {source:sourceId, eType:eventType, data:dta}
-                console.log(event)
                 playerListener.listener.send(event);
                 playerListener.listener.end();
+                playerListener.listener = null;
             }
         }
     }
@@ -111,6 +103,7 @@ module.exports = class Room {
     getData(){
         return {
             roomId : this.roomId,
+            roomType : this.roomType,
             roomStatus : this.roomStatus,
             roomPlayers: this.players,
             numPlayers : this.players.length,

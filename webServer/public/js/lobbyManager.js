@@ -147,7 +147,7 @@ lobbyManager = {
 
     joinRoomRequest: function(roomType, roomId) {
         $.ajax({
-            url: URL_BASE + "/joinRoom",
+            url: URL_BASE + "/room/join",
             type: "POST",
             data: {
                 rType : roomType,
@@ -159,7 +159,7 @@ lobbyManager = {
                     lobbyManager.autoUpdateRoomList = false
                     Cookies.set('actualRoomId',response.roomInfo)
                     Cookies.set('actualRoomType',response.roomType)
-                    room.initRoom(response.roomInfo);
+                    roomManager.initRoom(response.roomInfo);
                     console.log("Uniendose a sala")
                 }
             },

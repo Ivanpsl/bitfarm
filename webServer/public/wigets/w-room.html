@@ -12,8 +12,8 @@
     <div id="widget-chat" class="row ">
         <div id="room-section">
             <div class="room-header row" >
-                <span class="col-md-9 text-start name-container"><h5>Sala 1</h5></span>
-                <span class="float-end col-auto token-container text-muted ms-auto"><h5>ID: 123123</h5></span>
+                <span class="col-md-9 text-start name-container"><h5 id="room-name">Sala 1</h5></span>
+                <span class="float-end col-auto token-container text-muted ms-auto"><h5>ID: <span id="roomId-spam">123123</span></h5></span>
 
             </div>
             <div id="room-container" class="row" >
@@ -44,19 +44,19 @@
             </div>
             <div id="actions-container" class="row actions-container" >
                 <div class="col-4 player-actions">
-                    <button class="btn btn-secondary mx-0 px-2 py-1 " onclick= "room.exitChatRoom();">
+                    <button class="btn btn-secondary mx-0 px-2 py-1 " onclick= "roomManager.exitChatRoom();">
                         <span id="update-icon" class="icon bi bi-x-circle"></span>
                         Desconectar
                     </button>
-                    <button class="btn btn-primary mx-0 px-2 py-1" onclick= "room.startMatch();">
-                    <span id="update-icon" class="bi bi-check"></span>    
-                    Estoy listo
+                    <button id="btn-ready" class="btn btn-primary mx-0 px-2 py-1" onclick= "roomManager.changeReadyStatus();">
+                    <span id="ready-icon" class="bi bi-check"></span>    
+                    <span id="btn-ready-text">Estoy listo</span>
                     </button>
                 </div>
                 <div class="col-8 chat-actions">
                     <div class="col-12">
                             <input type="text" id="chat-input" placeholder="Escribe tu mensaje" required>
-                            <i id="send-icon" class="material-icons" onclick="room.sendMessage();" type="submit"  >send</i>
+                            <i id="send-icon" class="material-icons" onclick="roomManager.sendMessage();" type="submit"  >send</i>
                     </div>
                 </div>
             </div>
