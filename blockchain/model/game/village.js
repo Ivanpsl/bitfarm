@@ -12,7 +12,7 @@ class Village {
         this.actualEvent = null;
 
         this.townHall = new Hall(config.max_money, hallAccount);
-        this.players = null;
+        this.players = [];
         this.terrains = [];
         this.items = [];
         this.products = [];

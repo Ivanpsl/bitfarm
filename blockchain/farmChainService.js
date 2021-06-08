@@ -56,10 +56,9 @@ class FarmChainService {
             playersData[account.publicKey] = {name : player.name, account : account};
         })
     
-
         var newVillage = new Village(gameId,hallAccount,playersData,config.get("Game"));
         var blockchain = new Blockchain(gameId);
-        
+
         this.blockchains[gameId] = blockchain;
 
         var newTransaction = new Transaction(hallAccount.publicKey, newVillage.getInfo());
@@ -165,9 +164,7 @@ class FarmChainService {
         return this.blockchains;
     }
     
-    log(msg){
-        console.log("\x1b[35m%s\x1b[0m", "[FarmChainService] "+msg);
-    }
+    log(msg){ console.log("\x1b[35m%s\x1b[0m", "[FarmChainService] "+msg);}
     logError(msg){console.error("\x1b[35m%s\x1b[0m\x1b[31m\x1b[1m[ERROR] %s\x1b[0m","[FarmChainService] ",msg);}
 }
 
