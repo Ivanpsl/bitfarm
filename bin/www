@@ -1,21 +1,27 @@
 #!/usr/bin/env node
-
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0" /// TODO ------> SOLUCIONAR ERROR  Error: DEPTH_ZERO_SELF_SIGNED_CERT al solicitar nodos
+
 const config = require("config");
-const webApp = require("../webServer/app")
 const FarmChainService = require("../blockchain/farmChainService");
 
-//Módulo para los certificados de seguridad HTTP.
-const fs = require('fs');
-const https = require('https');
+
 
 if(config.get("WebServer.run_server")){
+    const webApp = require("../webServer/app")
+    //Módulo para los certificados de seguridad HTTP.
+    const fs = require('fs');
+    const https = require('https');
 
+    
     const httpsServer = https.createServer({key: fs.readFileSync('certificates/key.pem'), cert: fs.readFileSync('certificates/cert.pem')}, webApp);
     httpsServer.listen(config.get("WebServer.port"), function () {
         console.log("\x1b[33m%s\x1b[0m","[www] Servidor web activo en: "+"https://localhost:"+httpsServer.address().port);
+        
         webApp.set('blockchainService',  new FarmChainService());
+        webApp.get('webService').suscribeToBlockchain(webApp.get('blockchainService'));
+        
     });
 }else if(config.get("Blockchain.run_node")){
-    new FarmChainService();
+    const farmChainService = new FarmChainService();
+
 }

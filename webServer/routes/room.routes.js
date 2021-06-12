@@ -18,7 +18,7 @@ module.exports = function (app, webService) {
                 }
             } else {
                 throw new Error("Sesión no iniciada o sala no existente");
-            };
+            }
         } catch (e) {
             console.error(e.message);
             res.status(500).send(e.message);
@@ -64,7 +64,7 @@ module.exports = function (app, webService) {
     app.post("/room/sendMessage", function (req, res) {
         console.log(`[POST] [SENDMESSAGE] Jugador [${req.session.token} - ${req.session.playerId}][${req.session.user}] enviando [${req.body.rId} | ${req.body.txt}]`)
         if (req.session.token && req.session.playerId && req.body.rId == req.session.room && req.body.txt) {
-      
+
             const room = webService.getRoom(req.body.rId);
             if (room){
                 room.addMessage(req.session.playerId, req.body.txt);

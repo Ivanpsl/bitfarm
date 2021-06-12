@@ -2,82 +2,66 @@
 <html lang="es">
 
 <head>
+    <title>FarmChain - Game</title>
     <link rel="stylesheet" href="./stylesheets/game.css">
     <link rel="stylesheet" href="./stylesheets/modal.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <script src="https://unpkg.com/polipop/dist/polipop.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/polipop/dist/css/polipop.core.min.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/polipop/dist/css/polipop.default.min.css" />
 </head>
 
 <body>
 
     <div id="widget-game" class="game-screen">
         <div id="game-status" class="row shadow">
-            <div class="col-3 r"><span>m</span></div>
+            <div class="col-3 "><span></span></div>
             <div class="col-6 g">
                 <div class="turn-status-container row">
-                    <div class="col-2" id=""><img alt="perfil"
-                            src="https://image.flaticon.com/icons/png/512/2077/2077008.png" width="35"></img>
-                        <h5>invierno</h5>
+                    <div class="col-2" id="">
+                        <img alt="season" src="https://image.flaticon.com/icons/png/512/2077/2077008.png"
+                            width="35"></img>
+                        <h5 id="season">invierno</h5>
                     </div>
                     <div class="col-8 shadow" id="week-container">
-                        <h4>Febrero</h4>
-                        <h5>Semana 10</h5>
+                        <h4 id="week">Semama <span id="week-number">0</span></h4>
+                        <h5 id="week-season">Invierno</h5>
                     </div>
                     <div class="col-2" id="time-container">
-                        <img src="https://image.flaticon.com/icons/png/512/1886/1886376.png" width="35">
+                        <img alt="clima" src="https://image.flaticon.com/icons/png/512/1886/1886376.png" width="35">
                         <h5>soleado</h5>
                     </div>
                 </div>
             </div>
-            <div class="col-3 b "><span>a</span></div>
+            <div class="col-3"><span></span></div>
         </div>
         <div id="game-zone" class="row shadow game-zone">
-            <div id="players" class="col shadow">
-                <div class="player-drawer">
-                    <img class="profile-image"
-                        src='https://64.media.tumblr.com/867447a52725fd3372358cb0446def20/tumblr_pihjgvRkNZ1xmnkzyo2_250.png'
-                        alt="Profile pic" />
-                    <div class="player-text">
-                        <h6 class="">Ivan </h6>
-                        <div class="row player-resumen shadow-sm text-muted">
-                            <div class="cash col"><span class="bi bi-cash-stack"> 3000$ </span></div>
-                            <div class="terrain col"><span class="bi bi-layers-half"> 4 </span></div>
-                            <div class="store col"><span class="bi bi-box-seam"> 4/200</span></div>
-                        </div>
-                        <hr class="separator">
-                    </div>
-                </div>
-                <div class="player-drawer">
-                    <img class="profile-image"
-                        src='https://64.media.tumblr.com/867447a52725fd3372358cb0446def20/tumblr_pihjgvRkNZ1xmnkzyo2_250.png'
-                        alt="Profile pic" />
-                    <div class="player-text">
-                        <h6>Ivan </h6>
-                        <div class="row player-resumen shadow-sm text-muted">
-                            <div class="cash col"><span class="bi bi-cash-stack"> 3000$ </span></div>
-                            <div class="terrain col"><span class="bi bi-layers-half"> 4 </span></div>
-                            <div class="store col"><span class="bi bi-box-seam"> 4/200</span></div>
-                        </div>
-                        <hr class="shadow separator">
+            <div id="players-resume-list" class="col-2 shadow mt-2 players-resume-list">
+                <div id="players-container">
+                    <h6 class="players-title">Jugadores</h6>
+                    <hr>
+                    <div class="player-list">
                     </div>
                 </div>
             </div>
-
-            <div id="gameplayer" class="col-7">
+            <div id="gameplayer" class="col">
                 <div id="status-resume" class="status-resume shadow-lg">
                     <div class="row m-2">
-                        <h>TURNO</h>
+                        <h>Turno</h>
                         <hr>
                     </div>
                     <div class="row timer">
                         <div class="col-3"></div>
                         <div class="col pbar" style="width: 120px;">
-                            <div class="crono cr-icon"><span class="bi bi-hourglass-split c-icon"></span> </div>
-                            <div class="progress" style="height: 18px;" id="bar">
-                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-success"
-                                    role="progressbar" style="width:95%" aria-valuemin="0" aria-valuemax="100"
-                                    aria-valuenow="10"> </div>
+                            <div id="crono-icon" class="crono spin-icon"><span class="bi bi-hourglass-split"></span>
                             </div>
-                            <div class="crono">40</div>
+                            <div class="progress" style="height: 18px;" id="bar">
+                                <div id="progress"
+                                    class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+                                    role="progressbar" style="width:95%"> </div>
+                            </div>
+                            <div class="crono" id="time-remaining">40</div>
                             <h8 class="">Segundos restantes</h8>
                         </div>
                         <div class="col-3"></div>
@@ -85,97 +69,63 @@
                     <div class="row menu mt-2">
                         <div class="col-3">
                             <h3><span class="bi bi-box-seam"></span></h3>
-                            <div class="mb-1">4/200 de capacidad</div>
-                            <div class="my-2"><button type="button" class="btn btn-status-resume">Ver almacen</button>
+                            <div class="mb-1"><span id="storage-num">4/200</span> de capacidad</div>
+                            <div class="my-2"><button type="button" class="btn btn-status-resume" onclick="gameManager.openStorage();">Ver
+                                    almacen</button>
                             </div>
                         </div>
                         <div class="col">
                             <h3><span class="bi bi-cash-stack"></span></h3>
-                            <div class="mb-1">3000$</div>
-                            <div class="my-2"><button type="button" class="btn btn-status-resume">Ver tienda</button>
+                            <div class="mb-1" id="money-num">3000$</div>
+                            <div class="my-2"><button type="button" class="btn btn-status-resume" onclick="gameManager.openMarket();">Ver
+                                    tienda</button>
                             </div>
                         </div>
                         <div class="col-3">
                             <h3><span class="bi bi-hammer"></span></h3>
-                            <div class="mb-1">5 herramientas</div>
-                            <div class="my-2"><button type="button" class="btn btn-status-resume">Ver
+                            <div class="mb-1"><span id="tools-num">5</span> herramientas</div>
+                            <div class="my-2"><button type="button" class="btn btn-status-resume" onclick="gameManager.openInventory();">Ver
                                     inventario</button></div>
                         </div>
                     </div>
                 </div>
                 <div id="terrains-resume" class="terrains-resume mt-2">
                     <div class="row terrain-container relieve">
-                        <!--<div class="col-1 terrain-icon"><span class="bi-terreno bi bi-pin-map"> </span></div>-->
-                        <h5 class="col-2 terrain-name">Terreno</h5>
-                        <!--<div class="row"> -->
-                        <div class="col terrain-info">
-                            </hr>
+                        <div class="col terrain-name">
+                            <h5>Terreno 8 </h5>
                         </div>
-                        <div class="col-2 terrain-actions">
-                            <div class="row-4">
-                                <div type="button" class="btn btn-terrain-action">Construir</div>
-                            </div>
-                            <div class="row-4">
-                                <div type="button" class="btn btn-terrain-action">Construir</div>
-                            </div>
+                        <hr>
+                        <div class="terrain-info position-relative">
+                            <spam class="terrain-info-text position-absolute translate-middle">Este terreno no tiene
+                                contenido</spam>
                         </div>
-                        <!--</div>-->
-                    </div>
-                    <div class="row terrain-container relieve">
-                        <!--<div class="col-1 terrain-icon"><span class="bi-terreno bi bi-pin-map"> </span></div>-->
-                        <h5 class="col-2 terrain-name">Terreno</h5>
-                        <!--<div class="row"> -->
-                        <div class="col terrain-info">
-                            </hr>
+                        <div class="terrain-actions d-flex flex-row-reverse">
+                            <div type="button" class="btn btn-terrain-action">Construir</div>
+                            <div type="button" class="btn btn-terrain-action">Plantar</div>
                         </div>
-                        <div class="col-2 terrain-actions">
-                            <div class="row-4">
-                                <div type="button" class="btn btn-terrain-action">Construir</div>
-                            </div>
-                            <div class="row-4">
-                                <div type="button" class="btn btn-terrain-action">Construir</div>
-                            </div>
-                        </div>
-                        <!--</div>-->
-                    </div>
-                    <div class="row terrain-container relieve">
-                        <!--<div class="col-1 terrain-icon"><span class="bi-terreno bi bi-pin-map"> </span></div>-->
-                        <h5 class="col-2 terrain-name">Terreno</h5>
-                        <!--<div class="row"> -->
-                        <div class="col terrain-info">
-                            </hr>
-                        </div>
-                        <div class="col-2 terrain-actions">
-                            <div class="row-6">
-                                <div type="button" class="btn btn-terrain-action">Construir</div>
-                            </div>
-                            <div class="row-6">
-                                <div type="button" class="btn btn-terrain-action">Construir</div>
-                            </div>
-                        </div>
-                        <!--</div>-->
                     </div>
                 </div>
             </div>
 
-            <div id="map-resume" class="map-resume col shadow mt-2">
+            <div id="map-resume" class="map-resume col-2 shadow mt-2">
                 <div id="chain-log" class="chain-log">
                     <h6 class="chain-log-title">¿Que ocurre en la blockchain?</h6>
                     <hr>
-                    </hr>
-                    <div class="chain-log-container">
-                        <div class="log-element log-element-new">Nueva transacción</div>
-                        <div class="log-element">Nueva transacción</div>
+                    <div id="chain-log-container" class="chain-log-container">
+                        <div class="log-element log-element-new">Bloque minado <span class="badge"> Nueva</span></div>
+                        <div class="log-element log-element-new">Transacción <span class="badge"> Nueva</span></div>
+                        <div class="log-element">Transaccion</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    </div>
 
-    <!-- Modal -->
+    </div>
     <div id="modal-window" class="modal">
         <!-- Modal content -->
-        <div class="modal-content">
+        <div id="modal-content" class="modal-content">
 
         </div>
     </div>

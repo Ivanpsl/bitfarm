@@ -1,271 +1,320 @@
-
 #widget-game {
-margin: 0px 10%;
-text-align: center;
-padding: 15px;
-border-radius: 15px;
+  margin: 0px 10%;
+  text-align: center;
+  padding: 15px;
+  border-radius: 15px;
 }
+
 #game-status {
-padding: 2px;
-margin-bottom: 1px;
-border-radius: 15px;
-background: #fcfcfcef;
-margin-to: 1px;
+  padding: 2px;
+  margin-bottom: 1px;
+  border-radius: 15px;
+  background: #FCE6C2;
+  margin-top: 1px;
+  
 }
+
 .turn-status-container {
-padding-top: 4px;
-padding: 3px;
-margin: 10px;
-background: #88c5fa;
-vertical-align: middle;
+  padding-top: 4px;
+  padding: 3px;
+  margin: 10px;
+  background: #FCE6C2;
+  vertical-align: middle;
 }
+
 #week-container {
-padding-top: 4px;
+  padding-top: 4px;
 }
+
 #game-zone {
-margin-top: 2px;
-min-height: 800px;
+  margin-top: 2px;
+  min-height: 800px;
 }
 
 #players {
-margin: 8px;
-background: #fcfcfcef;
+  padding: 0;
 }
 
 #gameplayer {
-margin: 8px;
-padding: 2px;
+  margin: 8px;
+  padding: 2px;
 }
 
+.players-resume-list {
+  margin: 2px;
+  padding: 2px;
+  padding-top: 15px;
+  border-radius: 5px;
+  border-style: solid;
+  border-width: 0.1px;
+  background: rgba(255, 255, 255, 0.651);
+}
+
+/* .player-list{
+    min-height: 250px; 
+    max-height: 250px !important;
+    overflow-y: auto;
+    overflow-x: hidden;
+  } */
+
 .player {
-background: rgba(255, 255, 255, 0.822);
+  background: rgba(255, 255, 255, 0.822);
 }
 
 .profile-image {
-width: 52px;
-height: 52px;
-border-radius: 40px;
-/* image-resolution: 300dpi; */
+  width: 36px;
+  height: 36px;
+  border-radius: 40px;
 }
 
-#players {
-padding-top: 15px;
-}
 .player-drawer {
-margin: 0px;
-padding: 5px 4px;
-display: flex;
-vertical-align: baseline;
-transition: 0.3s ease;
-cursor: pointer;
+  margin: 0px;
+  padding: 5px 4px;
+  display: flex;
+  vertical-align: baseline;
+  transition: 0.3s ease;
+  cursor: pointer;
 }
+
 .player-drawer:hover {
-background: #53b688;
+  background: #53b688;
+  transform: scale(1.01);
 }
+
 .separator {
-margin: 5px auto;
+  margin: 5px auto;
 }
+
 .cash,
 .terrain,
 .store {
-margin: 0px;
-padding: 0px;
-vertical-align: middle;
+  margin: 0px;
+  padding: 0px;
+  vertical-align: middle;
 }
+
 .player-resumen {
-padding: 2px;
-padding-right: 4px;
-padding-left: 4px;
-font-size: 80%;
-margin-top: 4px;
-margin-bottom: 0px;
-margin-left: 2px;
-text-align: center;
-background: #e3e3d6;
-border-radius: 15px;
-border-style: solid;
-border-right-width: 1px;
-border-left-width: 1px;
-border-top-width: 1px;
-border-bottom-width: 2px;
-border-color: #a5a59d;
+  font-size: 75%;
+  margin: 3px 0 0 1px;
+  background: #e3e3d6;
+  border-radius: 15px;
+  border-style: solid;
+  border-width: 1px 1px 2px 1px;
+  border-color: #a5a59d;
 }
+
 .player-drawer h6 {
-margin-top: 6px;
-margin-bottom: 0px;
-text-align: left;
+  margin-top: 6px;
+  margin-bottom: 0px;
+  text-align: left;
 }
-.player-drawer > .player-text {
-margin-left: 5px;
-width: 65%;
+
+.player-drawer>.player-text {
+  margin-left: 5px;
+  width: 65%;
 }
 
 .status-resume {
-background: #deb950;
-border-radius: 15px;
-border: solid;
-border-width: 1px 2px 3px 1px;
-border-color: #987f38;
-max-height: 345px;
+  background: #e0c168;
+  border-radius: 15px;
+  border: solid;
+  border-width: 1px 2px 3px 1px;
+  border-color: #987f38;
+  max-height: 345px;
 }
+
 .relieve {
-border-style: solid;
-border-width: 1px 2px 3px 1px !important;
+  border-style: solid;
+  border-width: 1px 2px 3px 1px !important;
 }
+
 .pbar {
-background: #e0c168;
-padding: 15px;
-padding-top: 1px;
-border-radius: 15px;
-border-width: 1px 2px 3px 1px;
-border-style: solid;
-border-color: #b29a56;
+  background: #deb950;
+  padding: 15px;
+  padding-top: 1px;
+  border-radius: 15px;
+  border-width: 1px 2px 3px 1px;
+  border-style: solid;
+  border-color: #b29a56;
 }
+
 .crono {
-font-size: 150%;
-margin: 3px;
+  font-size: 150%;
+  margin: 3px;
 }
+
 .btn-status-resume {
-background: #c7a548;
-border: solid;
-border-right-width: 2px;
-border-left-width: 1px;
-border-top-width: 1px;
-border-bottom-width: 2px;
+  background: #CCAA54;
+  border: solid;
+  border-right-width: 2px;
+  border-left-width: 1px;
+  border-top-width: 1px;
+  border-bottom-width: 2px;
 }
+
 .btn-status-resume:hover {
-background: #ab8e3e;
-border-color: #5e563e;
+  background: #ab8e3e;
+  border-color: #5e563e;
 }
+
 .btn-status-resume:active {
-background: #a28e3e;
+  background: #a28e3e;
 }
-
+¡
 .terrains-resume {
-margin-top: 2px;
-overflow: auto;
-height: auto;
-min-height: 300px;
+  margin-top: 2px;
+  overflow: auto;
+  height: auto;
+  min-height: 300px;
 }
+
 .terrain-container {
-background: #db9244;
-border: #7d432f;
-border-style: solid;
-border-radius: 5px;
-margin: 5px 12px 2px 12px;
+  background: #EDAC61;
+  border: #7d432f;
+  border-style: solid;
+  border-radius: 5px;
+  margin: 5px 12px 2px 12px;
 }
+
 .terrain-name {
-padding: 4px;
-margin-left: 15px;
-text-align: left;
+  padding: 2px;
+  margin-bottom: 0px;
+  margin-left: 15px;
+  text-align: left;
 }
+
+.terrain-container hr {
+  margin: 1px;
+  margin-top: 0px;
+  padding: 0;
+  margin-bottom: 15px;
+}
+
+.terrain-info-text {
+  background-color: #D19D5E;
+  padding: 5px;
+  margin-top: 15px;
+  width: 500px;
+  height: 50px;
+  max-width: 500px;
+  max-height: 50px;
+  border-radius: 12px;
+  border-style: solid;
+  border-color: #7D432F;
+  border-width: 1px;
+  text-align: center;
+}
+
 .terrain-actions {
-padding: 5px;
+  padding: 5px;
 }
+
 .btn-terrain-action {
-padding: 0 0.5rem 0 0.5rem !important;
-margin: 0;
-background: #c0813f;
-border-style: solid;
-border-color: #a86f34;
-border-width: 1px 1px 1px 1px !important;
+  padding: 0 0.5rem 0 0.5rem !important;
+  margin: 0;
+  background: #db9244;
+  border-style: solid;
+  border-color: #a86f34;
+  border-width: 1px 1px 1px 1px !important;
+  width: 90px;
+  height: 35px;
+  line-height: 30px;
+  margin: 2px;
 }
+
 .btn-terrain-action:hover {
-background: #ab8e3e;
-border-color: #5e563e;
+  background: #D19D5E;
+  border-color: #5e563e;
 }
-.bi-terreno {
-background: #ab7d49;
-border-radius: 20px;
-text-align: center;
-display: inline-block;
-font-size: 162%;
-padding: 8px;
-margin: 5px;
-border-style: solid;
-border-color: #7d432f;
-border-width: 1px 1px 1px 1px !important;
-}
+
 #map-resume {
-padding:0;
+  padding: 0;
 
 }
+
 .chain-log {
-margin: 2px;
-padding:0px;
-background:#C2D0FF;
-padding:2px;
-padding-top: 15px;
-border-radius:5px;
-border-style: solid;
-border-width: 0.1px;
-border-color:#3B708A;
-
-}
-.chain-log-container{
-max-height: 250px !important;
-overflow-y: auto;
-overflow-x: hidden;
+  margin: 2px;
+  padding: 0px;
+  background: rgba(255, 255, 255, 0.651);
+  padding: 2px;
+  padding-top: 15px;
+  border-radius: 5px;
+  border-style: solid;
+  border-width: 0.1px;
+  border-color: #b29a56;
 }
 
-.log-element-new{
-background:#7395D6;
-border-style:solid;
-border-width: 1px;
-animation-name: new-log;
-animation-duration: 1.5s;
-animation-iteration-count: infinite;
+.chain-log-container {
+  min-height: 250px;
+  max-height: 250px !important;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
+
+.log-element-new {
+  background: #c7a548;
+  border-style: solid;
+  border-width: 1px;
+  animation-name: new-log;
+  animation-duration: 1.5s;
+  animation-iteration-count: infinite;
+}
+
 .log-element {
-background:#7395D6;
-padding: 1px;
-margin-bottom: 2px;
-border-radius:5px;
-text-align:center;
-vertical-align: baseline;
-cursor: pointer;
-}
-.log-element:hover{
-background:#546D9C;
-}
-.chain-log-title {
-margin-top:3px;
-
+  background: #e0c168;
+  padding: 1px;
+  margin-bottom: 2px;
+  border-radius: 5px;
+  text-align: center;
+  vertical-align: baseline;
+  cursor: pointer;
 }
 
-.r {
-background: #e36db6;
-border-top-left-radius: 10px;
-}
-.g {
-background: #adf067;
-}
-.b {
-background: #67b9f0;
-border-top-right-radius: 10px;
+.log-element:hover {
+  background: #c7a548 !important;
 }
 
-.cr-icon {
-animation-name: example;
-animation-duration: 8s;
-animation-iteration-count: infinite;
+.chain-log-title .players-title {
+  margin-top: 3px;
 }
+
+
+.spin-icon {
+  animation-name: spin;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+}
+.market-selected {
+  border-color: #78632B;
+  border-style:solid !important;
+  border-width: 2px 4px 4px 2px !important;
+  transition: all 0.2s;
+  margin:2px;
+  transform: scale(1.01);
+}
+
+.modal-body{
+  transition: all 0.5s;
+}
+
 @keyframes new-log {
-0%{
-    background:#7395D6;
-    border-color:#7395D6;
-}
-50% {
-    background:#4E7BCF;
-}
-100% {
-    background:#7395D6;
-    border-color:#7395D6;
-}
+  0% {
+    background: #e0c168;
+    border-color: #b29a56;
+  }
+
+  50% {
+    background: #c7a548;
+  }
+
+  100% {
+    background: #e0c168;
+    border-color: #b29a56;
+  }
 }
 
-@keyframes example {
-100% {
+@keyframes spin {
+  100% {
     transform: rotate(360deg);
-}
+  }
 }

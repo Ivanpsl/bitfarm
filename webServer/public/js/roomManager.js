@@ -1,10 +1,10 @@
 
-roomManager = {
+var roomManager = {
     actualRoom: null,
     players: [],
     messages: [],
     isReady : false,
-
+    isPlaying : false,
     initRoom: function (roomInfo) {
         this.actualRoom = roomInfo;
         this.renderRoom();
@@ -79,11 +79,13 @@ roomManager = {
             dataType: 'json',
             success: function (response, textStatus, jqXHR) {
                 if (jqXHR.status === 200) {
-                    game.startingGameOnClient(response);
+                    console.log(response)
+                    gameManager.initGame(response);
                 }
             },
             error: function (request, status, error) {
                 console.error("Se ha perdido la conexión con el servidor: \n", "Se ha perdido la conexión con el servidor")
+                restartSesion();
             }
         });
     },
@@ -102,16 +104,21 @@ roomManager = {
                 }
             },
             error: function (request, status, error) {
-                console.error("Se ha perdido la conexión con el servidor: \n", "Se ha perdido la conexión con el servidor")
+                console.error("Se ha perdido la conexión con el servidor: \n", "Se ha perdido la conexión con el servidor");
+                restartSesion();
             },
             complete: function (request, status, err) {
                 if (status == "timeout" || status == "success") {
-                    console.log(`[${status}] LOG: Normal timeot, nueva peticion.` + JSON.stringify(request));
-                    roomManager.subscribeChatRoom();
-                } else {
-                    setTimeout(function () {
+                    if(!roomManager.isPlaying){
+                        console.log(`[${status}] LOG: Normal timeot, nueva peticion.` + JSON.stringify(request));
                         roomManager.subscribeChatRoom();
-                    }, 1000);
+                    }
+                } else {
+                    if(!roomManager.isPlaying){
+                        setTimeout(function () {
+                            roomManager.subscribeChatRoom();
+                        }, 1000);
+                    }
                 }
             },
         });
@@ -129,7 +136,8 @@ roomManager = {
                 }
             },
             error: function (request, status, error) {
-                console.error("Se ha perdido la conexión con el servidor: \n", "Se ha perdido la conexión con el servidor")
+                console.error("Se ha perdido la conexión con el servidor: \n", "Se ha perdido la conexión con el servidor");
+                restartSesion();
             },
         });
     },
@@ -148,12 +156,14 @@ roomManager = {
             this.removePlayer(event.data);
         } else if (event.eType === ROOM_CONSTANTS.EVENT_PLAYER_CHANGE_STATUS) {
             this.updatePlayerStatus(event.data);
-            this.startMatch( );
+            this.startMatch();
         } else if (event.eType === ROOM_CONSTANTS.EVENT_GAME_START) {
-            // this.startRoomGame(event.data);
+            this.isPlaying = true;
+            gameManager.initGame(event.data);
         }
     },
 
+    
     addNewPlayer: function (playerData) {
         this.players.push(playerData);
         this.renderNewPlayer(playerData);
@@ -225,9 +235,10 @@ roomManager = {
         var drawer = document.createElement("div");
         drawer.id = playerInfo.id;
         drawer.className = "player-drawer g-0";
+        
         var img = document.createElement("img");
         img.className = "profile-image";
-        img.src = "https://avatars.dicebear.com/api/human/" + playerInfo.name + ".svg" //"https://64.media.tumblr.com/867447a52725fd3372358cb0446def20/tumblr_pihjgvRkNZ1xmnkzyo2_250.png";
+        img.src = "https://avatars.dicebear.com/api/human/" + playerInfo.name + ".svg";
         img.alt = "Profile pic";
         var playerText = document.createElement("div");
         playerText.className = "player-text";
@@ -260,7 +271,6 @@ roomManager = {
         var auth = document.createElement("h6");
         var messg = document.createElement("p");
 
-
         row.className = "row g-0";
         col.className = "col-md-3";
         chatBubble.className = "chat-bubble chat-bubble-left";
@@ -285,7 +295,6 @@ roomManager = {
         var auth = document.createElement("h6");
         var messg = document.createElement("p");
 
-
         row.className = "row g-0";
         col.className = "col-md-3 offset-md-9";
         chatBubble.className = "chat-bubble chat-bubble-right";
@@ -301,11 +310,7 @@ roomManager = {
         row.appendChild(col);
         cContainer.appendChild(row);
     },
-
 }
-
-
-
 
 
 

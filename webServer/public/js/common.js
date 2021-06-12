@@ -19,26 +19,42 @@ const ROOM_CONSTANTS = {
 };
 
 const GAME_CONSTANS = {
+    //EVENTOS
     EVENT_SYNC_TIMES : "SYNC_TIMES",
+    EVENT_START_TURN : "START_TURN",
+    EVENT_PLAYER_EXIT : "PLAYER_EXIT",
+    EVENT_UPDATE_GAME_DATA : "UPDATE",
+    EVENT_NEW_TRANSACTION_LOG : "NEW_TRANSACTION",
+    EVENT_NEW_BLOCK_LOG : "NEW_BLOCK",
+
     //ACCIONES
-    ACTION_TERRAIN_BUILD : "TERRAIN_BUILD",
-    ACTION_TERRAIN_PLANT : "TERRAIN_PLANT",
+    ACTION_START_GAME : "ACTION_START_GAME",
+    ACTION_TERRAIN_BUILD : "ACTION_TERRAIN_BUILD",
+    ACTION_TERRAIN_PLANT : "ACTION_TERRAIN_PLANT",
 
-    ACTION_PLANT_RECOLLECT : "PLANT_RECOLLECT",
-    ACTION_PLANT_WATTER : "PLANT_WATTER",
+    ACTION_PLANT_RECOLLECT : "ACTION_PLANT_COLLECT",
+    ACTION_PLANT_WATERING : "ACTION_PLANT_WATERING",
 
+    ACTION_BUILD_DEMOLISH : "ACTION_BUILD_DEMOLISH",
+    ACTION_BUILD_UPGRADE : "ACTION_BUILD_UPGRADE",
+    
     ACTION_PLAYER_END_TURN: "PLAYER_END_TURN",
+
+    ACTION_ELEMENT_BUY : "ACTION_ELEMENT_BUY",
 };
 
 
 function removeAllChildNodes(parent) {
-    while (parent && parent.firstChild) {
-        parent.removeChild(parent.firstChild);
-    }
+    if(parent)
+        while (parent.firstChild) {
+            parent.removeChild(parent.firstChild);
+        }
 };
 
 function restartSesion() {
+    Cookies.remove('userId');
     Cookies.remove('actualRoomId');
     Cookies.remove('actualRoomType');
     window.location.href = HOME_URL;
 }
+

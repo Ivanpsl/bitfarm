@@ -16,37 +16,94 @@
 
     "Game" : {
         "max_money" : 30000,
-        "start_money" : 2000,
-        "terrain_per_user" : 2,
-        "start_user_terrains" : 1,
-        "time_per_turn" : 60000, 
+        "init_money" : 2000,
+        "init_player_storage": 10,
+        "init_player_terrains" : 1,
+        "time_per_turn" : 60000,
+        "game_max_terrains" : 10,
+        "min_market_terrain_cost" : 1000,
+        "max_market_terrain_cost" : 3000,
+        "tools" : {
+            "shower" :{
+                "label" : "Regadera",
+                "amount" : 10,
+                "min_market_cost" : 100,
+                "max_market_cost" : 600,
+                "effect": {
+                    "type" : "EFFECT_ACTIONTIME",
+                    "target" : "ACTION_PLANT_WATERING",
+                    "size" : 20
+                }
+            }
+        },
+        "terrainActions" : [
+            {
+                "name" : "ACTION_TERRAIN_BUILD",
+                "label" : "Construir",
+                "time_cost" : 5000
+            },
+            {
+                "name" : "ACTION_TERRAIN_PLANT",
+                "label" : "Plantar",
+                "time_cost" : 5000
+            }
+        ],
+        
         "products" : {
-            "wheat" : {
-                "start_amount" : 10,
-                "productType" : "cereal",
-                "watter_consume_per_week" : 10,
-                "max_health" : 100,
-                "health_loss" : 50
+            "productsDefaultActions" : [
+                {
+                    "name" : "ACTION_PLANT_WATERING",
+                    "label" : "Regar",
+                    "time_cost" : 5000
+                },
+                {
+                    "name" : "ACTION_PLANT_COLLECT",
+                    "label" : "Recolectar",
+                    "time_cost" : 5000
+                }
+            ],
+            "productsList": {
+                "wheat" : {
+                    "amount" : 100,
+                    "label" : "Trigo",
+                    "productType" : "cereal",
+                    "watter_consume_per_turn" : 10,
+                    "max_watter_per_turn" : 100,
+                    "max_health" : 100,
+                    "health_loss" : 50,
+                    "min_market_cost" : 10,
+                    "max_market_cost" : 100
+                }
             }
         },
         "buildings" : {
-            "warehouse" :{
-                "money_cost" : 100,
-                "turn_cost" : 2,
-                "effect_type" : "STORAGE",
-                "effect_size" : 20
+            "buildingsDefaultActions" : [
+                {
+                    "name" : "ACTION_BUILD_DEMOLISH",
+                    "label" : "Demoler",
+                    "time_cost" : 5000
+                },
+                {
+                    "name" : "ACTION_BUILD_UPGRADE",
+                    "label" : "Mejorar",
+                    "time_cost" : 5000
+                }      
+            ],
+            "buildingsList" :
+            {
+                "warehouse" :{
+                    "label" : "Almacen",
+                    "money_cost" : 100,
+                    "amount" : 10,
+                    "upgrade_cost": 100,
+                    "upgrade_size" : 10,
+                    "effect": {
+                        "type" : "EFFECT_STORAGE",
+                        "target" : "PLAYER",
+                        "size" : 20
+                    }
+                }
             }
-        },
-        "items" : {
-            "warehouse" :{
-                "money_cost" : 100,
-                "turn_cost" : 2,
-                "effect_type" : "STORAGE",
-                "effect_size" : 20
-            }
-        },
-        "action_time" : {
-
         }
     }
 }

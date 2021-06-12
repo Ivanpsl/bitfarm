@@ -1,9 +1,9 @@
 <div class="modal-header">
-    <h5 class="modal-title">Transacción <span id="transaction-id"> asdasdx123</span></h5>
+    <h5 class="modal-title">Información de la transacción</h5>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 <div class="modal-body">
-    <h6 id="description">Informacion sobre la transacción enviada guardada en la blockchain.</h6>
+    <h6 id="description">Informacion sobre la transacción guardada en la blockchain.</h6>
     <hr>
     <div class="list-group">
         <div class="list-group-item list-group-item-action" aria-current="true">
@@ -11,14 +11,14 @@
                 <h5 class="mb-1">Emisor</h5>
             </div>
             <p class="mb-1">Clave pública del emisor:</p>
-            <small id="transaction-publickey">0x151651651651651</small>
+            <textarea id="transaction-publickey" class="form-control text-muted" readonly rows="1">0x151651651651651</textarea>
         </div>
         <div class="list-group-item list-group-item-action" aria-current="true">
             <div class="d-flex w-100 justify-content-between">
                 <h5 class="mb-1">Timestamp</h5>
             </div>
             <p class="mb-1">Momento en el cual se ha formado la transacción:</p>
-            <small id="transaction-timestamp">0x151651651651651</small>
+            <small id="transaction-timestamp" class=" form-control text-muted" readonly>0x151651651651651</small>
         </div>
         <div class="list-group-item list-group-item-action" aria-current="true">
             <div class="d-flex w-100 justify-content-between">
@@ -26,7 +26,7 @@
             </div>
             <p class="mb-1">Resultado de firmar el hash del contenido de la transacción con la clave privada del emisor:
             </p>
-            <small id="transaction-signature">0x151651651651651</small>
+            <textarea id="transaction-signature" class="form-control text-muted"  readonly rows="1">0x151651651651651</textarea>
         </div>
         <div class="list-group-item list-group-item-action" aria-current="true">
             <div class="d-flex w-100 justify-content-between">
@@ -34,7 +34,21 @@
             </div>
             <p class="mb-1">Campo que almacena los datos de la transacción, en nuestro caso el nuevo estado de juego
                 despues de realizar la acción:</p>
-            <textarea class="form-control disabled" id="private-text-area" disabled="true" rows="4"></textarea>
+            <textarea class="form-control text-muted" id="data-text-area" readonly rows="4"></textarea>
         </div>
     </div>
+    <script>
+        $(document).ready(function(){
+            var span = document.getElementsByClassName("btn-close")[0];
+            span.onclick = function() {
+                gameManager.closeModal();
+            }
+            
+            window.onclick = function(event) {
+                if (event.target == gameManager.modalElement) {
+                    gameManager.closeModal();
+                }
+            }
+        });
+    </script>
 </div>

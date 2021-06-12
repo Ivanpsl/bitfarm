@@ -1,4 +1,4 @@
-lobbyManager = {
+var lobbyManager = {
     rooms: null,
     selectedRoomId : null,
     intervalUpdateRoom: null,
@@ -33,9 +33,9 @@ lobbyManager = {
     },
 
     updateRoomList: function(roomData){
-        rooms = roomData;
+        this.rooms = roomData;
         console.log(rooms)
-        this.renderRoomList(rooms)
+        this.renderRoomList()
     },
         
 
@@ -56,7 +56,8 @@ lobbyManager = {
         }
     },
 
-    renderRoomList: function(rooms){
+    renderRoomList: function(){
+        var rooms = this.rooms;
         var roomList = document.getElementById('rooms');
         removeAllChildNodes(roomList);
         if(rooms.length>0){
@@ -128,6 +129,8 @@ lobbyManager = {
                 }
             },
             error: function (error) {
+                alert(error.message);
+                restartSesion();
             }
         });
     },
@@ -157,6 +160,7 @@ lobbyManager = {
             success: function (response, textStatus, jqXHR) {
                 if(jqXHR.status ===200){
                     lobbyManager.autoUpdateRoomList = false
+                    Cookies.set('userId',response.userId)
                     Cookies.set('actualRoomId',response.roomInfo)
                     Cookies.set('actualRoomType',response.roomType)
                     roomManager.initRoom(response.roomInfo);

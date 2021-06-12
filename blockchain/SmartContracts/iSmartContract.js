@@ -3,8 +3,10 @@ class ISmartContract {
         this.action = null;
     }
 
-    execute(village,blockchain, account){
-        return this.action(village,blockchain,account);
+    execute(village, sourceAccount, config, actionData){
+        if(this.action!=null){
+            return this.action(village, sourceAccount, config, actionData);
+        }
     }
 }
 

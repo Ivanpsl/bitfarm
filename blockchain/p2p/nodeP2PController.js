@@ -133,6 +133,7 @@ module.exports = {
         this.log("Enviando suscripción al servidor web")
 
         axios.post(requestUrl, {
+            id : service.identifier,
             host: thisHost,
             ip:  "localhost",
             port:  service._nodePort,
@@ -141,8 +142,8 @@ module.exports = {
         })
         .then(res => {
             res.data.forEach(newNode => {
+                service.addNewNode(newNode.id,newNode.host,newNode.ip,newNode.port);
                 this.sendSuscriptionToNode(service,newNode.host);
-                service.addNewNode(newNode.host,newNode.ip,newNode.port);
             });
         })
         .catch(error => {

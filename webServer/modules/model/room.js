@@ -18,9 +18,7 @@ module.exports = class Room {
 
     getPlayerById(id){
                 // -- console.log("Buscando jugador: " + JSON.stringify(player) + " ---- " + JSON.stringify(this.players))
-        return this.players.find(player => {
-            if(player.id === id) return true
-        });
+        return this.players.find(player => player.id === id);;
     }   
     setPlayerStatus(playerId,status){
         var player = this.getPlayerById(playerId);

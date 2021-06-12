@@ -7,7 +7,7 @@ class PlantSmartContract extends ISmartContract{
         this.action = this.plantProduct;
     }
 
-    plantProduct(village, account, actionData){
+    plantProduct(village, account, config, actionData){
         if(actionData.productIndex && actionData.terrainIndex)
         {
             if(village.products[actionData.productIndex].owner === account.publicKey &&

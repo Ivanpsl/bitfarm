@@ -1,12 +1,19 @@
 const RoomService = require('./roomService');
-const GameEventsService = require('./gameEventsService');
+const GameService = require('./gameService');
 
 module.exports = class WebService {
     constructor(app){
         this.app = app;
         this.nodes = [];
         this.roomService = new RoomService(app);
-        this.gameService = new GameEventsService(app);
+        this.gameService = new GameService(app);
+
+    }
+    static getWebInstance(){
+        return this;
+    }
+    suscribeToBlockchain(blockchainService){
+        blockchainService.suscribe((gameId,newBlock)=> this.handleNewTransaction(gameId,newBlock),(gameId,newBlock)=>this.handleNewBlock(gameId,newBlock));
     }
 
     getRoom(roomId){ 
@@ -23,7 +30,7 @@ module.exports = class WebService {
     }
     
     exitRoom(playerId,roomId){
-            return this.roomService.exitRoom(playerId,roomId);
+        return this.roomService.exitRoom(playerId,roomId);
     }
     setReadyStatus(playerId,roomId,status){
         var room = this.getRoom(roomId);
@@ -41,14 +48,23 @@ module.exports = class WebService {
     }
 
     joinGame(gameId,userId,listener){
-        this.gameService.suscribeClient(userId,gameId,listener);
+        this.gameService.suscribeClient(gameId,userId,listener);
     }
 
     exitGame(gameId,userId){
         this.gameService.clientExit(gameId,userId);
     }
     
-
+    sendGameAction(gameId,actionName,account,actionData){
+        const blockchainService = this.app.get("blockchainService");
+        return blockchainService.handleAction(gameId,actionName,account,actionData);
+    }
+    handleNewBlock(gameId,newBlock){
+        this.gameService.sendNewBlockEvent(gameId,newBlock);
+    }
+    handleNewTransaction(gameId,newTransaction){
+        this.gameService.sendNewTransactionEvent(gameId,newTransaction);
+    }
     addNode(nodeData) {
         this.log("Registrando nodo: "+nodeData.host)
         this.nodes[this.nodes.length] = nodeData;

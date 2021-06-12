@@ -33,7 +33,7 @@ module.exports = class RoomService {
             gameRoom.addPlayer(player);
             this.log("RoomInfo " + JSON.stringify(gameRoom.getData()));
 
-            return {userName : player.name ,roomInfo: gameRoom.getData(), error:null};
+            return {userId: player.id, userName : player.name ,roomInfo: gameRoom.getData(), error:null};
         }else{
             throw Error(`Sala ${roomId} no encontrada `)
         }

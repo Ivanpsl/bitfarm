@@ -1,12 +1,14 @@
+const {ACTIONS} = require('./../common/constants')
 const smFactory = require("./smartContracts/smartContractFactory")
-const NodeP2PService = require('./p2p/nodeP2PService');
 const cryptoUtils = require("./utils/cryptoUtils");
 const config = require('config');
+
+const NodeP2PService = require('./p2p/nodeP2PService');
 const Village = require("./model/game/village");
 const Blockchain = require("./model/blockchain");
 const Transaction = require("./model/transaction");
 const Block = require("./model/block");
-
+const Player = require("./model/game/player");
 
 class FarmChainService {
     constructor(){
@@ -15,29 +17,55 @@ class FarmChainService {
         this.smartContracts = smFactory.createSmartContracts();
         this.nodeService = new NodeP2PService(this);
         this.config = config.get("Blockchain");
-
         this.test();
+
+        this.onNewTransactionListeners = [];
+        this.onNewBlockListeners = [];
+    }
+
+    suscribe(onTransaction,onNewBlock){
+        this.log("Añadiendo suscripción")
+        if(typeof onTransaction === 'function' && typeof onNewBlock === 'function'){
+            this.onNewTransactionListeners.push(onTransaction);
+            this.onNewBlockListeners.push(onNewBlock);
+        }else{
+            this.logError("Intentando suscribirse con un tipo incorrecto");
+        }
+    }
+
+    onTransaction(identifier,transaccion){
+        this.onNewTransactionListeners.forEach(listener => listener(identifier,transaccion))
+    }
+    onBlockMined(identifier,block){
+        this.onNewTransactionListeners.forEach(listener => listener(identifier,block))
     }
 
     test(){
         setTimeout(async ()  =>{
-            const account = cryptoUtils.generateKeyPair();
-            var testIdentifier = "TestGame"
-            var hallAccount = cryptoUtils.generateKeyPair();
+            try { 
+                const account = cryptoUtils.generateKeyPair();
+                var testIdentifier = "TestGame"
+                var hallAccount = cryptoUtils.generateKeyPair();
+                var playerData = [];
+                playerData[account.publicKey] = new Player("-111", "testName", account);
+                var newVillage = new Village(testIdentifier,hallAccount,playerData, config.get("Game"));
+                
+                var blockchain = new Blockchain(testIdentifier);
+                var newTransaction = new Transaction(account.publicKey, newVillage.getInfo());
+                newTransaction.signTransaction(account.publicKey, account.privateKey);
+                
+                this.villages[testIdentifier] = newVillage;
+                this.blockchains[testIdentifier]= blockchain;
 
-            var newVillage = new Village(testIdentifier,hallAccount, {name:"testName",account:account}, config.get("Game"));
-            var blockchain = new Blockchain(testIdentifier);
-            var newTransaction = new Transaction(account.publicKey, newVillage.getInfo());
-            newTransaction.signTransaction(account.publicKey, account.privateKey);
-            
-            this.villages[testIdentifier] = newVillage;
-            this.blockchains[testIdentifier]= blockchain;
-            // this.nodeService.propagateTransaction("ASdasd",newTransaction)
+              
+                this.executeSmartContract(testIdentifier, ACTIONS.ACTION_START_GAME, hallAccount, {});
 
-            this.blockchains[testIdentifier].addTransaction(newTransaction);
-            const newBlock = await this.blockchains[testIdentifier].mineBlock();
-            this.nodeService.propagateNewBlock(testIdentifier,newBlock);
-
+                // this.blockchains[testIdentifier].addTransaction(newTransaction);
+                // const newBlock = await this.blockchains[testIdentifier].mineBlock();
+                // this.nodeService.propagateNewBlock(testIdentifier,newBlock);
+            } catch(e){
+                this.logError(e)
+            }
         }, 5000);
     }
 
@@ -48,29 +76,37 @@ class FarmChainService {
 
     createGame(gameId, players){
         this.log("Creando partida para "+gameId)
+
+        //Creación de todas las cuentas participantes
         var playersData = {}
         var hallAccount = cryptoUtils.generateKeyPair();
         players.forEach((player) => {
-            this.log("Añadiendo jugador " + player.name)
+            this.log("Añadiendo jugador " + player.name);
             const account = cryptoUtils.generateKeyPair();
-            playersData[account.publicKey] = {name : player.name, account : account};
+            playersData[account.publicKey] =  new Player(player.id, player.name, account);
         })
     
+        //Creacion del estado de la partida y blockchain
         var newVillage = new Village(gameId,hallAccount,playersData,config.get("Game"));
         var blockchain = new Blockchain(gameId);
-
         this.blockchains[gameId] = blockchain;
-
-        var newTransaction = new Transaction(hallAccount.publicKey, newVillage.getInfo());
-        newTransaction.signTransaction(hallAccount.publicKey, hallAccount.privateKey);
         this.villages[gameId] = newVillage;
-        this.addTransaction(gameId,newTransaction)
 
-        this.log("Partida creada: " + JSON.stringify(this.villages[gameId]))
+        //ejecución del contrato de inicio 
+        var contractData = {config : config.get("Game")};
+        this.executeSmartContract(gameId, ACTIONS.ACTION_START_GAME, hallAccount, contractData);
+        
+        this.log("Partida creada: " + JSON.stringify(this.villages[gameId]));
         return this.villages[gameId];
     }
 
-    async executeSmartContract(gameId, smartContractName, actionData, account)
+    async handleAction(gameId,actionName,account,actionData){
+        console.log("Ejecutando contrato "+actionName+ "\n" + JSON.stringify(actionData))
+        return this.executeSmartContract(gameId, actionName, account, actionData)
+
+    }
+
+    async executeSmartContract(gameId, smartContractName, account, actionData)
     {
         try{
             const smartContract = this.smartContracts[smartContractName];
@@ -78,11 +114,13 @@ class FarmChainService {
             {
                 if(this.villages[gameId] && this.blockchains[gameId])
                 {
-                    var newVillageState = smartContract.execute(this.villages[gameId],this.blockchains[gameId],actionData,account);
+                    var newVillageState = smartContract.execute(this.villages[gameId], account, config, actionData);
                     this.villages[gameId] = newVillageState;
 
                     var newTransaction = new Transaction(account.publicKey, newVillageState.getInfo());
-                    newTransaction.signTransaction(account.publicKey, account.privateKey);
+
+                    await newTransaction.signTransaction(account.publicKey, account.privateKey);
+
                     this.addTransaction(gameId,newTransaction)
                 }else
                 {
@@ -94,7 +132,8 @@ class FarmChainService {
             }
         }catch(e)
         {
-            
+            console.log(e.message);
+            return e;
         }
     }
     
@@ -109,11 +148,15 @@ class FarmChainService {
 
     async addTransaction(gameId,newTransaction){
 
-        this.blockchains[gameId].addTransaction(newTransaction);
+        this.blockchains[gameId].addTransaction(newTransaction);        
+        this.onTransaction(gameId,newTransaction)
+
         if(this.blockchains[gameId].getTransactionPoolSize() === this.config.max_transactions )
         {
             const newBlock = await this.blockchains[gameId].mineBlock();
             this.nodeService.propagateNewBlock(newBlock);
+            this.onBlockMined(gameId,newBlock);
+        
         }
     }
 
@@ -122,6 +165,7 @@ class FarmChainService {
         newBlock.parseBlock(block);
         if(this.blockchains[identifier].getLastBlock().getHash() === newBlock.getPreviousBlockHash() && newBlock.isValid()){
             this.blockchains[identifier].addNewBlock(newBlock);
+            this.onBlockMined(newBlock);
         }
     }
 

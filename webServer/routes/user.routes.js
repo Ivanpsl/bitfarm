@@ -44,30 +44,32 @@ module.exports = function (app,webService) {
     })
 
     app.get('/roomList', function(req,res,next){
-        console.log("Room List");
         var rooms = webService.getRoomsData();
-        console.log("Room send");
-        console.log(rooms);
         res.status(201).send(rooms);
         res.end();
     });
 
     app.post("/identificarse", function (req, res) {
-        console.log("Identificandose")
-        var user = req.body.username
-        var playerToken;
-        
-        playerToken = app.get('jwt').sign({usuario: user , tiempo: Date.now() / 1000},"secreto");
-        // playerAdded = webService.addPlayer(playerToken,user);
-        
-        req.session.user = user;
-        req.session.token = playerToken;
-        req.session.playerId = playerToken;
-        req.session.inRoom = false;
-        req.session.inGame = false;
-        
-        console.log(user + " se ha identificado correctamente " + " token = " + req.session.token);
-        res.redirect('/lobby');
+        try{
+            console.log("Identificandose")
+            var user = req.body.username
+            var playerToken;
+            
+            playerToken = app.get('jwt').sign({usuario: user , tiempo: Date.now() / 1000},"secreto");
+
+            req.session.user = user;
+            req.session.token = playerToken;
+            req.session.playerId = playerToken;
+            req.session.inRoom = false;
+            req.session.inGame = false;
+            
+            console.log(user + " se ha identificado correctamente " + " token = " + req.session.token);
+            res.redirect('/lobby');
+        }
+        catch(e){
+            console.error(e.message)
+            res.status(500).send(e.message);
+        }
     });
     
 }
