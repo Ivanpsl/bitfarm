@@ -55,9 +55,9 @@ module.exports = class WebService {
         this.gameService.clientExit(gameId,userId);
     }
     
-    sendGameAction(gameId,actionName,account,actionData){
+    async sendGameAction(gameId,actionName,account,actionData){
         const blockchainService = this.app.get("blockchainService");
-        return blockchainService.handleAction(gameId,actionName,account,actionData);
+        return await blockchainService.handleAction(gameId,actionName,account,actionData);
     }
     handleNewBlock(gameId,newBlock){
         this.gameService.sendNewBlockEvent(gameId,newBlock);

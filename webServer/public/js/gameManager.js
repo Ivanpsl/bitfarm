@@ -63,14 +63,14 @@ var gameManager = {
     },
 
     loadPlayers: function (dataPlayers) {
-
+        console.log()
         for (var key in dataPlayers) {
             var player = dataPlayers[key];
 
             player.terrains = [];
             player.tools = [];
             player.products = [];
-            
+            console.log(dataPlayers[key].id + "vs \n"+Cookies.get('userId'))
             if (dataPlayers[key].id === Cookies.get('userId')) {
                 console.log("Jugador recnocido")
                 this.player = player;
@@ -173,13 +173,12 @@ var gameManager = {
                     price : offert.price,
                 }
                 
-                this.sendAction(GAME_CONSTANS.ACTION_ELEMENT_BUY, 0, actionData, 
+                this.sendAction(GAME_CONSTANS.ACTION_ELEMENT_BUY, 40000, actionData, 
                     ()=>{
-                        this.closeModal();
                         gameManager.polipop.add({
                             content: 'Se ha llevado a cabo la compra.',
                             title: 'Compra realizada',
-                            type: 'succes',
+                            type: 'success',
                         });
                     }
                 );
@@ -190,7 +189,6 @@ var gameManager = {
 
     sendAction : function(actionName, timeConsume, data, callback){
         console.warn(`Ejecutando accion: [${actionName}][consume:${timeConsume}]  actionData: ${JSON.stringify(data)}`);
-    
         $.ajax({
             url: URL_BASE + "/game/action",
             type: "POST",
@@ -201,11 +199,36 @@ var gameManager = {
             },
             dataType: 'json',
             success: function (response, textStatus, jqXHR) {
+                console.log("RESPUESTA: ");
+                
+                var timeResult = parseInt(gameManager.milisecondsRemaining) - parseInt(timeConsume);
+                if(timeResult > 0){
+                    gameManager.milisecondsRemaining = timeResult;
+                }else{
+                    gameManager.milisecondsRemaining = 0;
+                }
+
+                console.log(JSON.stringify(response));
+                
+                console.log(JSON.stringify(response.players));
+                gameManager.loadPlayers(response.players);
+                gameManager.loadProducts(response.products)
+                gameManager.loadTerrains(response.terrains);
+                gameManager.loadTools(response.tools);
+
+                gameManager.updateAllPlayersResume();
+                gameManager.updateLocalPlayerResume()
                 callback(response);
+                gameManager.closeModal();
             },
             error: function (request, status, error) {
-                restartSesion();
-                console.error("Se ha perdido la conexión con el servidor: \n", "Se ha perdido la conexión con el servidor\n" + console.log(JSON.stringify(error)));
+                gameManager.polipop.add({
+                    content: request,
+                    title: 'Ha ocurrido un error',
+                    type: 'error',
+                });
+                // restartSesion();
+                console.error("Se ha perdido la conexión con el servidor: \n", "Se ha perdido la conexión con el servidor\n" + console.log(JSON.stringify(re)));
 
             }
         });
@@ -227,6 +250,7 @@ var gameManager = {
     },
 
     updatePlayerResume: function(playerData){
+        console.log(playerData)
         var cash = document.getElementById(`cash-${playerData.id}`);
         var terrain = document.getElementById(`terrain-${playerData.id}`);
         var storage = document.getElementById(`storage-${playerData.id}`);
@@ -256,7 +280,7 @@ var gameManager = {
 
     updateLocalPlayerResume(){
         this.toolsElement.textContent  = `${this.player.tools.length}`;
-        this.storageElement.textContent  =`${this.player.storage}/${this.player.max_storage}`;
+        this.storageElement.textContent  =`${this.player.products.length}/${this.player.max_storage}`;
         this.moneyElement.textContent  =  `${this.player.money}€`;
         this.updatePlayerResume(this.player);
     },
@@ -285,6 +309,7 @@ var gameManager = {
                 insert: 'before',
                 pool: 5,
                 sticky: true,
+                closeText: 'Cerrar',
             });
             gameManager.renderPlayers();
             gameManager.renderTerrains();
@@ -441,7 +466,13 @@ var gameManager = {
 
             this.modalRenderBlockChainLog(index);
         }
-        gameManager.blockchainLogContainer.appendChild(logElement);
+        
+        var firstLog = gameManager.blockchainLogContainer.firstChild;
+        if(firstLog){
+            gameManager.blockchainLogContainer.insertBefore(logElement,firstLog);
+        }else{
+            gameManager.blockchainLogContainer.appendChild(logElement);
+        }
     },
 
     modalRenderBlockChainLog : function(index){

@@ -102,7 +102,7 @@ class FarmChainService {
 
     async handleAction(gameId,actionName,account,actionData){
         console.log("Ejecutando contrato "+actionName+ "\n" + JSON.stringify(actionData))
-        return this.executeSmartContract(gameId, actionName, account, actionData)
+        return await this.executeSmartContract(gameId, actionName, account, actionData)
 
     }
 
@@ -120,8 +120,9 @@ class FarmChainService {
                     var newTransaction = new Transaction(account.publicKey, newVillageState.getInfo());
 
                     await newTransaction.signTransaction(account.publicKey, account.privateKey);
-
+                    this.log(newVillageState)
                     this.addTransaction(gameId,newTransaction)
+                    return newVillageState;
                 }else
                 {
                     throw new Error(`La partida con id ${gameId} no existe`);

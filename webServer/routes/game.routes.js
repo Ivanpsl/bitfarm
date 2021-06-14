@@ -28,7 +28,7 @@ module.exports = function (app,webService) {
         });
     }
 
-    function ActionHandler(req,res){
+    async function ActionHandler(req,res){
         try {
             var gameId = req.session.room;
             var sourceAccount = req.body.sourceAcc;
@@ -36,10 +36,9 @@ module.exports = function (app,webService) {
             var actionData = req.body.data;
             console.log(gameId + " "+sourceAccount + " "+ actioName + " " + JSON.stringify(actionData))
             if(gameId && sourceAccount && actioName && actionData){ 
-                var response = webService.sendGameAction(gameId,actioName,sourceAccount,actionData);
+                var response = await webService.sendGameAction(gameId,actioName,sourceAccount,actionData);
                 if(response instanceof Error) 
                     throw response;
- 
                 res.status(201).send(response);
             }else{
                 throw new Error("Faltan datos");

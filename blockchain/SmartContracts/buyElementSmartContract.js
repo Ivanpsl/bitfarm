@@ -48,7 +48,7 @@ class BuyElementSmartContract extends ISmartContract {
 
                     throw new Error("No se ha localizado receptor")
                 }
-                village.players[account.publicKey] = village.players[account.publicKey].money - actionData.price;
+                village.players[account.publicKey].money = village.players[account.publicKey].money - actionData.price;
                 village.products[actionData.elementIndex].owner = account.publicKey;
 
                 return village;
@@ -83,7 +83,7 @@ class BuyElementSmartContract extends ISmartContract {
                 village.builds[index].owner = actionData.targetPublicKey;
             }
 
-            village.players[account.publicKey] = village.players[account.publicKey].money - actionData.price;
+            village.players[account.publicKey].money = village.players[account.publicKey].money - actionData.price;
             village.terrains[actionData.elementIndex].owner = account.publicKey;
 
             return village;
@@ -108,7 +108,7 @@ class BuyElementSmartContract extends ISmartContract {
                 throw new Error("No se ha localizado receptor")
             }
 
-            village.players[account.publicKey] = village.players[account.publicKey].money - actionData.price;
+            village.players[account.publicKey].money = village.players[account.publicKey].money - actionData.price;
             village.tools[actionData.elementIndex].owner = account.publicKey;
 
             village.players[account.publicKey] = village.tools[actionData.elementIndex].addModifier(village.players[account.publicKey]);
