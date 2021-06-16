@@ -6,7 +6,7 @@ class Product {
         this.name = name;
         this.label = label;
         this.owner = owner;
-        this.state = GAME_CONSTANTS.PRODUCT_STATUS_SEED;
+        this.status = GAME_CONSTANTS.PRODUCT_STATUS_SEED;
         this.planted = false;
         this.builded = false;
         this.health = maxHealth;

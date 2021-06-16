@@ -32,6 +32,7 @@ class StartGameSmartContract extends ISmartContract {
                 }
 
             }
+            village.updateMarket();
             return village;
         }else {
             throw new Error("Config no localizada")

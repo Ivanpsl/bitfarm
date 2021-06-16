@@ -32,6 +32,7 @@ module.exports = class WebService {
     exitRoom(playerId,roomId){
         return this.roomService.exitRoom(playerId,roomId);
     }
+
     setReadyStatus(playerId,roomId,status){
         var room = this.getRoom(roomId);
         if (room) room.setPlayerStatus(playerId, status);
@@ -51,17 +52,31 @@ module.exports = class WebService {
         this.gameService.suscribeClient(gameId,userId,listener);
     }
 
+    playerEndTurn(gameId,userId){
+
+        const blockchainService = this.app.get("blockchainService");
+        var result = blockchainService.endPlayerTurn(gameId,userId);
+
+        if(result.endPlayerTurn === true){
+            this.gameService.sendPlayerEndTurnEvent(gameId, userId);
+        }else{
+            this.gameService.sendStartTurnEvent(gameId, result.newTurnData); 
+        }   
+    }
+
     exitGame(gameId,userId){
         this.gameService.clientExit(gameId,userId);
     }
     
-    async sendGameAction(gameId,actionName,account,actionData){
+    sendGameAction(gameId,actionName,account,actionData){
         const blockchainService = this.app.get("blockchainService");
-        return await blockchainService.handleAction(gameId,actionName,account,actionData);
+        return blockchainService.handleAction(gameId,actionName,account,actionData);
     }
+
     handleNewBlock(gameId,newBlock){
         this.gameService.sendNewBlockEvent(gameId,newBlock);
     }
+    
     handleNewTransaction(gameId,newTransaction){
         this.gameService.sendNewTransactionEvent(gameId,newTransaction);
     }

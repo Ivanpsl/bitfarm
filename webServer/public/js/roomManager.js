@@ -90,7 +90,6 @@ var roomManager = {
         });
     },
 
-
     subscribeChatRoom: function () {
         console.log("Subscribe")
         $.ajax({
@@ -123,6 +122,7 @@ var roomManager = {
             },
         });
     },
+    
     exitChatRoom: function () {
         $.ajax({
             url: URL_BASE + "/room/exit",

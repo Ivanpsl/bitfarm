@@ -24,6 +24,8 @@ class Village {
 
         this.market = [];
 
+        this.playersWaiting = 0;
+
         this.initPlayers(playerList);
         this.initTerrains(config.game_max_terrains);
         this.initToolsList(config.toolsList);
@@ -61,11 +63,18 @@ class Village {
         }
     }
 
+    playerEndTurn(playerId){
+        this.getPlayerFromId(playerId).isWaiting = true;
+        this.playersWaiting++;
+    }
+
     endTurn(){
         // TODO: añadir evento aleatorio al nuevo turno y su efecto -> this.selectRandomEvent();
         this.turn +=1
         this.applyEfectsToTerrains();
         this.updateMarket();
+
+        return this;
     }
 
     updateMarket(){
@@ -119,6 +128,9 @@ class Village {
         return Math.floor(Math.random() * max+1) + min;
     }
 
+    getPlayerFromId(playerId){
+        return this.players.find((player)=> player.id == playerId);
+    }
     getToolsFromOwner(ownerKey){
         var toolsList = [];
         for(let tool of this.tools){

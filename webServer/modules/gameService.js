@@ -47,6 +47,13 @@ module.exports = class GameService {
         this.sendEventToAll(gameId,GAME_CONSTANTS.EVENT_PLAYER_EXIT, {playerId : playerId});
     }
 
+    sendPlayerEndTurnEvent(gameId,playerId){
+        this.sendEventToAll(gameId, GAME_CONSTANTS.EVENT_PLAYER_END_TURN, {playerId : userId});
+    }
+    sendStartTurnEvent(gameId, turnData){
+        this.sendEventToAll(gameId, GAME_CONSTANTS.EVENT_START_TURN, {turnData: turnData});
+    }
+
     sendNewBlockEvent(gameId,newBlock){
         this.sendEventToAll(gameId,GAME_CONSTANTS.EVENT_NEW_BLOCK_LOG,newBlock);
     }

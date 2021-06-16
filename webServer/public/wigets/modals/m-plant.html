@@ -1,0 +1,42 @@
+<div class="modal-header">
+    <h5 id="modal-title" class="modal-title">Plantar en el terreno <spam id="plant-terrain-id"></spam>
+    </h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <div class="">
+        <div class="input-group mb-3">
+            <label class="input-group-text" for="inputGroupSelect01">Semillas a plantar</label>
+            <select class="form-select" id="inputGroupSelect01">
+                <option selected value="0">Semilla de cocorote</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary cancel" id="cancel" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" id="accept" class="btn btn-primary">Plantar<spam id="time"></spam></button>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var span = document.getElementsByClassName("btn-close")[0];
+
+        var cancelBtn = document.getElementById("cancel");
+
+        span.onclick = function() {
+            gameManager.closeModal();
+        }
+        cancelBtn.onclick = function(){
+            gameManager.closeModal();
+        }
+        window.onclick = function(event) {
+            if (event.target == gameManager.modalElement) {
+                gameManager.closeModal();
+            }
+        }
+    });
+</script>

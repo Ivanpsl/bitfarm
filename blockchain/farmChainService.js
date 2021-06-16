@@ -57,12 +57,8 @@ class FarmChainService {
                 this.villages[testIdentifier] = newVillage;
                 this.blockchains[testIdentifier]= blockchain;
 
-              
                 this.executeSmartContract(testIdentifier, ACTIONS.ACTION_START_GAME, hallAccount, {});
 
-                // this.blockchains[testIdentifier].addTransaction(newTransaction);
-                // const newBlock = await this.blockchains[testIdentifier].mineBlock();
-                // this.nodeService.propagateNewBlock(testIdentifier,newBlock);
             } catch(e){
                 this.logError(e)
             }
@@ -102,7 +98,7 @@ class FarmChainService {
 
     async handleAction(gameId,actionName,account,actionData){
         console.log("Ejecutando contrato "+actionName+ "\n" + JSON.stringify(actionData))
-        return await this.executeSmartContract(gameId, actionName, account, actionData)
+        return this.executeSmartContract(gameId, actionName, account, actionData)
 
     }
 
@@ -137,7 +133,15 @@ class FarmChainService {
             return e;
         }
     }
-    
+
+    endPlayerTurn(gameId,userId){
+        this.villages[gameId].playerEndTurn(userId);
+        if(this.villages[gameId].playersWaiting === this.villages[gameId].players.length){
+            var newTurn = this.endTurn(gameId);
+            return {allPlayersReady : true, newTurnData : newTurn};
+        }else return { allPlayersReady : false}   
+    }
+
     endTurn(gameId){
         this.villages[gameId].endTurn();
         const hallAccount = this.villages[gameId].townHall.account

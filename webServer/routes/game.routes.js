@@ -5,6 +5,14 @@ module.exports = function (app,webService) {
         if (game) res.send(JSON.stringify(game))
     });
 
+    app.get("/game/player/endTurn", function (req, res,next) {
+        var gameId = req.session.game;
+        var playerId = req.session.playerId
+        if(gameId && playerId)
+        {
+            webService.playerEndTurn(gameId, playerId);
+        }
+    });
     
     function ssEventHandler(req, res) {
         const headers = {

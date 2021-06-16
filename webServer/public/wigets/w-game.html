@@ -3,12 +3,13 @@
 
 <head>
     <title>FarmChain - Game</title>
+
     <link rel="stylesheet" href="./stylesheets/game.css">
     <link rel="stylesheet" href="./stylesheets/modal.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    
+
     <script src="https://unpkg.com/polipop/dist/polipop.min.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/polipop/dist/css/polipop.core.min.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/polipop/dist/css/polipop.core.min.css" />
     <link rel="stylesheet" href="https://unpkg.com/polipop/dist/css/polipop.default.min.css" />
 </head>
 
@@ -70,21 +71,24 @@
                         <div class="col-3">
                             <h3><span class="bi bi-box-seam"></span></h3>
                             <div class="mb-1"><span id="storage-num">4/200</span> de capacidad</div>
-                            <div class="my-2"><button type="button" class="btn btn-status-resume" onclick="gameManager.openStorage();">Ver
+                            <div class="my-2"><button type="button" id="btn-open-storage"
+                                    class="btn btn-status-resume">Ver
                                     almacen</button>
                             </div>
                         </div>
                         <div class="col">
                             <h3><span class="bi bi-cash-stack"></span></h3>
                             <div class="mb-1" id="money-num">3000$</div>
-                            <div class="my-2"><button type="button" class="btn btn-status-resume" onclick="gameManager.openMarket();">Ver
+                            <div class="my-2"><button type="button" id="btn-open-money"
+                                    class="btn btn-status-resume">Ver
                                     tienda</button>
                             </div>
                         </div>
                         <div class="col-3">
                             <h3><span class="bi bi-hammer"></span></h3>
                             <div class="mb-1"><span id="tools-num">5</span> herramientas</div>
-                            <div class="my-2"><button type="button" class="btn btn-status-resume" onclick="gameManager.openInventory();">Ver
+                            <div class="my-2"><button type="button" id="btn-open-inventory"
+                                    class="btn btn-status-resume">Ver
                                     inventario</button></div>
                         </div>
                     </div>
@@ -127,6 +131,70 @@
         <!-- Modal content -->
         <div id="modal-content" class="modal-content">
 
+        </div>
+    </div>
+
+    <div id="negociation-modal-window" class="modal negociation-modal">
+        <div class="negociation-modal-content">
+            <div class="modal-header">
+                <h5 id="modal-title" class="modal-title">Fase de negociación</h5>
+                Crea tus ofertas o compra una oferta de otro jugador
+            </div>
+            <div class="modal-body">
+                <div class="row inventory m-2 mt-3">
+                    <div class="negociation-modal-inventory col-6">
+                        <h5>Tus posesiones:</h5>
+                        <hr>
+                        <div id="item-element-list" class="item-element-list">
+                            <div class="list-group-item" aria-current="true">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">Item</h5>
+                                    <small class="text-muted">3 days ago</small>
+                                </div>
+                                <div class="d-flex w-100 justify-content-between">
+                                    <div class="w-75">Objeto plantable</div>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control form-control-sm" placeholder="Precio"
+                                            aria-label="Precio en euros">
+                                        <span class="input-group-text">€</span>
+                                        <button class="btn btn-outline-secondary" type="button">Crear oferta</button>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="col mx-2">
+                        <h5>Ofertas:</h5>
+                        <hr>
+                        <div id="offert-list" class="offert-list mx-4">
+                            <div class="list-group-item" aria-current="true">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">Oferta de </h5>
+                                    <button type="button" id="buy" class="btn btn-outline-success">Comprar
+                                        oferta</button>
+                                </div>
+                                <p class="mb-1">Semillas de babuino.</p>
+                            </div>
+                            <div class="list-group-item" aria-current="true">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">Oferta de </h5>
+                                    <button type="button" id="buy" class="btn btn-outline-success">Comprar
+                                        oferta</button>
+                                </div>
+                                <p class="mb-1">Semillas de babuino.</p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="end-turn" class="btn btn-primary ">Finalizar turno</button>
+            </div>
         </div>
     </div>
 </body>
