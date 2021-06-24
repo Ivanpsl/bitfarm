@@ -17,7 +17,7 @@ class FarmChainService {
         this.smartContracts = smFactory.createSmartContracts();
         this.nodeService = new NodeP2PService(this);
         this.config = config.get("Blockchain");
-        this.test();
+  
 
         this.onNewTransactionListeners = [];
         this.onNewBlockListeners = [];
@@ -38,31 +38,6 @@ class FarmChainService {
     }
     onBlockMined(identifier,block){
         this.onNewTransactionListeners.forEach(listener => listener(identifier,block))
-    }
-
-    test(){
-        setTimeout(async ()  =>{
-            try { 
-                const account = cryptoUtils.generateKeyPair();
-                var testIdentifier = "TestGame"
-                var hallAccount = cryptoUtils.generateKeyPair();
-                var playerData = [];
-                playerData[account.publicKey] = new Player("-111", "testName", account);
-                var newVillage = new Village(testIdentifier,hallAccount,playerData, config.get("Game"));
-                
-                var blockchain = new Blockchain(testIdentifier);
-                var newTransaction = new Transaction(account.publicKey, newVillage.getInfo());
-                newTransaction.signTransaction(account.publicKey, account.privateKey);
-                
-                this.villages[testIdentifier] = newVillage;
-                this.blockchains[testIdentifier]= blockchain;
-
-                this.executeSmartContract(testIdentifier, ACTIONS.ACTION_START_GAME, hallAccount, {});
-
-            } catch(e){
-                this.logError(e)
-            }
-        }, 5000);
     }
 
 
@@ -97,7 +72,7 @@ class FarmChainService {
     }
 
     async handleAction(gameId,actionName,account,actionData){
-        console.log("Ejecutando contrato "+actionName+ "\n" + JSON.stringify(actionData))
+        this.log("Ejecutando contrato "+actionName+ "\n\t\t\t" + JSON.stringify(actionData))
         return this.executeSmartContract(gameId, actionName, account, actionData)
 
     }
@@ -112,15 +87,16 @@ class FarmChainService {
                 {
                     var newVillageState = smartContract.execute(this.villages[gameId], account, config, actionData);
                     this.villages[gameId] = newVillageState;
-
+                    
                     var newTransaction = new Transaction(account.publicKey, newVillageState.getInfo());
 
                     await newTransaction.signTransaction(account.publicKey, account.privateKey);
-                    this.log(newVillageState)
                     this.addTransaction(gameId,newTransaction)
+                    
                     return newVillageState;
                 }else
                 {
+                    this.logError(`La partida con id ${gameId} no existe\n\t${JSON.stringify(this.villages)}`)
                     throw new Error(`La partida con id ${gameId} no existe`);
                 }
             }else
@@ -128,18 +104,23 @@ class FarmChainService {
                 throw new Error(`El smartContract ${smartContractName} no existe`);
             }
         }catch(e)
-        {
-            console.log(e.message);
-            return e;
+        {                    
+            this.logError(`${e.message}`)
+            return new Error("Ha ocurrido un error ejecutando el SmartContract");
         }
     }
 
     endPlayerTurn(gameId,userId){
-        this.villages[gameId].playerEndTurn(userId);
-        if(this.villages[gameId].playersWaiting === this.villages[gameId].players.length){
-            var newTurn = this.endTurn(gameId);
-            return {allPlayersReady : true, newTurnData : newTurn};
-        }else return { allPlayersReady : false}   
+        if(this.villages[gameId]){
+            this.villages[gameId].playerEndTurn(userId);
+            console.log("Pasando tunro "+this.villages[gameId].playersWaiting +"-" +this.villages[gameId].players.length )
+            if(this.villages[gameId].playersWaiting === this.villages[gameId].players.length){
+                var newTurn = this.endTurn(gameId);
+                return {allPlayersReady : true, newTurnData : newTurn};
+            }else return { allPlayersReady : false, newTurnData : null};   
+        }else{
+            this.logError(`Partida con ID ${gameId} no localizada al intentar pasar turno`)
+        }
     }
 
     endTurn(gameId){

@@ -40,12 +40,12 @@
             {
                 "name" : "ACTION_TERRAIN_BUILD",
                 "label" : "Construir",
-                "time_cost" : 5000
+                "time_cost" : 25000
             },
             {
                 "name" : "ACTION_TERRAIN_PLANT",
                 "label" : "Plantar",
-                "time_cost" : 5000
+                "time_cost" : 25000
             }
         ],
         
@@ -81,12 +81,12 @@
                 {
                     "name" : "ACTION_BUILD_DEMOLISH",
                     "label" : "Demoler",
-                    "time_cost" : 5000
+                    "time_cost" : 25000
                 },
                 {
                     "name" : "ACTION_BUILD_UPGRADE",
                     "label" : "Mejorar",
-                    "time_cost" : 5000
+                    "time_cost" : 25000
                 }      
             ],
             "buildingsList" :

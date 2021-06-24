@@ -4,6 +4,7 @@ class Terrain {
     {
         this.index = index;
         this.owner = owner;
+        this.label = "Terreno " + this.index;
         this.status = GAME_CONSTANTS.TERRAIN_STATUS_EMPTY;
         this.contentIndex = null;
         this.soilExhaustion = {};

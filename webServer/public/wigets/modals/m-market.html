@@ -30,9 +30,9 @@
         <div class="col-10">
             <p class="text-muted m-0 p-0">La seleccion te cuesta: <spam id="selection-cost">300€</span></p>
         </div>
-        <div class="col-2"><button id="btn-buy" class="btn btn-primary" onclick="gameManager.buyOnMarket();" disabled>Comprar</button></div>
+        <div class="col-2"><button id="btn-buy" class="btn btn-primary" disabled>Comprar</button></div>
     </div>
-    
+
 </div>
 
 <script>
@@ -47,7 +47,9 @@
                 gameManager.closeModal();
             }
         }
-
-
+        var buybtn = document.getElementById("btn-buy");
+        buybtn.onclick = function (){
+            gameManager.buyOnMarket();
+        }
     });
 </script>

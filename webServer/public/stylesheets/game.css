@@ -167,7 +167,6 @@
   height: auto;
   min-height: 300px;
 }
-
 .terrain-container {
   background: #EDAC61;
   border: #7d432f;
@@ -175,36 +174,38 @@
   border-radius: 5px;
   margin: 5px 12px 2px 12px;
 }
-
 .terrain-name {
   padding: 2px;
-  margin-bottom: 0px;
-  margin-left: 15px;
+  margin-bottom:0px;
+  margin-left: 5px;
   text-align: left;
 }
-
 .terrain-container hr {
-  margin: 1px;
-  margin-top: 0px;
-  padding: 0;
-  margin-bottom: 15px;
+margin:1px;
+margin-top:0px;
+padding:0;
+margin-bottom: 15px;
 }
 
-.terrain-info-text {
+.terrain-info-text{
   background-color: #D19D5E;
-  padding: 5px;
-  margin-top: 15px;
-  width: 500px;
-  height: 50px;
-  max-width: 500px;
-  max-height: 50px;
+  padding: 0px;
+  margin: 3px auto -40px auto;
+  max-width: 450px;
+  max-height: 75px;
   border-radius: 12px;
   border-style: solid;
   border-color: #7D432F;
   border-width: 1px;
   text-align: center;
+  width: 50% !important;
+  min-width: 270px;
 }
-
+.terrain-info-data{
+padding: 0;
+margin: 0;
+font-size :.9rem;
+}
 .terrain-actions {
   padding: 5px;
 }
@@ -256,7 +257,7 @@
   border-style: solid;
   border-width: 1px;
   animation-name: new-log;
-  animation-duration: 1.5s;
+  animation-duration: 5s;
   animation-iteration-count: infinite;
 }
 
@@ -281,7 +282,7 @@
 
 .spin-icon {
   animation-name: spin;
-  animation-duration: 1s;
+  animation-duration: 3s;
   animation-iteration-count: infinite;
 }
 .market-selected {
@@ -315,10 +316,10 @@
 
 .negociation-modal-content {
   background-color: #fefefe;
-  margin: 10% auto; /* 15% from the top and centered */
+  margin: 5% auto; 
   padding: 20px;
   border: 1px solid #888;
-  width: 75%; /* Could be more or less, depending on screen size */
+  width: 75%; 
 }
 .negociation-modal-inventory{
   border-style: solid;

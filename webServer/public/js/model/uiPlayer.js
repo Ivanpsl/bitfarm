@@ -32,11 +32,50 @@ class UIPlayer {
     }
 
     getElementByTypeAndIndex(type,index){
-        if(type === GAME_CONSTANS.TYPE_TERRAIN) return this.terrains.find((terrain)=> terrain.index == index);
-        else if(type === GAME_CONSTANS.TYPE_TOOL) return this.tools.find((tool)=> tool.index == index);
-        else if(type === GAME_CONSTANS.TYPE_PRODUCT) return this.products.find((product)=> product.index == index);
-        else if(type === GAME_CONSTANS.TYPE_BUILDING) return this.buildings.find((building)=> building.index == index);
+        var result = null;
+        if(type === GAME_CONSTANTS.TYPE_TERRAIN) {
+            result = this.terrains.find((terrain)=> terrain.index == index);
+        }
+        else if(type === GAME_CONSTANTS.TYPE_TOOL) {
+            result = this.tools.find((tool)=> tool.index == index);
+        }
+        else if(type === GAME_CONSTANTS.TYPE_PRODUCT) {
+            result = this.products.find((product)=> product.index == index);
+        }
+        else if(type === GAME_CONSTANTS.TYPE_BUILDING) {
+            result = this.buildings.find((building)=> building.index == index);
+        }
+        
+        if(result == null) {
+            console.error(`${type} No encontrado con indice ${index} para el jugador`)
+            var list = null;
+            if(type === GAME_CONSTANTS.TYPE_TERRAIN ) list = this.terrains;
+            else if(type === GAME_CONSTANTS.TYPE_TOOL) list = this.tools;
+            else if(type === GAME_CONSTANTS.TYPE_PRODUCT) list = this.products;
+            else if(type === GAME_CONSTANTS.TYPE_BUILDING) list = this.buildings;
+
+            console.error(JSON.stringify(list));
+        }
+        
+        return result;
     }
+
+    removeElemenyByTypeAndIndex(type,index){
+        if(type === GAME_CONSTANTS.TYPE_TERRAIN) {
+            this.terrains.filter((terrain)=> terrain.index != index);
+        }
+        else if(type === GAME_CONSTANTS.TYPE_TOOL) {
+            this.tools.filter((tool)=> tool.index != index);
+        }
+        else if(type === GAME_CONSTANTS.TYPE_PRODUCT) {
+            this.products.filter((product)=> product.index != index);
+        }
+        else if(type === GAME_CONSTANTS.TYPE_BUILDING) {
+            this.buildings.filter((building)=> building.index != index);
+        }
+        
+    }
+
 
     getNumProducts(){
         return this.products.length;
@@ -49,13 +88,15 @@ class UIPlayer {
     addTerrain(terrainData){
         this.terrains.push(new UITerrain(terrainData));
     }
+    
+    addTool(toolData){
+        this.tools.push(toolData);
+    }
 
     removeMoney(amount){
         this.money = this.money - amount;
         this.updateLocalResume();
     }
-
-
 
     resetLists(){
         this.terrains = [];
@@ -113,8 +154,6 @@ class UIPlayer {
             }
         });
     }
-
-
 
     updateLocalResume(){
         gameManager.toolsElement.textContent  = `${this.tools.length}`;
@@ -187,7 +226,7 @@ class UIPlayer {
         this.UIPlayerElement.storage = storageSpan;
         this.UIPlayerElement.terrain = terrainSpan;
 
-        document.getElementById('players-resume-list').appendChild(drawer);
+        document.getElementById('player-list').appendChild(drawer);
     }
     
     renderTerrains(){

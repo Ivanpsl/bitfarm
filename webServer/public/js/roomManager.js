@@ -1,10 +1,10 @@
-
 var roomManager = {
     actualRoom: null,
     players: [],
     messages: [],
-    isReady : false,
-    isPlaying : false,
+    isReady: false,
+    isPlaying: false,
+    listeningEvents: true,
     initRoom: function (roomInfo) {
         this.actualRoom = roomInfo;
         this.renderRoom();
@@ -15,9 +15,9 @@ var roomManager = {
         $("#gamecontainer").load("wigets/w-room.html", function () {
             roomManager.updateRoomPlayers(roomManager.actualRoom.roomPlayers);
             document.getElementById("roomId-spam").innerHTML = roomManager.actualRoom.roomId;
-            if(roomManager.actualRoom.roomType === "PRIVATE")
-                document.getElementById("room-name").innerHTML ="Sala privada";
-            else document.getElementById("room-name").innerHTML ="Sala "+roomManager.actualRoom.roomId;
+            if (roomManager.actualRoom.roomType === "PRIVATE")
+                document.getElementById("room-name").innerHTML = "Sala privada";
+            else document.getElementById("room-name").innerHTML = "Sala " + roomManager.actualRoom.roomId;
         });
     },
 
@@ -79,8 +79,10 @@ var roomManager = {
             dataType: 'json',
             success: function (response, textStatus, jqXHR) {
                 if (jqXHR.status === 200) {
-                    console.log(response)
-                    gameManager.initGame(response);
+                    // if(roomManager.isPlaying===false){
+                    //     this.isPlaying = true;
+                    //     gameManager.initGame(response);
+                    // }
                 }
             },
             error: function (request, status, error) {
@@ -108,12 +110,12 @@ var roomManager = {
             },
             complete: function (request, status, err) {
                 if (status == "timeout" || status == "success") {
-                    if(!roomManager.isPlaying){
+                    if (!roomManager.isPlaying) {
                         console.log(`[${status}] LOG: Normal timeot, nueva peticion.` + JSON.stringify(request));
                         roomManager.subscribeChatRoom();
                     }
                 } else {
-                    if(!roomManager.isPlaying){
+                    if (!roomManager.isPlaying) {
                         setTimeout(function () {
                             roomManager.subscribeChatRoom();
                         }, 1000);
@@ -122,7 +124,7 @@ var roomManager = {
             },
         });
     },
-    
+
     exitChatRoom: function () {
         $.ajax({
             url: URL_BASE + "/room/exit",
@@ -143,11 +145,15 @@ var roomManager = {
     },
 
     manageEvent: function (event) {
-        console.log("RECIBIENDO EVENTO: \n" + JSON.stringify(event))
+        console.log("******************RECIBIENDO EVENTO: \n" + JSON.stringify(event.eType))
         if (event.eType === ROOM_CONSTANTS.EVENT_PLAYERMESSAGE) {
             //source : sourceId, name:player.name, data: message
-            console.log(JSON.stringify(event.data));
-            const newMsg = { source: event.source, author: event.data.author, message: event.data.message };
+            // console.log(JSON.stringify(event.data));
+            const newMsg = {
+                source: event.source,
+                author: event.data.author,
+                message: event.data.message
+            };
             this.messages.push(newMsg);
             this.renderOtherPlayerMessage(newMsg.author, newMsg.message);
         } else if (event.eType === ROOM_CONSTANTS.EVENT_PLAYER_JOIN) {
@@ -156,14 +162,16 @@ var roomManager = {
             this.removePlayer(event.data);
         } else if (event.eType === ROOM_CONSTANTS.EVENT_PLAYER_CHANGE_STATUS) {
             this.updatePlayerStatus(event.data);
-            this.startMatch();
         } else if (event.eType === ROOM_CONSTANTS.EVENT_GAME_START) {
-            this.isPlaying = true;
-            gameManager.initGame(event.data);
+            this.listeningEvents = false
+            if (roomManager.isPlaying === false) {
+                this.isPlaying = true;
+                gameManager.initGame(event.data);
+            }
         }
     },
 
-    
+
     addNewPlayer: function (playerData) {
         this.players.push(playerData);
         this.renderNewPlayer(playerData);
@@ -199,14 +207,14 @@ var roomManager = {
 
     updatePlayerStatus: function (data) {
         var statusElement = document.getElementById(`${data.player.id}-status`);
-        console.log("Cambiado estado de "+data.player.id)
+        console.log("Cambiado estado de " + data.player.id)
         if (statusElement) {
             if (data.isReady === 'true') {
                 statusElement.classList.remove("not-ready");
                 statusElement.classList.add("ready");
                 statusElement.innerHTML = "Listo";
             } else {
-                
+
                 statusElement.classList.add("not-ready");
                 statusElement.classList.remove("ready");
                 statusElement.innerHTML = "No esta listo";
@@ -235,7 +243,7 @@ var roomManager = {
         var drawer = document.createElement("div");
         drawer.id = playerInfo.id;
         drawer.className = "player-drawer g-0";
-        
+
         var img = document.createElement("img");
         img.className = "profile-image";
         img.src = "https://avatars.dicebear.com/api/human/" + playerInfo.name + ".svg";
@@ -311,11 +319,3 @@ var roomManager = {
         cContainer.appendChild(row);
     },
 }
-
-
-
-
-
-
-
-

@@ -53,9 +53,9 @@ module.exports = class RoomService {
         }
     }
 
-    setRunningStatus(roomId){
+    setRunningStatus(roomId,gameData){
         if(this.roomExist(roomId)){
-            this.getRoom(roomId).startGame();
+            this.getRoom(roomId).startGame(gameData);
         }else{
             throw Error(`Sala ${roomId} no encontrada `);
         }

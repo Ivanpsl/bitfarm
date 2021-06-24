@@ -18,7 +18,7 @@ const ROOM_CONSTANTS = {
     EVENT_GAME_START : "GAME_START"
 };
 
-const GAME_CONSTANS = {
+const GAME_CONSTANTS = {
     
     // ESTADO PARTIDA
     GAME_STATUS_PLAYING : "GAME_PLAYING",
@@ -33,7 +33,7 @@ const GAME_CONSTANS = {
     // TERRENOS
     TERRAIN_STATUS_EMPTY : "TERRAIN_EMPTY",
     TERRAIN_STATUS_PLANTED : "TERRAIN_PLANTED",
-    TERRAIN_STATUS_CONSTUCTED : "TERRAIN_CONSTUCTED",
+    TERRAIN_STATUS_BUILDED : "TERRAIN_BUILDED",
     //PRODUCTOS
     PRODUCT_STATUS_SEED : "PRODUCT_SEED",
     PRODUCT_STATUS_PLANTED : "PRODUCT_PLANTED",
@@ -49,12 +49,12 @@ const GAME_CONSTANS = {
     EVENT_PLAYER_END_TURN : "END_TURN",
     EVENT_START_TURN : "START_TURN",
     EVENT_PLAYER_EXIT : "PLAYER_EXIT",
-    EVENT_MARKET_BUY :  "MARKET_BUY",
+    EVENT_PLAYER_ACTION : "PLAYER_ACTION",
     EVENT_UPDATE_GAME_DATA : "UPDATE",
     EVENT_NEW_TRANSACTION_LOG : "NEW_TRANSACTION",
     EVENT_NEW_BLOCK_LOG : "NEW_BLOCK",
     EVENT_OFFERT_BUY : "OFFERT_BUY",
-    EVENT_OFFERT_CREATE : "OFFERTW_OFFERT",
+    EVENT_OFFERT_CREATE : "NEW_OFFERT",
     EVENT_OFFERT_REMOVE : "OFFERT_REMOVE",
 
     //ACCIONES
@@ -67,13 +67,23 @@ const GAME_CONSTANS = {
 
     ACTION_BUILD_DEMOLISH : "ACTION_BUILD_DEMOLISH",
     ACTION_BUILD_UPGRADE : "ACTION_BUILD_UPGRADE",
-    
     ACTION_PLAYER_END_TURN: "PLAYER_END_TURN",
 
     ACTION_ELEMENT_BUY : "ACTION_ELEMENT_BUY",
 };
 
-
+function productStatusToString(status){
+    if(PRODUCT_STATUS_SEED === status)
+        return "Semilla";
+    if(PRODUCT_STATUS_PLANTED === status)
+        return "Plantado";
+    if(PRODUCT_STATUS_GROW === status)
+        return "Maduro";
+    if(PRODUCT_STATUS_ROTTEN === status)
+        return "Podrido";
+    if(PRODUCT_STATUS_DRY === status)
+        return "Seco";
+}
 function removeAllChildNodes(parent) {
     if(parent)
         while (parent.firstChild) {
@@ -86,5 +96,8 @@ function restartSesion() {
     Cookies.remove('actualRoomId');
     Cookies.remove('actualRoomType');
     window.location.href = HOME_URL;
+    if(gameManager.gameEventsHandler && gameManager.gameEventsHandler.listening){
+        gameManager.gameEventsHandler.disconect();
+    }
 }
 

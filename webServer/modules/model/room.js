@@ -14,16 +14,28 @@ module.exports = class Room {
         this.listeners = [];
         this.roomStatus = ROOM_CONSTANTS.STATUS_EMPTY;
         this.messages = [];
+        this.playersReady = 0;
     }
 
     getPlayerById(id){
                 // -- console.log("Buscando jugador: " + JSON.stringify(player) + " ---- " + JSON.stringify(this.players))
         return this.players.find(player => player.id === id);;
     }   
+
+    
     setPlayerStatus(playerId,status){
         var player = this.getPlayerById(playerId);
         player.isReady=status
-        this.sendEventToAll(-1,ROOM_CONSTANTS.EVENT_PLAYER_CHANGE_STATUS, { player : {id:player.id, name: player.name}, isReady: status });
+        if(player.isReady)
+            this.playersReady++;
+        else
+            this.playersReady--;
+        if(this.playersReady == this.players.length)
+            return true;
+        else {
+            this.sendEventToAll(-1,ROOM_CONSTANTS.EVENT_PLAYER_CHANGE_STATUS, { player : {id:player.id, name: player.name}, isReady: status });
+            return false;
+        }
     }
     addPlayer(player){
         console.log("Añadiendo jugador a sala: " + player.id + "    " + player.name);
@@ -92,9 +104,9 @@ module.exports = class Room {
         }
     }
 
-    startGame(){
+    startGame(gameData){
         this.roomStatus = ROOM_CONSTANTS.STATUS_RUNNING;
-        this.sendEventToAll(-1, ROOM_CONSTANTS.EVENT_GAME_START)
+        this.sendEventToAll(-1, ROOM_CONSTANTS.EVENT_GAME_START,gameData)
         this.listeners = [];
     }
     

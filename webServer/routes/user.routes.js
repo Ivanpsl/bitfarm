@@ -5,8 +5,6 @@ module.exports = function (app,webService) {
 
     const routerUsuarioToken = express.Router();
     routerUsuarioToken.use(function (req, res, next) {
-        console.error("TokenTest:");
-
         var token = req.headers['token'] || req.body.token || req.query.token || req.session.token;
         if (token != null) {
             app.get('jwt').verify(token, 'secreto', function (err, infoToken) {

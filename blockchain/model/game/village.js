@@ -129,7 +129,10 @@ class Village {
     }
 
     getPlayerFromId(playerId){
-        return this.players.find((player)=> player.id == playerId);
+        for(var key in this.players){
+            if(this.players[key].id === playerId) 
+                return this.players[key];
+        }
     }
     getToolsFromOwner(ownerKey){
         var toolsList = [];
@@ -196,6 +199,7 @@ class Village {
             terrains : this.terrains,
             toolsList : this.toolsList,
             products : this.products,
+            buildings: this.buildings
         });
     }
 

@@ -33,6 +33,6 @@ app.set('webService',webService);
 
 
 app.use('/game', express.static('./webServer/public'));
-require('./routes/index')(app,webService);
+require('./routes/index.routes')(app,webService);
 
 module.exports = app;

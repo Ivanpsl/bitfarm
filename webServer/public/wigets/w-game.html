@@ -3,14 +3,9 @@
 
 <head>
     <title>FarmChain - Game</title>
-
     <link rel="stylesheet" href="./stylesheets/game.css">
     <link rel="stylesheet" href="./stylesheets/modal.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
-    <script src="https://unpkg.com/polipop/dist/polipop.min.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/polipop/dist/css/polipop.core.min.css" />
-    <link rel="stylesheet" href="https://unpkg.com/polipop/dist/css/polipop.default.min.css" />
 </head>
 
 <body>
@@ -42,7 +37,7 @@
                 <div id="players-container">
                     <h6 class="players-title">Jugadores</h6>
                     <hr>
-                    <div class="player-list">
+                    <div class="player-list" id="player-list">
                     </div>
                 </div>
             </div>
@@ -193,6 +188,7 @@
 
             </div>
             <div class="modal-footer">
+                <small class="text-muted">Jugadores listos: <spam id="players-waiting">0</spam></small>
                 <button type="button" id="end-turn" class="btn btn-primary ">Finalizar turno</button>
             </div>
         </div>

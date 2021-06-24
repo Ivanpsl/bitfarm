@@ -1,7 +1,7 @@
 const {GAME_CONSTANTS} = require("../../common/constants");
 const ISmartContract = require("./iSmartContract")
 
-class BuildSmartContract extends ISmartContract{
+class RecollectSmartContract extends ISmartContract{
 
     constructor(){
         super()
@@ -14,4 +14,4 @@ class BuildSmartContract extends ISmartContract{
 
 }
 
-module.exports = BuildSmartContract;
+module.exports = RecollectSmartContract;

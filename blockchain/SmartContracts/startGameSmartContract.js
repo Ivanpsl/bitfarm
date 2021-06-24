@@ -2,9 +2,6 @@ const {GAME_CONSTANTS} =require("../../common/constants");
 const ISmartContract = require("./iSmartContract")
 
 class StartGameSmartContract extends ISmartContract {
-    /**
- * @constructor
- */
     constructor(){
         super();
         this.action = this.startGameActions;
