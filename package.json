@@ -8,6 +8,9 @@
     "test" : "mocha",
     "testnya": "mocha --reporter nyan"
   },
+  "engines": {
+    "node": "14.x"
+  },
   "dependencies": {
     "all": "^0.0.0",
     "awilix": "^4.3.4",
