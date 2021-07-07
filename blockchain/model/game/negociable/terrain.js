@@ -1,19 +1,22 @@
-const {GAME_CONSTANTS} = require("../../../../common/constants");
-class Terrain {
+const {GAME_CONSTANTS} =  require("../../../../common/constants");
+const AbstractElement = require('./abstractElement');
+class Terrain extends AbstractElement{
     constructor(index,owner)
     {
-        this.index = index;
-        this.owner = owner;
-        this.label = "Terreno " + this.index;
+        super(index,`terrain`,`Terreno ${index}`,owner,GAME_CONSTANTS.TYPE_TERRAIN);
+
         this.status = GAME_CONSTANTS.TERRAIN_STATUS_EMPTY;
         this.contentIndex = null;
         this.soilExhaustion = {};
-        this.type = GAME_CONSTANTS.TYPE_TERRAIN;
     }
     
     addSoilUse(productType,effect){
-        soilExhaustion[productType] += effect;
-        return soilExhaustion[productType];
+        
+        this.soilExhaustion[productType] += effect;
+        return this.soilExhaustion[productType];
+    }
+    getSoilUse(productType){
+        return this.soilExhaustion[productType] ?? 0;
     }
 }
 

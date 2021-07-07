@@ -8,8 +8,8 @@ module.exports = class GameService {
     }
 
     initGame(gameId){
-        this.games.filter((game) => game.id == gameId);
-        this.eventLogs.filter((log) => log.id == gameId);
+        this.games = this.games.filter((game) => game.id != gameId);
+        this.eventLogs = this.eventLogs.filter((log) => log.id != gameId);
 
         this.games.push({id: gameId, playerListeners : []});
         this.eventLogs.push({id : gameId, logs : []});
@@ -59,8 +59,10 @@ module.exports = class GameService {
     }
 
     clientExit(gameId,playerId){
-        this.getGames(gameId)?.playerListeners.filter(player => player.playerId !== playerId);
-        this.sendEventToAll(gameId,GAME_CONSTANTS.EVENT_PLAYER_EXIT, {playerId : playerId});
+        if(this.getGames(gameId)){
+            this.getGames(gameId).playerListeners = this.getGames(gameId).playerListeners.filter(player => player.playerId !== playerId);
+            this.sendEventToAll(gameId,GAME_CONSTANTS.EVENT_PLAYER_EXIT, {playerId : playerId});
+        }
     }
 
     sendPlayerEndTurnEvent(gameId,playerId){
@@ -77,13 +79,17 @@ module.exports = class GameService {
         this.sendEventToAll(gameId, GAME_CONSTANTS.EVENT_OFFERT_CREATE, {source : sourceAccount, offertIndex: offertIndex, itemType : itemType, itemIndex : itemIndex, price : price});
     }
 
+    sendOnPlayerRemoveOffert(gameId,offertIndex){
+        this.sendEventToAll(gameId, GAME_CONSTANTS.EVENT_OFFERT_REMOVE, {offertIndex: offertIndex});
+    }
+
     sendOnPlayerAction(gameId,actionName,account,actionData){
         this.sendEventToAll(gameId, GAME_CONSTANTS.EVENT_PLAYER_ACTION, {source : account, action: actionName, actionData : actionData});
     }
 
     sendNewBlockEvent(gameId,newBlock){
         this.sendEventToAll(gameId,GAME_CONSTANTS.EVENT_NEW_BLOCK_LOG,newBlock);
-        this.getEventsLog(gameId).push({oldEvent : event, oldData: data});
+        this.getEventsLog(gameId).push({oldEvent : GAME_CONSTANTS.EVENT_NEW_BLOCK_LOG, oldData: newBlock});
     }
     
 

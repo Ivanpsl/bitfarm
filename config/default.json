@@ -11,7 +11,7 @@
         "node_port" : 4005,
         "node_host" : "http://localhost:",
         "logger" : ">>>>> [P2P] :method :url :status",
-        "nodes_request_target" : "https://localhost:3000/nodes"
+        "nodes_request_target" : "https://localhost:3002"
     },
 
     "Game" : {
@@ -21,8 +21,23 @@
         "init_player_terrains" : 1,
         "time_per_turn" : 60000,
         "game_max_terrains" : 10,
-        "min_market_terrain_cost" : 1000,
+        "min_market_terrain_cost" : 10,
         "max_market_terrain_cost" : 3000,
+        "terrain_tax" : 100,
+        "climaticEvents" : {
+            "rain" :{
+                "name" : "rain",
+                "label" : "Lluvia",
+                "percent" : 0.25,
+                "waterEffect" : 25
+            },
+            "drought" :{
+                "name" : "drought",
+                "label" : "Sequia",
+                "percent" : 0.25,
+                "waterEffect" : -25
+            }
+        },
         "tools" : {
             "shower" :{
                 "label" : "Regadera",
@@ -67,10 +82,14 @@
                     "amount" : 100,
                     "label" : "Trigo",
                     "productType" : "cereal",
-                    "watter_consume_per_turn" : 10,
-                    "max_watter_per_turn" : 100,
+                    "water_consume_per_turn" : 10,
+                    "min_water_to_grow" : 45,
+                    "min_water_to_survive": 25,
+                    "growth_per_week" : 25,
                     "max_health" : 100,
                     "health_loss" : 50,
+                    "dehydration_health_loss" : 30,
+                    "exhaustion_health_loss" : 15,
                     "min_market_cost" : 10,
                     "max_market_cost" : 100
                 }
@@ -82,12 +101,7 @@
                     "name" : "ACTION_BUILD_DEMOLISH",
                     "label" : "Demoler",
                     "time_cost" : 25000
-                },
-                {
-                    "name" : "ACTION_BUILD_UPGRADE",
-                    "label" : "Mejorar",
-                    "time_cost" : 25000
-                }      
+                }
             ],
             "buildingsList" :
             {

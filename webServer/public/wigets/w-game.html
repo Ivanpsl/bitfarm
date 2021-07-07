@@ -6,36 +6,36 @@
     <link rel="stylesheet" href="./stylesheets/game.css">
     <link rel="stylesheet" href="./stylesheets/modal.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://unpkg.com/polipop/dist/polipop.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/polipop/dist/css/polipop.core.min.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/polipop/dist/css/polipop.default.min.css" />
 </head>
 
 <body>
 
     <div id="widget-game" class="game-screen">
+
         <div id="game-status" class="row shadow">
-            <div class="col-3 "><span></span></div>
-            <div class="col-6 g">
+            <div class="col-md-3 col-sm-0 "></div>
+            <div class="col-md-6 col-sm-12 g">
                 <div class="turn-status-container row">
-                    <div class="col-2" id="">
-                        <img alt="season" src="https://image.flaticon.com/icons/png/512/2077/2077008.png"
-                            width="35"></img>
-                        <h5 id="season">invierno</h5>
+                    <div class="col-2" id="season-container">
                     </div>
                     <div class="col-8 shadow" id="week-container">
-                        <h4 id="week">Semama <span id="week-number">0</span></h4>
-                        <h5 id="week-season">Invierno</h5>
+                        <h4 id="week">Semana <span id="week-number">0</span></h4>
+                    <h4 class="bi bi-cloud-sun p-0 m-0" id="climatic-icon"> </h4><span id="climatic-text" class="p-0 m-0">Sol con nubes</span>
                     </div>
                     <div class="col-2" id="time-container">
-                        <img alt="clima" src="https://image.flaticon.com/icons/png/512/1886/1886376.png" width="35">
-                        <h5>soleado</h5>
-                    </div>
+                    </div> 
                 </div>
             </div>
-            <div class="col-3"><span></span></div>
+            <div class="col-md-3 col-sm-0"></div>
         </div>
+
         <div id="game-zone" class="row shadow game-zone">
-            <div id="players-resume-list" class="col-2 shadow mt-2 players-resume-list">
+            <div id="players-resume-list" class="col-md-2 col-sm-0 shadow mt-2 players-resume-list">
                 <div id="players-container">
-                    <h6 class="players-title">Jugadores</h6>
+                    <h6 class="players-title col-sm-auto">Jugadores</h6>
                     <hr>
                     <div class="player-list" id="player-list">
                     </div>
@@ -48,8 +48,8 @@
                         <hr>
                     </div>
                     <div class="row timer">
-                        <div class="col-3"></div>
-                        <div class="col pbar" style="width: 120px;">
+                        <div class="col-md-3 col-sm-1 col-xs-0 "></div>
+                        <div class="col-md col-sm col-xs-12 pbar" style="width: 120px;">
                             <div id="crono-icon" class="crono spin-icon"><span class="bi bi-hourglass-split"></span>
                             </div>
                             <div class="progress" style="height: 18px;" id="bar">
@@ -60,31 +60,28 @@
                             <div class="crono" id="time-remaining">40</div>
                             <h8 class="">Segundos restantes</h8>
                         </div>
-                        <div class="col-3"></div>
+                        <div class="col-md-3 col-sm-1 col-xs-0"></div>
                     </div>
                     <div class="row menu mt-2">
-                        <div class="col-3">
-                            <h3><span class="bi bi-box-seam"></span></h3>
-                            <div class="mb-1"><span id="storage-num">4/200</span> de capacidad</div>
+                        <div class="col-lg-3 col-md col-sm col-xm-0">
+                            <h4><span class="bi bi-box-seam "></span></h4>
+                            <div class="mb-1 "><span id="storage-num">4/200</span> capacidad</div>
                             <div class="my-2"><button type="button" id="btn-open-storage"
-                                    class="btn btn-status-resume">Ver
-                                    almacen</button>
+                                    class="btn btn-status-resume">Ver almacen</button>
                             </div>
                         </div>
-                        <div class="col">
-                            <h3><span class="bi bi-cash-stack"></span></h3>
+                        <div class="col-md col-sm col-xm-12">
+                            <h4><span class="bi bi-cash-stack"></span></h4>
                             <div class="mb-1" id="money-num">3000$</div>
                             <div class="my-2"><button type="button" id="btn-open-money"
-                                    class="btn btn-status-resume">Ver
-                                    tienda</button>
+                                    class="btn btn-status-resume">Ver tienda</button>
                             </div>
                         </div>
-                        <div class="col-3">
-                            <h3><span class="bi bi-hammer"></span></h3>
+                        <div class=" col-lg-3 col-md col-sm col-xm-0">
+                            <h4><span class="bi bi-hammer"></span></h4>
                             <div class="mb-1"><span id="tools-num">5</span> herramientas</div>
                             <div class="my-2"><button type="button" id="btn-open-inventory"
-                                    class="btn btn-status-resume">Ver
-                                    inventario</button></div>
+                                    class="btn btn-status-resume">Ver inventario</button></div>
                         </div>
                     </div>
                 </div>
@@ -106,7 +103,7 @@
                 </div>
             </div>
 
-            <div id="map-resume" class="map-resume col-2 shadow mt-2">
+            <div id="map-resume" class="map-resume col-md-2 col-sm-0 shadow mt-2">
                 <div id="chain-log" class="chain-log">
                     <h6 class="chain-log-title">¿Que ocurre en la blockchain?</h6>
                     <hr>
@@ -137,6 +134,7 @@
             </div>
             <div class="modal-body">
                 <div class="row inventory m-2 mt-3">
+                    <div class="offerts-notifications m-0 p-0" id="offerts-notifications"></div>
                     <div class="negociation-modal-inventory col-6">
                         <h5>Tus posesiones:</h5>
                         <hr>
@@ -193,6 +191,8 @@
             </div>
         </div>
     </div>
+
+
 </body>
 
 </html>

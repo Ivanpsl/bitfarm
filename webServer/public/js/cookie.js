@@ -1,3 +1,7 @@
+/* eslint-disable no-extra-semi */
+/* eslint-disable no-empty */
+/* eslint-disable no-useless-escape */
+/* eslint-disable no-undef */
 /*!
  * JavaScript Cookie v2.1.4
  * https://github.com/js-cookie/js-cookie

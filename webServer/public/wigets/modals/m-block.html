@@ -1,0 +1,53 @@
+<div class="modal-header">
+    <h5 class="modal-title">Información del bloque</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <h6 id="description">Informacion sobre un bloque de la blockchain.</h6>
+    <hr>
+    <div class="list-group">
+        <div class="list-group-item list-group-item-action" aria-current="true">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">Index</h5>
+            </div>
+            <p class="mb-1">Identificador del bloque dentro de la cadena de bloques:</p>
+            <textarea id="block-index" class="form-control text-muted" readonly rows="1">0x151651651651651</textarea>
+        </div>
+        <div class="list-group-item list-group-item-action" aria-current="true">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">Timestamp</h5>
+            </div>
+            <p class="mb-1">Momento en el cual se ha formado el bloque:</p>
+            <small id="block-timestamp" class=" form-control text-muted" readonly>0x151651651651651</small>
+        </div>
+        <div class="list-group-item list-group-item-action" aria-current="true">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">Hash</h5>
+            </div>
+            <p class="mb-1">Resultado de aplicar una función hash al contenido del bloque:
+            </p>
+            <textarea id="block-hash" class="form-control text-muted"  readonly rows="1">0x151651651651651</textarea>
+        </div>
+        <div class="list-group-item list-group-item-action" aria-current="true">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">Hash del bloque anterior</h5>
+            </div>
+            <p class="mb-1">Referencia al hash del bloque anterior en la cadena:</p>
+            <textarea class="form-control text-muted" id="block-previous-hash" readonly rows="1"></textarea>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function(){
+            var span = document.getElementsByClassName("btn-close")[0];
+            span.onclick = function() {
+                gameManager.closeModal();
+            }
+            
+            window.onclick = function(event) {
+                if (event.target == gameManager.modalElement) {
+                    gameManager.closeModal();
+                }
+            }
+        });
+    </script>
+</div>

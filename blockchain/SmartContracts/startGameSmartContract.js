@@ -1,4 +1,3 @@
-const {GAME_CONSTANTS} =require("../../common/constants");
 const ISmartContract = require("./iSmartContract")
 
 class StartGameSmartContract extends ISmartContract {
@@ -7,7 +6,8 @@ class StartGameSmartContract extends ISmartContract {
         this.action = this.startGameActions;
     }
 
-    startGameActions(village, account, config, actionData){
+    // eslint-disable-next-line no-unused-vars
+    startGameActions(village, account, config, _actionData){
         var gameConfig = config.get("Game");
         if(gameConfig)
         {

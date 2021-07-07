@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 
 const URL_BASE = "https://localhost:3000";
 const HOME_URL = "https://localhost:3000";
@@ -73,15 +75,15 @@ const GAME_CONSTANTS = {
 };
 
 function productStatusToString(status){
-    if(PRODUCT_STATUS_SEED === status)
+    if(GAME_CONSTANTS.PRODUCT_STATUS_SEED === status)
         return "Semilla";
-    if(PRODUCT_STATUS_PLANTED === status)
+    if(GAME_CONSTANTS.PRODUCT_STATUS_PLANTED === status)
         return "Plantado";
-    if(PRODUCT_STATUS_GROW === status)
+    if(GAME_CONSTANTS.PRODUCT_STATUS_GROW === status)
         return "Maduro";
-    if(PRODUCT_STATUS_ROTTEN === status)
+    if(GAME_CONSTANTS.PRODUCT_STATUS_ROTTEN === status)
         return "Podrido";
-    if(PRODUCT_STATUS_DRY === status)
+    if(GAME_CONSTANTS.PRODUCT_STATUS_DRY === status)
         return "Seco";
 }
 function removeAllChildNodes(parent) {
@@ -89,13 +91,16 @@ function removeAllChildNodes(parent) {
         while (parent.firstChild) {
             parent.removeChild(parent.firstChild);
         }
-};
+}
 
+/*global  Cookies,window,gameManager*/
 function restartSesion() {
     Cookies.remove('userId');
     Cookies.remove('actualRoomId');
     Cookies.remove('actualRoomType');
-    window.location.href = HOME_URL;
+
+    var mensaje = "Se ha perdido la conexión con el servidor";
+    window.location.href = HOME_URL+`/game/login.html?mensaje=${mensaje}&tipoMensaje=alert-danger` ; 
     if(gameManager.gameEventsHandler && gameManager.gameEventsHandler.listening){
         gameManager.gameEventsHandler.disconect();
     }

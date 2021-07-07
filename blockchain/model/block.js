@@ -6,7 +6,7 @@ class Block {
         this.index = index;
         this.previousHash = previousHash;
         this.data = transactions;
-        this.timestamp = + new Date();
+        this.timestamp = + new Date()
         this.nonce = nonce;
         this.hash = this.calculateHash();
     }
@@ -23,10 +23,10 @@ class Block {
 
 
     isValid() {
-        if(hash !== this.calculateHash()){
+        if(this.hash !== this.calculateHash()){
             return false;
         }
-        data.forEach(transaction => {
+        this.data.forEach(transaction => {
             if(!transaction.isValid())
                 return false;
         });
@@ -38,7 +38,7 @@ class Block {
         const { index, previousProof, previousHash, data, timestamp } = this;
 
         return { 
-            index, previousProof, previousHash, transaction, timestamp,
+            index, previousProof, previousHash, timestamp,
             data : data.map(dt=> dt.getInfo()),
         };
     }

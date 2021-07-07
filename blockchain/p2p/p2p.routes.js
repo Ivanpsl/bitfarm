@@ -7,7 +7,11 @@ module.exports = function (server, nodeP2PController) {
     router.post('/subscribeNode', function (req, res) {
         nodeP2PController.manageSubscriptionRequest(server,req,res)
     });
-
+    
+    router.post('/exitNode', function (req, res) {
+        nodeP2PController.manageNodeExit(server,req,res)
+    });
+    
     router.get('/nodeInfo', function (req, res) {
         var nodeInfo =  server.get("nodeService").getNodeInfo();
         res.send(nodeInfo);

@@ -1,12 +1,11 @@
-const {GAME_CONSTANTS} = require("../../../../common/constants");
+const {GAME_CONSTANTS} =  require("../../../../common/constants");
+const AbstractElement = require('./abstractElement');
 
-class Tool {
+class Tool extends AbstractElement{
     constructor(index,name,label,effect, owner){
-        this.index = index;
-        this.name = name;
-        this.label = label;
+        super(index,name,label,owner,GAME_CONSTANTS.TYPE_TOOL);
+
         this.effect = effect;
-        this.owner = owner;
         this.type = GAME_CONSTANTS.TYPE_TOOL;
     }
 

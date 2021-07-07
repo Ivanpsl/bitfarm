@@ -1,3 +1,5 @@
+
+/*global Cookies, URL_BASE,$,document,removeAllChildNodes, restartSesion,ROOM_CONSTANTS,roomManager */
 var lobbyManager = {
     rooms: null,
     selectedRoomId : null,
@@ -34,7 +36,7 @@ var lobbyManager = {
 
     updateRoomList: function(roomData){
         this.rooms = roomData;
-        console.log(rooms)
+        console.log(roomData)
         this.renderRoomList()
     },
         
@@ -54,6 +56,11 @@ var lobbyManager = {
             this.selectedRoomId = null;
             joinBtn.disabled = true;
         }
+    },
+
+
+    createPrivateRoom: function(){
+        this.createPrivateRoomRequest();
     },
 
     renderRoomList: function(){
@@ -129,6 +136,7 @@ var lobbyManager = {
                 }
             },
             error: function (error) {
+                // eslint-disable-next-line no-undef
                 alert(error.message);
                 restartSesion();
             }
@@ -147,6 +155,26 @@ var lobbyManager = {
     },
 
 
+    
+    createPrivateRoomRequest: function(){
+        $.ajax({
+                url: URL_BASE + "/room/create",
+                type: "GET",
+                data: {
+                },
+                dataType: 'json',
+                success: function (response, textStatus, jqXHR) {
+                    if(jqXHR.status ===200){
+                        lobbyManager.joinRoomRequest(response.roomType,response.roomId);
+                    }
+                },
+                // eslint-disable-next-line no-unused-vars
+                error: function (_request, _error) {
+                    console.error("Se ha perdido la conexión con el servidor: \n","Se ha perdido la conexión con el servidor");
+                    restartSesion();
+                }
+            });
+    },
 
     joinRoomRequest: function(roomType, roomId) {
         $.ajax({
@@ -167,7 +195,8 @@ var lobbyManager = {
                     console.log("Uniendose a sala")
                 }
             },
-            error: function (request, error) {
+            // eslint-disable-next-line no-unused-vars
+            error: function (_request, _error) {
                 console.error("Se ha perdido la conexión con el servidor: \n","Se ha perdido la conexión con el servidor");
                 restartSesion();
             }

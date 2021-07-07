@@ -14,6 +14,7 @@
   
 }
 
+
 .turn-status-container {
   padding-top: 4px;
   padding: 3px;
@@ -24,6 +25,12 @@
 
 #week-container {
   padding-top: 4px;
+}
+
+#climatic-text{
+  font-size: 0.8rem;
+  top: -8px;
+    position: relative;
 }
 
 #game-zone {
@@ -150,6 +157,7 @@
   border-left-width: 1px;
   border-top-width: 1px;
   border-bottom-width: 2px;
+  font-size: .9rem;
 }
 
 .btn-status-resume:hover {
@@ -217,7 +225,8 @@ font-size :.9rem;
   border-style: solid;
   border-color: #a86f34;
   border-width: 1px 1px 1px 1px !important;
-  width: 90px;
+  width: auto;
+  font-size: 0.9rem;
   height: 35px;
   line-height: 30px;
   margin: 2px;

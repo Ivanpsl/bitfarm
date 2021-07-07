@@ -1,4 +1,4 @@
-
+/*global window,Cookies, GAME_CONSTANTS,UIPlayer,URL_BASE,$,document,removeAllChildNodes, Polipop,GameEventsHandler */
 var gameManager = {
 
     gameConfig: null,
@@ -17,10 +17,13 @@ var gameManager = {
     turnInterval: null,
     turnIsRunning: true,
     milisecondsRemaining: 0,
+    climaticEvent : null,
 
 
     playersWaiting: 0,
     weekElement: null,
+    climaticElement : null,
+    climaticIcon : null,
     timeRemainingElement: null,
     toolsElement: null,
     storageElement: null,
@@ -36,7 +39,7 @@ var gameManager = {
 
     initGame: function (gameData) {
         this.loadConfig(gameData.gameConfig);
-
+        this.loadClimaticEvent(gameData.actualEvent);
         this.loadTownHall(gameData.townHall)
 
         this.blockchainLogs = [];
@@ -45,14 +48,12 @@ var gameManager = {
 
         this.loadPlayers(gameData.players);
 
-
         this.loadTerrains(gameData.terrains);
         this.loadProducts(gameData.products)
         this.loadTools(gameData.tools);
         this.loadBuildings(gameData.buildings);
 
         this.renderGameWindow();
-
     },
 
     loadConfig: function (config) {
@@ -63,6 +64,7 @@ var gameManager = {
 
     loadTownHall: function (hallData) {
         gameManager.townHall = hallData;
+
         gameManager.townHall.products = [];
         gameManager.townHall.terrains = [];
         gameManager.townHall.tools = [];
@@ -70,7 +72,7 @@ var gameManager = {
     },
 
     loadPlayers: function (dataPlayers) {
-        this.players ={};
+        this.players = {};
         for (var key in dataPlayers) {
             var player = new UIPlayer(dataPlayers[key]);
 
@@ -83,7 +85,9 @@ var gameManager = {
             }
         }
     },
-
+    loadClimaticEvent : function (climaticData) {
+        this.climaticEvent = climaticData;
+    },
 
     loadTerrains: function (dataTerrains) {
         for (let terrain of dataTerrains) {
@@ -96,18 +100,20 @@ var gameManager = {
 
     loadProducts: function (dataProducts) {
         for (let product of dataProducts) {
-            let owner = product.owner;
-            if (owner === this.townHall.account.publicKey) this.townHall.products.push(product);
-            else if (owner === this.player.account.publicKey) {
-                this.player.addProduct(product);
-                if (product.status === GAME_CONSTANTS.PRODUCT_STATUS_PLANTED){
-                    console.log(JSON.stringify(product))
-                    this.player.terrains.find((terrain) => terrain.index == product.terrainIndex).setContent(product);
+            if (product && product.owner) {
+                let owner = product.owner;
+                if (owner === this.townHall.account.publicKey) this.townHall.products.push(product);
+                else if (owner === this.player.account.publicKey) {
+                    this.player.addProduct(product);
+                    if (product.status === GAME_CONSTANTS.PRODUCT_STATUS_PLANTED) {
+                        console.log(JSON.stringify(product))
+                        this.player.terrains.find((terrain) => terrain.index == product.terrainIndex).setContent(product);
+                    }
+                } else if (this.players[owner]) {
+                    this.players[owner].addProduct(product);
+                    if (product.status === GAME_CONSTANTS.PRODUCT_STATUS_PLANTED)
+                        this.players[owner].terrains.find((terrain) => terrain.index == product.terrainIndex).setContent(product);
                 }
-            } else if (this.players[owner]) {
-                this.players[owner].addProduct(product);
-                if (product.status === GAME_CONSTANTS.PRODUCT_STATUS_PLANTED)
-                    this.players[owner].terrains.find((terrain) => terrain.index == product.terrainIndex).setContent(product);
             }
         }
     },
@@ -123,12 +129,14 @@ var gameManager = {
 
     loadBuildings: function (dataBuilding) {
         for (let building of dataBuilding) {
-            if(building!=null) {
+            if (building != null) {
                 let owner = building.owner;
                 if (owner === this.player.account.publicKey)
                     this.player.getElementByTypeAndIndex(GAME_CONSTANTS.TYPE_TERRAIN, building.terrainIndex).setContent(building);
                 else if (this.players[owner])
-                    this.players[owner].getElementByTypeAndIndex(GAME_CONSTANTS.TYPE_TERRAIN, building.terrainIndex).setContent(addBuilding);
+                    var build = this.players[owner].getElementByTypeAndIndex(GAME_CONSTANTS.TYPE_TERRAIN, building.terrainIndex);
+                    if(build)
+                        this.players[owner].getElementByTypeAndIndex(GAME_CONSTANTS.TYPE_TERRAIN, building.terrainIndex).setContent(building);
             }
         }
     },
@@ -143,26 +151,51 @@ var gameManager = {
     setGameStatus: function (gData) {
         this.renderGameStatus(gData);
     },
+    refresPolipop: function(){
+        gameManager.polipop =  new Polipop('globalppop', {
+            layout: 'popups',
+            insert: 'before',
+            pool: 20,
+            sticky: false,
+            closeText: 'Cerrar',
+            progressbar: true,
+            life: 3000,
+            interval: 100
+        });
+    },
 
     startTurn: function () {
+        gameManager.refresPolipop();
+        gameManager.playersWaiting = 0;
+
         this.turn++;
         this.milisecondsRemaining = this.maxMilisecondsPerTurn;
         this.turnIsRunning = true;
-        if(this.turnInterval== null)
+        this.playersOfferts = [];
+
+        if (this.turnInterval == null)
             this.turnInterval = setInterval(() => {
                 this.turnTick()
             }, 1000);
+            
         this.updateSecondsRemaining();
-        this.weekElement.textContent = this.turn;
+        this.updateTurnInfo();
         this.closeNegotiationMenu();
+
+        if(gameManager.turn > 1){
+            var msg = `Cobrado ${gameManager.gameConfig.terrain_tax * gameManager.player.terrains.length}€ en impuestos de propiedad`;
+            gameManager.showNotification('Turno finalizado','info',msg);
+            console.log(msg)
+        }
+
     },
 
     endFase: function () {
         clearInterval(this.turnInterval);
         for (var i = 0; i < this.turnInterval; i++)
-	        window.clearInterval(i);
+            window.clearInterval(i);
 
-        this.turnInterval= null;
+        this.turnInterval = null;
         this.modalRenderNegociationMenu();
 
         this.turnIsRunning = false;
@@ -173,13 +206,14 @@ var gameManager = {
         console.log("Finalizando turno")
         gameManager.modalNegociationElements.endTurnBtn.disabled = true;
         gameManager.modalNegociationElements.endTurnBtn.textContent = "Esperando por los demas jugadores";
+        // gameManager.showNotification('Tu turno ha finalizado', 'success', 'Esperando por el resto de jugadores');
+
         $.ajax({
             url: URL_BASE + "/game/player/endTurn",
             type: "GET",
             data: {},
             dataType: 'json',
-            success: function (response) {
-                gameManager.showNotification('Tu turno ha finalizado', 'success', 'Esperando por el resto de jugadores');
+            success: function () {
                 console.log("Finalizando turno")
 
             },
@@ -197,9 +231,14 @@ var gameManager = {
     },
 
     removeMarketElementByProductIndexAndType(itemIndex, itemType) {
+        console.log(`Eliminando elemento de la tienda ${itemIndex}-> ${itemType}`)
+
         for (let i = 0; i < gameManager.market.length; i++) {
-            if (gameManager.market[i].item.index === itemIndex && gameManager.market[i].item.type === itemType) {
-                gameManager.market.filter((offert) => (offert.index !== gameManager.market[i].index));
+            console.log(`Check ${gameManager.market[i].item.index}-> ${ gameManager.market[i].item.type}`)
+            if (gameManager.market[i].item.index == itemIndex && gameManager.market[i].item.type == itemType) {
+                console.log(`Encontrado offert-${i} con index =>${gameManager.market[i].index} `)
+
+                gameManager.market[i].wasBuy = true;
                 var uiOffert = document.getElementById(`offert-${i}`);
                 if (uiOffert != null)
                     uiOffert.parentNode.removeChild(uiOffert);
@@ -208,13 +247,58 @@ var gameManager = {
     },
 
     openNegotiationMenu: function () {
-        gameManager.modalElement.style.display = "block";
+        gameManager.modalNegociationElements.parent.style.display = "block";
     },
 
     closeNegotiationMenu: function () {
-        gameManager.modalElement.style.display = "none";
+        gameManager.modalNegociationElements.parent.style.display = "none";
+
+    },
+    removeNegotiationNotify : function(){
+        removeAllChildNodes(gameManager.modalNegociationElements.notificationContainer);
+    },
+    setNegotiationNotify : function(msg){
+        this.removeNegotiationNotify();
+        var alertElement = document.createElement("div");
+        alertElement.className = "alert alert-warning m-2 d-flex align-items-center";
+        alertElement.role = "alert";
+        alertElement.textContent = msg;
+        gameManager.modalNegociationElements.notificationContainer.appendChild(alertElement);
     },
 
+    refreshAllData: function (gameData) {
+        for (let key in gameManager.players) {
+            gameManager.players[key].resetLists();
+        }
+
+        gameManager.player.resetLists();
+
+        gameManager.loadTownHall(gameData.townHall);
+
+        for (let key in gameData.players) {
+            if (gameManager.players[key]) {
+                gameManager.players[key].money = gameData.players[key].money;
+                gameManager.players[key].max_storage = gameData.players[key].max_storage;
+                gameManager.players[key].modifiers = gameData.players[key].modifiers;
+            } else if (gameManager.player.account.publicKey === key) {
+                gameManager.player.money = gameData.players[key].money;
+                gameManager.player.max_storage = gameData.players[key].max_storage;
+                gameManager.player.modifiers = gameData.players[key].modifiers;
+            }
+        }
+        this.market = gameData.market
+        gameManager.loadClimaticEvent(gameData.actualEvent);
+        gameManager.loadTerrains(gameData.terrains);
+        gameManager.loadProducts(gameData.products);
+        gameManager.loadBuildings(gameData.buildings);
+        gameManager.loadTools(gameData.tools);
+
+        gameManager.updateAllPlayersResume();
+        gameManager.updateLocalPlayerResume();
+        gameManager.updateTurnInfo();
+        gameManager.renderTerrains();
+    },
+ 
     buyOnMarket: function () {
         for (var offert of this.market) {
             if (offert.select) {
@@ -228,19 +312,18 @@ var gameManager = {
                 }
 
                 this.sendAction(GAME_CONSTANTS.ACTION_ELEMENT_BUY, 5000, actionData,
-                    () => {
-                        gameManager.polipop.add({
-                            content: 'Se ha llevado a cabo la compra.',
-                            title: 'Compra realizada',
-                            type: 'success',
-                        });
+                    (completed) => {
+                        if(completed){
+                            this.removeMarketElementByProductIndexAndType(offert.item.index,offert.item.type)
+                            gameManager.showNotification('Se ha llevado a cabo la compra.','success','Compra realizada');
+                        }
                     }
                 );
             }
         }
 
     },
-
+    
     sendAction: function (actionName, timeConsume, data, callback) {
         var timeResult = parseInt(gameManager.milisecondsRemaining) - parseInt(timeConsume);
 
@@ -257,41 +340,19 @@ var gameManager = {
                     data: data
                 },
                 dataType: 'json',
-                success: function (response, textStatus, jqXHR) {
+                // eslint-disable-next-line no-unused-vars
+                success: function (response, _textStatus, _jqXHR) {
 
-                    for (let key in gameManager.players) {
-                        gameManager.players[key].resetLists();
-                    }
+                    gameManager.refreshAllData(response)
 
-                    gameManager.player.resetLists();
-
-                    gameManager.loadTownHall(response.townHall);
-
-                    for (let key in response.players) {
-                        if (gameManager.players[key]) {
-                            gameManager.players[key].money = response.players[key].money;
-                            gameManager.players[key].max_storage = response.players[key].max_storage;
-                            gameManager.players[key].modifiers = response.players[key].modifiers;
-                        } else if (gameManager.player.account.publicKey === key){
-                            gameManager.player.money = response.players[key].money;
-                            gameManager.player.max_storage = response.players[key].max_storage;
-                            gameManager.player.modifiers = response.players[key].modifiers;
-                        }
-                    }
-
-                    gameManager.loadTerrains(response.terrains);
-                    gameManager.loadProducts(response.products);
-                    gameManager.loadBuildings(response.buildings);
-                    gameManager.loadTools(response.tools);
-
-                    gameManager.updateAllPlayersResume();
-                    gameManager.updateLocalPlayerResume();
-                    gameManager.renderTerrains();
-                    if(callback)
-                        callback(response);
+                    if (callback)
+                        callback(true,response);
                     gameManager.closeModal();
                 },
-                error: function (response, status, error) {
+                // eslint-disable-next-line no-unused-vars
+                error: function (response, _status, _error) {
+                    if (callback)
+                        callback(false,response);
                     gameManager.showNotification('Ha ocurrido un error', 'error', response.responseText);
                     gameManager.milisecondsRemaining = gameManager.milisecondsRemaining + parseInt(timeConsume);
                 }
@@ -314,21 +375,39 @@ var gameManager = {
                 price: price
             },
             dataType: 'json',
-            success: function (response, textStatus, jqXHR) {
+            // eslint-disable-next-line no-unused-vars
+            success: function (_response, _textStatus, _jqXHR) {
                 gameManager.showNotification('Oferta creada', 'success', 'La oferta para ' + item.label + ' ha sido creada');
             },
-            error: function (response, status, error) {
+            // eslint-disable-next-line no-unused-vars
+            error: function (response, _status, _error) {
                 gameManager.showNotification('Ha ocurrido un error', 'error', response.responseText);
             }
         });
     },
 
 
+    
     updateAllPlayersResume: function () {
         for (let key in this.players)
             this.players[key].updatePlayerResume();
     },
 
+    updateTurnInfo: function () {
+        this.weekElement.textContent = this.turn;
+        console.warn("Climatic event " + JSON.stringify(this.climaticEvent) )
+        if(this.climaticEvent){
+            this.climaticElement.textContent = this.climaticEvent.label;
+            if(this.climaticEvent == 'rain')
+                this.climaticIcon.className = 'bi bi-cloud-rain-heavy';
+            else if(this.climaticEvent == 'drought')
+                this.climaticIcon.className = 'bi bi-thermometer-sun';
+        }
+        else{
+            this.climaticElement.textContent = 'Sol con nubes';
+            this.climaticIcon.className = 'bi bi-cloud-sun'
+        }
+    },
     updateSecondsRemaining: function () {
         var timePercent = (((this.milisecondsRemaining) * 100) / parseInt(this.maxMilisecondsPerTurn))
 
@@ -350,6 +429,8 @@ var gameManager = {
     renderGameWindow: function () {
         $("#gamecontainer").load("wigets/w-game.html", function () {
             gameManager.weekElement = document.getElementById("week-number");
+            gameManager.climaticElement = document.getElementById("climatic-text");
+            gameManager.climaticIcon = document.getElementById("climatic-icon");
             gameManager.timeRemainingElement = document.getElementById("time-remaining");
             gameManager.timeBarElement = document.getElementById("progress");
             gameManager.timeIconElement = document.getElementById("crono-icon");
@@ -368,6 +449,7 @@ var gameManager = {
             gameManager.modalNegociationElements.offertList = document.getElementById("offert-list");
             gameManager.modalNegociationElements.endTurnBtn = document.getElementById("end-turn");
             gameManager.modalNegociationElements.waitingNumberSpam = document.getElementById("players-waiting");
+            gameManager.modalNegociationElements.notificationContainer = document.getElementById("offerts-notifications");
 
             gameManager.modalNegociationElements.parent.style.display = "none";
 
@@ -376,7 +458,7 @@ var gameManager = {
             gameManager.polipop = new Polipop('mypolipop', {
                 layout: 'popups',
                 insert: 'before',
-                pool: 5,
+                pool: 20,
                 sticky: false,
                 closeText: 'Cerrar',
                 progressbar: true,
@@ -426,20 +508,33 @@ var gameManager = {
         gameManager.updateLocalPlayerResume();
     },
 
-    renderBlockchainLog: function (index, text) {
+    addBlockchainLog: function(log){
+        let index = gameManager.blockchainLogs.length;
+        gameManager.blockchainLogs[gameManager.blockchainLogs.length] = log;
+        gameManager.renderBlockchainLog(index, log.event);
+    },
+
+    renderBlockchainLog: function (index,logType) {
+    
         var logElement = document.createElement("div");
         logElement.className = "log-element log-element-new";
         logElement.id = `log-element-${index}`;
-        logElement.textContent = text;
         var spanElement = document.createElement("span");
         spanElement.className = "badge";
         spanElement.id = `spam-log-badge-${index}`;
-        spanElement.textContent = " Nueva"
+        spanElement.textContent = " Nuevo"
+   
+
+        if(logType === GAME_CONSTANTS.EVENT_NEW_BLOCK_LOG){
+            logElement.textContent = "Bloque";
+        }else{
+            logElement.textContent = "Transacción";
+        }
         logElement.appendChild(spanElement);
         logElement.onclick = () => {
             logElement.classList.remove("log-element-new");
             if (spanElement) {
-                logElement.removeChild(spanElement);
+                spanElement.parentNode.removeChild(spanElement);
                 spanElement = null;
             }
 
@@ -456,11 +551,11 @@ var gameManager = {
 
     removeOffertsByOwner: function (ownerKey) {
         this.playersOfferts.forEach((offert) => offert.remove());
-        this.playersOfferts.filter((offert) => offert.owner != ownerKey);
+        this.playersOfferts = this.playersOfferts.filter((offert) => offert.owner != ownerKey);
     },
 
     modalRenderNegociationMenu: function () {
-        this.playersOfferts = [];
+        
         removeAllChildNodes(gameManager.modalNegociationElements.playerItems);
         removeAllChildNodes(gameManager.modalNegociationElements.offertList);
         gameManager.modalNegociationElements.endTurnBtn.disabled = false;
@@ -470,19 +565,22 @@ var gameManager = {
         var productDescription = "";
         var productTitle = "";
         for (let product of this.player.products) {
-            if (product.status == GAME_CONSTANTS.PRODUCT_STATUS_SEED) {
-                smallInfo = "semilla";
-                productDescription = "Semillas plantables"
-                productTitle = "Semillas de " + product.label;
-            } else {
-                smallInfo = "Producto";
-                productDescription = "Producto vendible, intercambiable o del que se puede extraer semillas"
-                productTitle = product.label;
+            if(product) {
+                if (product.status !== GAME_CONSTANTS.PRODUCT_STATUS_PLANTED){
+                    if (product.status == GAME_CONSTANTS.PRODUCT_STATUS_SEED) {
+                        smallInfo = "semilla";
+                        productDescription = "Semillas plantables"
+                        productTitle = "Semillas de " + product.label;
+                    } else{
+                        smallInfo = "Producto";
+                        productDescription = "Producto vendible, intercambiable o del que se puede extraer semillas"
+                        productTitle = product.label;
+                    }
+                    gameManager.modalNegociationElements.playerItems.appendChild(
+                        gameManager.createNegotiationOptionElement(productTitle, smallInfo, productDescription, product, gameManager.sendNewOffert)
+                    );
+                }
             }
-            gameManager.modalNegociationElements.playerItems.appendChild(
-                gameManager.createNegotiationOptionElement(productTitle, smallInfo, productDescription, product, gameManager.sendNewOffert)
-            );
-        
         }
 
         for (var tool of this.player.tools) {
@@ -503,6 +601,7 @@ var gameManager = {
         }
 
         gameManager.modalNegociationElements.parent.style.display = "block";
+        this.playersOfferts.forEach((offert) => offert.render());
     },
 
 
@@ -563,14 +662,27 @@ var gameManager = {
     },
 
     modalRenderBlockChainLog: function (index) {
-        $("#modal-content").load("wigets/modals/m-transaction.html", function () {
-            var log = gameManager.blockchainLogs[index].data;
-            document.getElementById("transaction-publickey").textContent = log.sender;
-            document.getElementById("transaction-timestamp").textContent = log.timestamp;
-            document.getElementById("transaction-signature").textContent = log.signature;
-            document.getElementById("data-text-area").textContent = log.data;
-            gameManager.openModal();
-        });
+        var logType = gameManager.blockchainLogs[index].event;
+        var logData = gameManager.blockchainLogs[index].data;
+        if(logType === GAME_CONSTANTS.EVENT_NEW_BLOCK_LOG){
+            $("#modal-content").load("wigets/modals/m-block.html", function () {
+
+                document.getElementById("block-index").textContent = logData.index;
+                document.getElementById("block-timestamp").textContent = logData.timestamp;
+                document.getElementById("block-hash").textContent = logData.hash;
+                document.getElementById("block-previous-hash").textContent = logData.previousHash;
+                gameManager.openModal();
+            });
+        }else{
+            $("#modal-content").load("wigets/modals/m-transaction.html", function () {
+
+                document.getElementById("transaction-publickey").textContent = logData.sender;
+                document.getElementById("transaction-timestamp").textContent = logData.timestamp;
+                document.getElementById("transaction-signature").textContent = logData.signature;
+                document.getElementById("data-text-area").textContent = logData.data;
+                gameManager.openModal();
+            });
+        }
     },
 
     modalRenderMarket: function () {
@@ -578,42 +690,44 @@ var gameManager = {
             var marketElementContainer = document.getElementById("element-container");
             removeAllChildNodes(marketElementContainer);
             for (let i = 0; i < gameManager.market.length; i++) {
-                gameManager.market[i].select = false;
-                var offert = gameManager.market[i];
-                var description = "";
-                if (offert.item.type === "TERRAIN") {
-                    description = `Parcela numero ${offert.item.index} donde cultivar`;
-                } else if (offert.item.type === "TOOL") {
-                    description = `Le permitira mejorar su desempeño en la granja`;
-                } else {
-                    description = `Se puede plantar en una parcela`
+                if(!gameManager.market[i].wasBuy){
+                    gameManager.market[i].select = false;
+                    var offert = gameManager.market[i];
+                    var description = "";
+                    if (offert.item.type === "TERRAIN") {
+                        description = `Parcela numero ${offert.item.index} donde cultivar`;
+                    } else if (offert.item.type === "TOOL") {
+                        description = `Le permitira mejorar su desempeño en la granja`;
+                    } else {
+                        description = `Se puede plantar en una parcela`
+                    }
+
+                    var liContainer = document.createElement("li");
+                    liContainer.className = "list-group-item d-flex justify-content-between align-items-start list-group-item-action";
+                    liContainer.id = `offert-${i}`;
+                    var container = document.createElement("div");
+                    container.className = "ms-2 me-auto";
+
+                    var header = document.createElement("div");
+                    header.className = "fw-bold";
+                    header.textContent = offert.item.label ?? "Terreno";
+                    var spamDescription = document.createElement("spam");
+                    spamDescription.textContent = description;
+                    container.appendChild(header);
+                    container.appendChild(spamDescription);
+
+                    var priceSpan = document.createElement("span");
+                    priceSpan.className = "badge bg-success rounded-pill";
+                    priceSpan.textContent = `${offert.price}€`;
+
+                    liContainer.appendChild(container);
+                    liContainer.appendChild(priceSpan);
+                    liContainer.addEventListener("click", () => {
+                        gameManager.selectMarketItem(i)
+                    });
+
+                    marketElementContainer.appendChild(liContainer);
                 }
-
-                var liContainer = document.createElement("li");
-                liContainer.className = "list-group-item d-flex justify-content-between align-items-start list-group-item-action";
-                liContainer.id = `offert-${i}`;
-                var container = document.createElement("div");
-                container.className = "ms-2 me-auto";
-
-                var header = document.createElement("div");
-                header.className = "fw-bold";
-                header.textContent = offert.item.label ?? "Terreno";
-                var spamDescription = document.createElement("spam");
-                spamDescription.textContent = description;
-                container.appendChild(header);
-                container.appendChild(spamDescription);
-
-                var priceSpan = document.createElement("span");
-                priceSpan.className = "badge bg-success rounded-pill";
-                priceSpan.textContent = `${offert.price}€`;
-
-                liContainer.appendChild(container);
-                liContainer.appendChild(priceSpan);
-                liContainer.addEventListener("click", () => {
-                    gameManager.selectMarketItem(i)
-                });
-
-                marketElementContainer.appendChild(liContainer);
             }
 
 
@@ -654,6 +768,7 @@ var gameManager = {
     },
 
     showNotification: function (title, type, msg) {
+        console.log("Notificación "+title + "\n\t"+msg)
         gameManager.polipop.add({
             content: msg,
             title: title,

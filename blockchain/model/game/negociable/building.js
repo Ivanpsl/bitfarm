@@ -1,12 +1,11 @@
-class Building {
+const {GAME_CONSTANTS} =  require("../../../../common/constants");
+const AbstractElement = require('./abstractElement');
+
+class Building extends AbstractElement {
     constructor(index, name,label, effect, terrainIndex, owner) {
-        this.index = index;
-        this.name = name;
-        this.label  = label;
+        super(index,name,label,owner,GAME_CONSTANTS.TYPE_BUILDING);
         this.effect = effect;
-        this.owner = owner;
         this.terrainIndex = terrainIndex;
-        this.type = "BUILDING";
     }
 
     addModifier(player) {

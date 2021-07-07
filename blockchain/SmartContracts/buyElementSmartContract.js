@@ -10,7 +10,7 @@ class BuyElementSmartContract extends ISmartContract {
     buyElement(village, account, config, actionData){
         if(actionData.elementType && actionData.elementIndex && actionData.targetPublicKey && actionData.price){
             
-            if(village.players[account.publicKey].money > actionData.price){
+            if(village.players[account.publicKey].money > parseInt(actionData.price)){
                 if(actionData.elementType === GAME_CONSTANTS.TYPE_PRODUCT){
                     return this.buyProduct(village, account, config, actionData);
                 }else if(actionData.elementType === GAME_CONSTANTS.TYPE_TERRAIN){
@@ -37,16 +37,16 @@ class BuyElementSmartContract extends ISmartContract {
 
 
                 if(village.players[actionData.targetPublicKey]) 
-                    village.players[actionData.targetPublicKey].money = village.players[actionData.targetPublicKey].money + actionData.price;
+                    village.players[actionData.targetPublicKey].money += parseInt(actionData.price);
                 else if(village.townHall.account.publicKey == actionData.targetPublicKey) 
-                    village.townHall.money = village.townHall.money + actionData.price;
+                    village.townHall.money += parseInt(actionData.price);
                 else 
                 {
                     console.log(village.products[actionData.elementIndex].owner + "\n"+console.log(JSON.stringify(village.products[actionData.elementIndex])))
 
                     throw new Error("No se ha localizado receptor")
                 }
-                village.players[account.publicKey].money = village.players[account.publicKey].money - actionData.price;
+                village.players[account.publicKey].money -= parseInt(actionData.price)
                 village.products[actionData.elementIndex].owner = account.publicKey;
 
                 return village;
@@ -65,9 +65,9 @@ class BuyElementSmartContract extends ISmartContract {
             
 
             if(village.players[actionData.targetPublicKey]) 
-                village.players[actionData.targetPublicKey].money = village.players[actionData.targetPublicKey].money + actionData.price;
+                village.players[actionData.targetPublicKey].money += parseInt(actionData.price);
             else if(village.townHall.account.publicKey == actionData.targetPublicKey) 
-                village.townHall.money = village.townHall.money + actionData.price;
+                village.townHall.money += parseInt(actionData.price)
             else 
                 throw new Error("No se ha localizado receptor");
     
@@ -79,7 +79,7 @@ class BuyElementSmartContract extends ISmartContract {
                 village.builds[index].owner = actionData.targetPublicKey;
             }
 
-            village.players[account.publicKey].money = village.players[account.publicKey].money - actionData.price;
+            village.players[account.publicKey].money -= parseInt(actionData.price);
             village.terrains[actionData.elementIndex].owner = account.publicKey;
 
             return village;
@@ -95,17 +95,17 @@ class BuyElementSmartContract extends ISmartContract {
 
 
             if(village.players[actionData.targetPublicKey]) {
-                village.players[actionData.targetPublicKey].money = village.players[actionData.targetPublicKey].money + actionData.price;
+                village.players[actionData.targetPublicKey].money += parseInt(actionData.price);
 
                 village.players[actionData.targetPublicKey] = village.tools[actionData.elementIndex].removeModifier(village.players[actionData.targetPublicKey]);
             }
             else if(village.townHall.account.publicKey == actionData.targetPublicKey) 
-                village.townHall.money = village.townHall.money + actionData.price;
+                village.townHall.money += parseInt(actionData.price);
             else{
                 throw new Error("No se ha localizado receptor")
             }
 
-            village.players[account.publicKey].money = village.players[account.publicKey].money - actionData.price;
+            village.players[account.publicKey].money -= parseInt(actionData.price);
             village.tools[actionData.elementIndex].owner = account.publicKey;
 
             village.players[account.publicKey] = village.tools[actionData.elementIndex].addModifier(village.players[account.publicKey]);

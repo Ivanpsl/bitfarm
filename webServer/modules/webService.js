@@ -1,5 +1,6 @@
 const RoomService = require('./roomService');
 const GameService = require('./gameService');
+const { GAME_CONSTANTS } = require('../../common/constants');
 
 module.exports = class WebService {
     constructor(app) {
@@ -8,12 +9,18 @@ module.exports = class WebService {
         this.roomService = new RoomService(app);
         this.gameService = new GameService(app);
 
+        this.farmChainFacade = null
     }
-    static getWebInstance() {
-        return this;
+
+    setChainFacade(farmChainFacade){
+        this.farmChainFacade = farmChainFacade;
+        this.suscribeToBlockchain();
     }
-    suscribeToBlockchain(blockchainService) {
-        blockchainService.suscribe((gameId, newBlock) => this.handleNewTransaction(gameId, newBlock), (gameId, newBlock) => this.handleNewBlock(gameId, newBlock));
+    
+    suscribeToBlockchain() {
+        this.farmChainFacade.suscribeToChainLog(
+            (gameId, newTransaction) => this.handleNewTransaction(gameId, newTransaction),
+            (gameId, newBlock) => this.handleNewBlock(gameId, newBlock));
     }
 
     getRoom(roomId) {
@@ -22,6 +29,10 @@ module.exports = class WebService {
 
     getRoomsData() {
         return this.roomService.getRoomsData();
+    }
+    
+    createPrivateRoom(playerId){
+        return this.roomService.createRoom(playerId);
     }
 
     joinRoom(playerId, userName, roomId) {
@@ -40,7 +51,6 @@ module.exports = class WebService {
     setReadyStatus(playerId, roomId, status) {
         var room = this.getRoom(roomId);
         if (room){
-
             var allReady = room.setPlayerStatus(playerId, status);
             if(allReady)
                 this.startGame(roomId);
@@ -50,10 +60,11 @@ module.exports = class WebService {
 
     startGame(roomId) {
         var roomPlayers = this.roomService.getRoomPlayers(roomId)
+        
+        if(!this.checkFacade())
+            throw new Error("No se ha establecido comunicación con el servicio de la blockchain correctamente");
 
-
-        const blockchainService = this.app.get("blockchainService");
-        var result = blockchainService.createGame(roomId, roomPlayers);
+        var result = this.farmChainFacade.createGame(roomId, roomPlayers);
         if (result instanceof Error)
             throw result;
         else {
@@ -68,23 +79,28 @@ module.exports = class WebService {
     }
 
     playerEndTurn(gameId, userId) {
+        
+        if(!this.checkFacade())
+            throw new Error("No se ha establecido comunicación con el servicio de la blockchain correctamente");
 
-        const blockchainService = this.app.get("blockchainService");
-        var result = blockchainService.endPlayerTurn(gameId, userId);
+        var result = this.farmChainFacade.endPlayerTurn(gameId, userId);
 
         if (result.allPlayersReady === true) {
-            this.gameService.sendPlayerEndTurnEvent(gameId, userId);
-        } else {
             this.gameService.sendStartTurnEvent(gameId, result.newTurnData);
+        } else {
+            this.gameService.sendPlayerEndTurnEvent(gameId, userId);
         }
-        this.gameService.sendPlayerEndTurnEvent(gameId, userId);
+        return result.newTurnData;
+        
 
     }
 
     playerCreateOffert(gameId, sourceAccount, offertIndex, itemType, itemIndex, price) {
         this.gameService.sendOnPlayerCreateOffert(gameId, sourceAccount, offertIndex, itemType, itemIndex, price);
     }
-
+    playerRemoveOffert(gameId,offertIndex){
+        this.gameService.sendOnPlayerRemoveOffert(gameId,offertIndex );
+    }
     playerBuyOffert(gameId, offertIndex, offertOwner, offertElement, offerPrice, buySource) {
         var actionData = {
             targetPublicKey: offertOwner,
@@ -92,9 +108,9 @@ module.exports = class WebService {
             elementIndex: offertElement.index,
             price: offerPrice,
         }
+        this.checkFacade();
 
-        const blockchainService = this.app.get("blockchainService");
-        var result = blockchainService.handleAction(gameId, GAME_CONSTANTS.ACTION_ELEMENT_BUY, buySource, actionData);
+        var result = this.farmChainFacade.handleAction(gameId, GAME_CONSTANTS.ACTION_ELEMENT_BUY, buySource, actionData);
 
         if (result instanceof Error)
             throw result;
@@ -109,9 +125,11 @@ module.exports = class WebService {
     }
 
     sendGameAction(gameId, actionName, account, actionData) {
-        const blockchainService = this.app.get("blockchainService");
+        
+        if(!this.checkFacade())
+            throw new Error("No se ha establecido comunicación con el servicio de la blockchain correctamente");
 
-        var result = blockchainService.handleAction(gameId, actionName, account, actionData);
+        var result = this.farmChainFacade.handleAction(gameId, actionName, account, actionData);
 
         if (result instanceof Error)
             throw result;
@@ -122,19 +140,29 @@ module.exports = class WebService {
     }
 
     handleNewBlock(gameId, newBlock) {
+        this.log("Detectado nuevo bloque")
         this.gameService.sendNewBlockEvent(gameId, newBlock);
     }
 
     handleNewTransaction(gameId, newTransaction) {
+        this.log("Detectado nueva transacción")
         this.gameService.sendNewTransactionEvent(gameId, newTransaction);
     }
     addNode(nodeData) {
         this.log("Registrando nodo: " + nodeData.host)
-        this.nodes[this.nodes.length] = nodeData;
+        this.nodes.push(nodeData);
+    }
+    removeNode(nodeData){
+        this.log("Eliminando nodo de la lista : " + nodeData.identifier)
+        this.nodes = this.nodes.filter((n) => n.identifier !== nodeData.identifier)
     }
 
     getNodes() {
         return this.nodes;
+    }
+    
+    checkFacade(){
+        return (this.farmChainFacade != null)
     }
 
     log(text) {

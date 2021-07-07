@@ -16,7 +16,7 @@ class WateringSmartContract extends ISmartContract {
                 var productIndex = village.terrains[actionData.terrainIndex].contentIndex;
                 if(this.isOwner(village,account.publicKey,productIndex,actionData.terrainIndex)){
                     if(village.products[productIndex].status == GAME_CONSTANTS.PRODUCT_STATUS_PLANTED){
-                        village.products[productIndex].watter += village.players[account.publicKey].getWaterPerAction();
+                        village.products[productIndex].water += village.players[account.publicKey].getWaterPerAction();
                         return village;
                     }else{
                         throw new Error("No es posible ejecutar WateringSmartContract: el producto no esta correctamente plantado.");

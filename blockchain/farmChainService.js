@@ -1,9 +1,10 @@
-const {ACTIONS} = require('./../common/constants')
+const {GAME_CONSTANTS} = require('./../common/constants')
 const smFactory = require("./smartContracts/smartContractFactory")
 const cryptoUtils = require("./utils/cryptoUtils");
 const config = require('config');
 
 const NodeP2PService = require('./p2p/nodeP2PService');
+const FarmChainFacade = require("./farmChainFacade");
 const Village = require("./model/game/village");
 const Blockchain = require("./model/blockchain");
 const Transaction = require("./model/transaction");
@@ -11,19 +12,29 @@ const Block = require("./model/block");
 const Player = require("./model/game/player");
 
 class FarmChainService {
-    constructor(){
+    constructor(chainConfig){
         this.blockchains = {};
         this.villages = {};
         this.smartContracts = smFactory.createSmartContracts();
-        this.nodeService = new NodeP2PService(this);
-        this.config = config.get("Blockchain");
-  
+        this.config = chainConfig;
 
+        
         this.onNewTransactionListeners = [];
         this.onNewBlockListeners = [];
+
+        this.nodeService = new NodeP2PService(this, this.config.node_host, this.config.node_port, this.config.logger);
+        this.facade = new FarmChainFacade(this)
     }
 
-    suscribe(onTransaction,onNewBlock){
+    startNode(){
+        this.nodeService.init();
+    }
+
+    getFacade(){
+        return this.facade;
+    }
+
+    suscribeLog(onTransaction,onNewBlock){
         this.log("Añadiendo suscripción")
         if(typeof onTransaction === 'function' && typeof onNewBlock === 'function'){
             this.onNewTransactionListeners.push(onTransaction);
@@ -34,10 +45,10 @@ class FarmChainService {
     }
 
     onTransaction(identifier,transaccion){
-        this.onNewTransactionListeners.forEach(listener => listener(identifier,transaccion))
+        this.onNewTransactionListeners.forEach(listener => listener(identifier,transaccion));
     }
     onBlockMined(identifier,block){
-        this.onNewTransactionListeners.forEach(listener => listener(identifier,block))
+        this.onNewBlockListeners.forEach(listener => listener(identifier,block));
     }
 
 
@@ -60,25 +71,26 @@ class FarmChainService {
         //Creacion del estado de la partida y blockchain
         var newVillage = new Village(gameId,hallAccount,playersData,config.get("Game"));
         var blockchain = new Blockchain(gameId);
+
+        blockchain.addObserver(
+            (chainIdentifier,transaction)=> {this.onTransaction(chainIdentifier,transaction)}, 
+            (chainIdentifier,block)=> {this.onBlockMined(chainIdentifier,block)}
+            );
+
         this.blockchains[gameId] = blockchain;
         this.villages[gameId] = newVillage;
 
         //ejecución del contrato de inicio 
         var contractData = {config : config.get("Game")};
-        this.executeSmartContract(gameId, ACTIONS.ACTION_START_GAME, hallAccount, contractData);
+        this.executeSmartContract(gameId, GAME_CONSTANTS.ACTION_START_GAME, hallAccount, contractData);
         
         this.log("Partida creada: " + JSON.stringify(this.villages[gameId]));
         return this.villages[gameId];
     }
 
-    async handleAction(gameId,actionName,account,actionData){
-        this.log("Ejecutando contrato "+actionName+ "\n\t\t\t" + JSON.stringify(actionData))
-        return this.executeSmartContract(gameId, actionName, account, actionData)
-
-    }
-
     async executeSmartContract(gameId, smartContractName, account, actionData)
     {
+        this.log("Ejecutando contrato "+smartContractName+ "\n\t\t" + JSON.stringify(actionData))
         try{
             const smartContract = this.smartContracts[smartContractName];
             if (smartContract)
@@ -110,12 +122,11 @@ class FarmChainService {
         }
     }
 
-    endPlayerTurn(gameId,userId){
+    playerEndTurn(gameId,userId){
         if(this.villages[gameId]){
             this.villages[gameId].playerEndTurn(userId);
-            console.log("Pasando tunro "+this.villages[gameId].playersWaiting +"-" +this.villages[gameId].players.length )
-            if(this.villages[gameId].playersWaiting === this.villages[gameId].players.length){
-                var newTurn = this.endTurn(gameId);
+            if(this.villages[gameId].playersWaiting === this.villages[gameId].getNumberOfPlayers()){
+                var newTurn = this.gameEndTurn(gameId);
                 return {allPlayersReady : true, newTurnData : newTurn};
             }else return { allPlayersReady : false, newTurnData : null};   
         }else{
@@ -123,23 +134,25 @@ class FarmChainService {
         }
     }
 
-    endTurn(gameId){
+    gameEndTurn(gameId){
         this.villages[gameId].endTurn();
-        const hallAccount = this.villages[gameId].townHall.account
 
+        const hallAccount = this.villages[gameId].townHall.account
         var newTransaction = new Transaction(hallAccount.publicKey, this.villages[gameId].getInfo());
+
         newTransaction.signTransaction(hallAccount.publicKey, hallAccount.privateKey);
-        this.blockchains[gameId].addTransaction(newTransaction);
+        this.addTransaction(gameId,newTransaction)
+
+        return this.villages[gameId]; 
     }
 
     async addTransaction(gameId,newTransaction){
 
         this.blockchains[gameId].addTransaction(newTransaction);        
-        this.onTransaction(gameId,newTransaction)
 
         if(this.blockchains[gameId].getTransactionPoolSize() === this.config.max_transactions )
         {
-            const newBlock = await this.blockchains[gameId].mineBlock();
+            var newBlock = await this.blockchains[gameId].mineBlock();
             this.nodeService.propagateNewBlock(newBlock);
             this.onBlockMined(gameId,newBlock);
         
@@ -151,7 +164,7 @@ class FarmChainService {
         newBlock.parseBlock(block);
         if(this.blockchains[identifier].getLastBlock().getHash() === newBlock.getPreviousBlockHash() && newBlock.isValid()){
             this.blockchains[identifier].addNewBlock(newBlock);
-            this.onBlockMined(newBlock);
+            this.onBlockMined(identifier,newBlock);
         }
     }
 
@@ -181,7 +194,7 @@ class FarmChainService {
 
     parseAllBlockchains(blockchainsData){
         blockchainsData.forEach(otherBchain=> {
-            parseBlockchain(otherBchain);
+            this.parseBlockchain(otherBchain);
         });
     }
 

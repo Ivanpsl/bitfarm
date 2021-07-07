@@ -5,12 +5,13 @@ module.exports = class Room {
     {
         this.roomId = roomId;
         this.roomType = roomType;
+        this.players = [];
+
         if(owner !==null){
             this.ownerId = owner.id;
             this.players.push(owner);
         }
         else this.ownerId = null;
-        this.players = [];
         this.listeners = [];
         this.roomStatus = ROOM_CONSTANTS.STATUS_EMPTY;
         this.messages = [];
@@ -19,7 +20,7 @@ module.exports = class Room {
 
     getPlayerById(id){
                 // -- console.log("Buscando jugador: " + JSON.stringify(player) + " ---- " + JSON.stringify(this.players))
-        return this.players.find(player => player.id === id);;
+        return this.players.find(player => player.id === id);
     }   
 
     
@@ -30,7 +31,8 @@ module.exports = class Room {
             this.playersReady++;
         else
             this.playersReady--;
-        if(this.playersReady == this.players.length)
+        console.log(`setReady ${this.playersReady} -->${this.players.length} `)
+        if(this.players.length > 1 && this.playersReady == this.players.length)
             return true;
         else {
             this.sendEventToAll(-1,ROOM_CONSTANTS.EVENT_PLAYER_CHANGE_STATUS, { player : {id:player.id, name: player.name}, isReady: status });
@@ -80,7 +82,7 @@ module.exports = class Room {
         }
     }
     removeListener(playerId){
-        this.listeners.filter(playerListener => playerListener.id !== playerId);
+        this.listeners = this.listeners.filter(playerListener => playerListener.id !== playerId);
     }
     
     addMessage(playerId, msg){

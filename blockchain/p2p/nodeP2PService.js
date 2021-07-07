@@ -3,47 +3,66 @@ const config = require('config');
 const logger = require('morgan');
 const { v4: uuidv4 } = require('uuid');
 
-
 const p2pController = require('./nodeP2PController')
-var self = null;
 
 module.exports =  class NodeP2PService { 
-    constructor(farmChainService){
+    constructor(farmChainService, host, port, loggConfig){
         this.identifier = uuidv4(); 
-        this._nodePort = config.get("Blockchain.node_port")
-        this._nodeHost = config.get("Blockchain.node_host")
+        this.nodePort = port;
+        this.nodeHost = host;
+        this.loggerConfig = loggConfig;
         this.farmChainService = farmChainService;
         this.subscribedNodes = [];
-        this.httpServer = null
-        this.start();
-        self = this;
+        this.httpServer = null;
+        this.serverInstance = null;
     }
     
 
-    start(){
+    init(){
         this.httpServer = new express();
         this.httpServer.use(express.json());
         this.httpServer.use(express.urlencoded({extended: true}));
-        this.httpServer.use(logger(config.get('Blockchain.logger')));
+        this.httpServer.use(logger(this.loggerConfig));
         this.httpServer.set("nodeService",this);
         
         this.httpServer.use("/p2p",require('./p2p.routes')(this.httpServer,p2pController));
-        this.httpServer.listen(this._nodePort, () => {
-            this.log("Nodo activo en: "+"http://localhost:"+this._nodePort);
-            this.requestSuscriptionToBlockchain();
+
+        process.on('SIGINT', ()=>  {
+            this.serverInstance.close();
+        });
+
+        this.serverInstance  = this.httpServer.listen(this.nodePort, () => {
+            this.log("Nodo activo en: "+"http://localhost:"+this.nodePort);
+            this.requestSuscriptionToP2P();
+
+            this.serverInstance.on('close', ()=> {
+                this.disconectNode();
+            });
+            
+            
         });
     }
-    
+
     getId(){
         return this.identifier;
     }
 
+    getPort(){
+        return this.nodePort;
+    }
+    
     getHost(){
-        return this._nodeHost + this._nodePort;
+        return this.nodeHost + this.getPort();
     }
 
     getChains(){
-        return this.farmChainService.getBlockchains();
+        if(this.farmChainService)
+            return this.farmChainService.getBlockchains();
+        else {
+            this.log("Solicitud de blockchain a nodo sin servicio")
+            return null;
+        }
+
     }
     
     propagateTransaction(identifier, transaction){
@@ -55,16 +74,23 @@ module.exports =  class NodeP2PService {
         p2pController.propagateBlock(this, identifier,block);
     }
     manageNewBlock(identifier,block){
-        this.farmChainService.processedRecievedBlock(identifier,block);
+        if(this.farmChainService)
+            this.farmChainService.processedRecievedBlock(identifier,block);
+        else
+            console.log("Se ha recibido peticion de nuevo bloque pero el nodo no tiene farmChainService")
     }
 
-    addNewTransaction(identifier,transactionData){
-        this.farmChainService.addNewTransaction(identifier,transactionData);
-    }
-
-    requestSuscriptionToBlockchain(){
-        var requestUrl = config.get("Blockchain.nodes_request_target");
+    requestSuscriptionToP2P(){
+        var requestUrl = config.get("Blockchain.nodes_request_target") + "/node/suscribe";
         p2pController.subscribeAndRequestNodes(this,requestUrl)
+    }
+
+    disconectNode(){
+        this.log("Nodo cerrando sesion. Enviando cierre al resto de nodos");
+
+        var requestUrl = config.get("Blockchain.nodes_request_target") + "/node/disconect";
+        p2pController.requestExit(this,requestUrl)
+
     }
 
     
@@ -73,18 +99,28 @@ module.exports =  class NodeP2PService {
         this.subscribedNodes.push({host: newHost, ip:newIp, port: newPort});
     }
 
+    removeNode(host){
+        this.log(this.subscribedNodes.length)
+        this.subscribedNodes = this.subscribedNodes.filter((node) => node.host != host);
+        this.log(this.subscribedNodes.length)
+    }
 
     getNodeInfo(){
-        const chains = this.farmChainService.getBlockchains();
-        
+        var chains = null;
+        var numChains = 0;
+        if(this.farmChainService){
+            chains = this.farmChainService.getBlockchains();
+            numChains = chains.length;
+        }
+
         return {
             id : this.identifier,
-            host: this._nodeHost,
-            port: this._nodePort,
+            host: this.nodeHost,
+            port: this.nodePort,
             num_conected_nodes: this.subscribedNodes.length,
-            num_blockchains: this.farmChainService.getBlockchains().length,
-            blockhains_info: chains, //JSON.stringify(blockchainsInfo),
-            nodes_info: this.subscribedNodes
+            nodes_info: this.subscribedNodes,
+            num_blockchains: numChains,
+            blockhains_info: chains //JSON.stringify(blockchainsInfo),
         }
     }
     log(msg){

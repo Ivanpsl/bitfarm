@@ -12,12 +12,8 @@ module.exports = function (app,webService) {
                     console.log("Token")
                     console.error("Error con el token: "+err);
                     res.status(403);
-                    // res.json({
-                    //     acceso: false,
-                    //     error: 'Token invalido o caducado'
-                    // });
                     console.error("No hay token valido")
-                    res.redirect("/");
+                    res.redirect('/game/login.html?mensaje=Token no valido')
                 } else {
                     res.usuario = infoToken.usuario;
                     next();
@@ -25,7 +21,6 @@ module.exports = function (app,webService) {
             });
         } else {
             res.status(403);
-            console.error("No hay token valido")
             res.redirect("/");
         }
     });
@@ -37,11 +32,11 @@ module.exports = function (app,webService) {
     app.use('/joinRoom', routerUsuarioToken);
 
 
-    app.get('/lobby', function(req,res,next){
+    app.get('/lobby', function(req,res){
         res.redirect('/game/main.html')
     })
 
-    app.get('/roomList', function(req,res,next){
+    app.get('/roomList', function(req,res){
         var rooms = webService.getRoomsData();
         res.status(201).send(rooms);
         res.end();
@@ -49,24 +44,25 @@ module.exports = function (app,webService) {
 
     app.post("/identificarse", function (req, res) {
         try{
-            console.log("Identificandose")
-            var user = req.body.username
-            var playerToken;
-            
-            playerToken = app.get('jwt').sign({usuario: user , tiempo: Date.now() / 1000},"secreto");
+            var user = req.body.username;
+            if(user != null && user.trim().length > 0){
+        
+                var playerToken;
+                
+                playerToken = app.get('jwt').sign({usuario: user , tiempo: Date.now() / 1000},"secreto");
 
-            req.session.user = user;
-            req.session.token = playerToken;
-            req.session.playerId = playerToken;
-            req.session.inRoom = false;
-            req.session.inGame = false;
-            
-            console.log(user + " se ha identificado correctamente " + " token = " + req.session.token);
-            res.redirect('/lobby');
+                req.session.user = user;
+                req.session.token = playerToken;
+                req.session.playerId = playerToken;
+                req.session.inRoom = false;
+                req.session.inGame = false;
+                console.log(user + " se ha identificado correctamente " + " token = " + req.session.token);
+                res.status(200).redirect('/lobby');
+            } else throw Error("El nombre de usuario no es un nombre valido")
         }
         catch(e){
             console.error(e.message)
-            res.status(500).send(e.message);
+            res.redirect(`/game/login.html?mensaje=${e.message}&tipoMensaje=alert-danger`)
         }
     });
     

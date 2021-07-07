@@ -1,5 +1,8 @@
+/*global  GAME_CONSTANTS,$,document,gameManager,UITerrain,URL_BASE */
+
+// eslint-disable-next-line no-unused-vars
 class UIPlayer {
-    constructor(playerData) {
+    constructor(playerData, isLocalPlayer = false) {
         this.id = playerData.id;
         this.name = playerData.name;
         this.account = playerData.account; 
@@ -13,6 +16,7 @@ class UIPlayer {
         this.modifiers = [];
         this.buildings = [];
 
+        this.isLocalPlayer = isLocalPlayer;
         this.playerWaiting =false ;
         this.UIPlayerElement = null;
     }
@@ -24,7 +28,7 @@ class UIPlayer {
     getSeeds(){
         var seeds = [];
         for(let product of this.products){
-            if(product.status === GAME_CONSTANTS.PRODUCT_STATUS_SEED){
+            if(product && product.status === GAME_CONSTANTS.PRODUCT_STATUS_SEED){
                 seeds.push(product);
             }
         }
@@ -47,7 +51,7 @@ class UIPlayer {
         }
         
         if(result == null) {
-            console.error(`${type} No encontrado con indice ${index} para el jugador`)
+            console.error(`${type} No encontrado con indice ${index} para el jugador ${this.name}`)
             var list = null;
             if(type === GAME_CONSTANTS.TYPE_TERRAIN ) list = this.terrains;
             else if(type === GAME_CONSTANTS.TYPE_TOOL) list = this.tools;
@@ -62,16 +66,16 @@ class UIPlayer {
 
     removeElemenyByTypeAndIndex(type,index){
         if(type === GAME_CONSTANTS.TYPE_TERRAIN) {
-            this.terrains.filter((terrain)=> terrain.index != index);
+            this.terrains = this.terrains.filter((terrain)=> terrain.index != index);
         }
         else if(type === GAME_CONSTANTS.TYPE_TOOL) {
-            this.tools.filter((tool)=> tool.index != index);
+            this.tools = this.tools.filter((tool)=> tool.index != index);
         }
         else if(type === GAME_CONSTANTS.TYPE_PRODUCT) {
-            this.products.filter((product)=> product.index != index);
+            this.products = this.products.filter((product)=> product.index != index);
         }
         else if(type === GAME_CONSTANTS.TYPE_BUILDING) {
-            this.buildings.filter((building)=> building.index != index);
+            this.buildings = this.buildings.filter((building)=> building.index != index);
         }
         
     }
@@ -95,7 +99,10 @@ class UIPlayer {
 
     removeMoney(amount){
         this.money = this.money - amount;
-        this.updateLocalResume();
+        if(this.isLocalPlayer)
+            this.updateLocalResume();
+        else
+            this.updatePlayerResume();
     }
 
     resetLists(){
@@ -131,12 +138,13 @@ class UIPlayer {
     updatePlayerResume(){
         if(this.UIPlayerElement == null){
             this.render();
-        }else{
+        }
+        // }else{
 
             this.UIPlayerElement.cash.textContent  = ` ${this.money}$`;
             this.UIPlayerElement.storage.textContent  =` ${this.products.length}/${this.getMaxStorage()}`
             this.UIPlayerElement.terrain.textContent  =` ${this.terrains.length}`
-        }
+        // }
     }
 
     sendReadyToEndTurn(){
@@ -145,11 +153,13 @@ class UIPlayer {
             type: "GET",
             data: {},
             dataType: 'json',
-            success: function (response, textStatus, jqXHR) {
+            // eslint-disable-next-line no-unused-vars
+            success: function (_response, _textStatus, _jqXHR) {
                 gameManager.showNotification('Turno finalizado','success','Se ha finalizado el turno, esperando por el resto de jugadores');
                 this.setPlayerWaiting(true);
             },
-            error: function (response, status, error) {
+            // eslint-disable-next-line no-unused-vars
+            error: function (response, _status, _error) {
                 gameManager.showNotification('Ha ocurrido un error','error',response.responseText);
             }
         });
@@ -227,6 +237,7 @@ class UIPlayer {
         this.UIPlayerElement.terrain = terrainSpan;
 
         document.getElementById('player-list').appendChild(drawer);
+        this.updatePlayerResume();
     }
     
     renderTerrains(){

@@ -1,3 +1,6 @@
+/*global  GAME_CONSTANTS,$,document,removeAllChildNodes,gameManager */
+
+// eslint-disable-next-line no-unused-vars
 class UITerrain {
     constructor(terrainData){
         this.index = terrainData.index;
@@ -81,14 +84,14 @@ class UITerrain {
         pItem.appendChild(productPlantSizeText);
 
 
-        var pWatter = document.createElement("p");
-        pWatter.className = "terrain-info-data";
-        var terrainWatterText = document.createElement("spam");
-        terrainWatterText.className = "bi bi-droplet watter";
-        pWatter.appendChild(terrainWatterText);
+        var pWater = document.createElement("p");
+        pWater.className = "terrain-info-data";
+        var terrainWaterText = document.createElement("spam");
+        terrainWaterText.className = "bi bi-droplet watter";
+        pWater.appendChild(terrainWaterText);
 
         contentDataContainer1.appendChild(pItem);
-        contentDataContainer1.appendChild(pWatter);
+        contentDataContainer1.appendChild(pWater);
         contentCol1.appendChild(contentDataContainer1);
 
      /// Informacion del desgaste del terreno
@@ -128,7 +131,7 @@ class UITerrain {
         this.UIElement.actionsContainer = actionsContainerElement;
         this.UIElement.productNameText = productNameText;
         this.UIElement.productSizeText = productPlantSizeText;
-        this.UIElement.productWatterText = terrainWatterText
+        this.UIElement.productWaterText = terrainWaterText
         this.UIElement.productSeparator = varSpamSeparator;
         this.UIElement.terrainStatusText = pStatusText
 
@@ -140,12 +143,12 @@ class UITerrain {
     updateOptions(){
         removeAllChildNodes(this.UIElement.actionsContainer);
         console.log("Imprimiendo acciones para: "+this.status)
-        if(this.status === GAME_CONSTANTS.TERRAIN_STATUS_EMPTY){
+        if(this.status === GAME_CONSTANTS.TERRAIN_STATUS_EMPTY || this.terrainContent ===null ){
             for(let action of gameManager.gameConfig.terrainActions){
                 let actionElement = document.createElement("div");
                 actionElement.type ="button";
                 actionElement.className = "btn btn-terrain-action";
-                actionElement.textContent = action.label;
+                actionElement.textContent = action.label + ` (${action.time_cost/1000}s)`;
                 let actionData = {type : "TERRAIN", index: this.index};
                 actionElement.onclick = ()=> this.onClickAction(action,actionData);
                 this.UIElement.actionsContainer.appendChild(actionElement);
@@ -155,7 +158,7 @@ class UITerrain {
                     let actionElement = document.createElement("div");
                     actionElement.type ="button";
                     actionElement.className = "btn btn-terrain-action";
-                    actionElement.textContent = action.label;
+                    actionElement.textContent = action.label + ` (${action.time_cost/1000}s)`;
                     let actionData = {type : "TERRAIN", terrainIndex: this.index};
                     actionElement.onclick = ()=> this.onClickAction(action,actionData);
                     this.UIElement.actionsContainer.appendChild(actionElement);
@@ -166,7 +169,7 @@ class UITerrain {
                 let actionElement = document.createElement("div");
                 actionElement.type ="button";
                 actionElement.className = "btn btn-terrain-action";
-                actionElement.textContent = action.label;
+                actionElement.textContent = action.label + ` (${action.time_cost/1000}s)`;
                 let actionData = {type : "TERRAIN", terrainIndex: this.index};
                 actionElement.onclick = ()=> this.onClickAction(action,actionData);
                 this.UIElement.actionsContainer.appendChild(actionElement);
@@ -182,7 +185,7 @@ class UITerrain {
             this.UIElement.productSizeText.textContent ="";
             this.UIElement.productSizeText.className = "";
             this.UIElement.productSeparator.textContent = "";
-            this.UIElement.productWatterText.textContent ="-";
+            this.UIElement.productWaterText.textContent ="-";
         }else if(this.status === GAME_CONSTANTS.TERRAIN_STATUS_BUILDED){
             this.UIElement.productNameText.textContent = ` ${this.terrainContent.label}`
             this.UIElement.productNameText.className = "bi bi-shop";
@@ -190,7 +193,7 @@ class UITerrain {
             this.UIElement.productSizeText.textContent ="";
             this.UIElement.productSizeText.className = "";
             this.UIElement.productSeparator.textContent = "";
-            this.UIElement.productWatterText.textContent ="-";
+            this.UIElement.productWaterText.textContent ="-";
         }else if(this.status === GAME_CONSTANTS.TERRAIN_STATUS_PLANTED){
 
             this.UIElement.productNameText.textContent = ` ${this.terrainContent.label}`
@@ -210,7 +213,7 @@ class UITerrain {
             this.UIElement.productSizeText.textContent =` ${finalGrowPrecent}%`;
             this.UIElement.productSizeText.className = icon;
             this.UIElement.productSeparator.textContent = " - ";
-            this.UIElement.productWatterText.textContent =`${this.terrainContent.watter}`;
+            this.UIElement.productWaterText.textContent =`${this.terrainContent.water}`;
             
         }
         var exhaustionText = ""
@@ -239,13 +242,13 @@ class UITerrain {
                     itemList.appendChild(actionElement);
                 }
 
-            $('#accept').click(function(){
-                var selectedItem = $('.form-select').val();
-                var actionData = {terrainIndex: uiTerrain.index, productIndex : selectedItem};
-                gameManager.sendAction(action.name,action.time_cost,actionData, (response)=> {onExecute(response,action,actionData,uiTerrain)});
-            });
+                $('#accept').click(function(){
+                    var selectedItem = $('.form-select').val();
+                    var actionData = {terrainIndex: uiTerrain.index, productIndex : selectedItem};
+                    gameManager.sendAction(action.name,action.time_cost,actionData, (completed,response)=> {onExecute(completed,response,action,actionData,uiTerrain)});
+                });
 
-            gameManager.openModal();
+                gameManager.openModal();
 
             }else{
                 gameManager.showNotification('Error','error','No tienes semillas para plantar')
@@ -274,16 +277,19 @@ class UITerrain {
                 var selectedItem = $('.form-select').val();
                 var price = gameManager.gameConfig.buildings.buildingsList[selectedItem].money_cost;
                 var actionData = {terrainIndex: uiTerrain.index, buildingId : selectedItem, buildCost : price};
-                gameManager.sendAction(action.name,action.time_cost,actionData, (response)=> {onExecute(response,action,actionData,uiTerrain)});
+                gameManager.sendAction(action.name,action.time_cost,actionData, (completed,response)=> {onExecute(completed,response,action,actionData,uiTerrain)});
             });
 
-            gameManager.openModal();
+            gameManager.openModal(); 
         });
     }
 
-    onExecuteAction(response,action,actionData,uiTerrain){
-        // gameManager.player.removeMoney(actionData.buildCost);
-     //   uiTerrain.updateContainerInfo();
+    // eslint-disable-next-line no-unused-vars
+    onExecuteAction(completed,_response,action,_actionData,_uiTerrain){
+        if(completed)
+            gameManager.showNotification('Acción completada con éxito','success',`La acción de ${action.label} se ha llevado a cabo correctamente.`)
+
+        /// TO-DO: añadir mas notificaciones
     }
 
     onClickAction(action, actionData){

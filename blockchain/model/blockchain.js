@@ -5,6 +5,20 @@ module.exports = class Blockchain {
         this.identifier = identifier;
         this.chain = blocks || [this.startGenesisBlock()];
         this.transactionsPool = [];
+
+        this.observers = [];
+
+    }
+
+    addObserver(onNewTransaction,onNewBlock){
+        this.observers.push({onTransaction:onNewTransaction, onBlock:onNewBlock });
+    }
+    onTransaction(transaction){
+        this.observers.forEach(observer => observer.onTransaction(this.identifier,transaction));
+    }
+
+    onBlockMined(block){
+        this.observers.forEach(observer => observer.onBlock(this.identifier,block));
     }
 
     getChain(){ return this.chain; }
@@ -21,28 +35,32 @@ module.exports = class Blockchain {
 
 
     async mineBlock(){
-        console.log("minando bloque")
+
         const previousBlock = this.getLastBlock();
                 //TODO: Prueba de trabajo
         let newBlock = new Block(previousBlock.getIndex()+1, this.transactionsPool, previousBlock.getHash());
         this.transactionsPool = [];
         this.chain.push(newBlock);
+        this.onBlockMined(newBlock);
         return newBlock;
     }
 
     addNewBlock(block){
-        this.chain.push(newBlock);
+        this.chain.push(block);
     }
 
 
     addTransaction(transaccion){
         if(transaccion.isValid()){
             this.transactionsPool.push(transaccion);
+            this.chainLog("Añadiendo nueva transacción")
+            this.onTransaction(transaccion);
 
             if(this.transactionsPool.length===5){
-                console.log("minando")
+                this.chainLog("Minando nuevo bloque")
                 this.mineBlock();
             }
+      
             return true;
         }
         return false;
@@ -95,7 +113,7 @@ module.exports = class Blockchain {
     }
     
     chainLog(msg){
-        console.log(`[CHAIN:${id}]: ${msg}`)
+        console.log(`[CHAIN:${this.identifier}]: ${msg}`)
     }
 
 };

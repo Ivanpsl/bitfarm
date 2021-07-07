@@ -1,4 +1,4 @@
-const Room = require('./model/room');
+const Room = require('./entities/room');
 const {ROOM_CONSTANTS} = require("../../common/constants");
 const { v4: uuidv4 } = require('uuid');
 module.exports = class RoomService {
@@ -21,9 +21,13 @@ module.exports = class RoomService {
     }
     
     createRoom(owner){
-        const identifier = uuidv4();
-        const newRoom = new Room(identifier,ROOM_CONSTANTS.ROOM_TYPE_PRIVATE,owner);
+        var identifier = uuidv4();
+        this.log("Creando sala privada con identificador "+identifier)
+
+        var newRoom = new Room(identifier,ROOM_CONSTANTS.ROOM_TYPE_PRIVATE,owner);
         this.gameRooms.push(newRoom);
+
+        return newRoom;
     }
 
     joinRoom(player,roomId){

@@ -1,3 +1,5 @@
+/*global Cookies, URL_BASE,$,document,removeAllChildNodes, restartSesion,ROOM_CONSTANTS,window,HOME_URL,gameManager*/
+
 var roomManager = {
     actualRoom: null,
     players: [],
@@ -37,11 +39,12 @@ var roomManager = {
                 txt: message
             },
             dataType: 'json',
-            success: function (response, textStatus, jqXHR) {
+            // eslint-disable-next-line no-unused-vars
+            success: function (_response, _textStatus, _jqXHR) {
                 $("#chat-input").val("")
                 roomManager.renderMessage(message)
             },
-            error: function (request, status, error) {
+            error: function (_request, _status, error) {
                 console.error("Se ha perdido la conexión con el servidor: \n", "Se ha perdido la conexión con el servidor\n" + console.log(JSON.stringify(error)));
                 restartSesion();
             }
@@ -58,10 +61,11 @@ var roomManager = {
                 isReady: roomManager.isReady
             },
             dataType: 'json',
-            success: function (response, textStatus, jqXHR) {
+            // eslint-disable-next-line no-unused-vars
+            success: function (_response, _textStatus, _jqXHR) {
                 roomManager.updateReadyBtn();
             },
-            error: function (request, status, error) {
+            error: function (_request, _status, error) {
                 console.error("Se ha perdido la conexión con el servidor: \n", "Se ha perdido la conexión con el servidor\n" + console.log(JSON.stringify(error)));
                 restartSesion();
             }
@@ -77,7 +81,7 @@ var roomManager = {
                 rId: roomManager.actualRoom.roomId
             },
             dataType: 'json',
-            success: function (response, textStatus, jqXHR) {
+            success: function (_response, _textStatus, jqXHR) {
                 if (jqXHR.status === 200) {
                     // if(roomManager.isPlaying===false){
                     //     this.isPlaying = true;
@@ -85,7 +89,8 @@ var roomManager = {
                     // }
                 }
             },
-            error: function (request, status, error) {
+            // eslint-disable-next-line no-unused-vars
+            error: function (_request, _status, _error) {
                 console.error("Se ha perdido la conexión con el servidor: \n", "Se ha perdido la conexión con el servidor")
                 restartSesion();
             }
@@ -98,17 +103,17 @@ var roomManager = {
             url: URL_BASE + "/room/subscribeChatRoom",
             type: "GET",
             async: true,
-            success: function (response, textStatus, jqXHR) {
+            success: function (response, _textStatus, jqXHR) {
                 console.log(JSON.stringify(response));
                 if (jqXHR.status === 200) {
                     roomManager.manageEvent(response);
                 }
             },
-            error: function (request, status, error) {
+            error: function () {
                 console.error("Se ha perdido la conexión con el servidor: \n", "Se ha perdido la conexión con el servidor");
                 restartSesion();
             },
-            complete: function (request, status, err) {
+            complete: function (request, status) {
                 if (status == "timeout" || status == "success") {
                     if (!roomManager.isPlaying) {
                         console.log(`[${status}] LOG: Normal timeot, nueva peticion.` + JSON.stringify(request));
@@ -130,14 +135,15 @@ var roomManager = {
             url: URL_BASE + "/room/exit",
             type: "GET",
             async: true,
-            success: function (response, textStatus, jqXHR) {
+            success: function (_response, _textStatus, jqXHR) {
                 if (jqXHR.status === 200) {
                     Cookies.remove('actualRoomId');
                     Cookies.remove('actualRoomType');
                     window.location.href = HOME_URL + "/lobby";
                 }
             },
-            error: function (request, status, error) {
+            // eslint-disable-next-line no-unused-vars
+            error: function (_request, _status, _error) {
                 console.error("Se ha perdido la conexión con el servidor: \n", "Se ha perdido la conexión con el servidor");
                 restartSesion();
             },

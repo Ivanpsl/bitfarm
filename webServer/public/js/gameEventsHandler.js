@@ -1,3 +1,6 @@
+
+/*global  gameManager,EventSource,GAME_CONSTANTS,UIPlayerOffert*/
+// eslint-disable-next-line no-unused-vars
 class GameEventsHandler {
     constructor() {
         this.listening = false;
@@ -27,13 +30,13 @@ class GameEventsHandler {
         if (eventObj.event === GAME_CONSTANTS.EVENT_NEW_BLOCK_LOG || eventObj.event === GAME_CONSTANTS.EVENT_NEW_TRANSACTION_LOG) {
             this.onNewBlockchainLog(eventObj);
         } else if (eventObj.event === GAME_CONSTANTS.EVENT_START_TURN) {
-            this.onStartTurn();
+            this.onStartTurn(eventObj);
         } else if (eventObj.event === GAME_CONSTANTS.EVENT_PLAYER_END_TURN) {
             this.onPlayerEndTurn(eventObj);
         } else if (eventObj.event === GAME_CONSTANTS.EVENT_PLAYER_ACTION) {
             this.onPlayerAction(eventObj);
         } else if (eventObj.event === GAME_CONSTANTS.EVENT_OFFERT_BUY) {
-            this.onOffertBuy(eventObj);
+            this.onBuyOffert(eventObj);
         } else if (eventObj.event === GAME_CONSTANTS.EVENT_OFFERT_CREATE) {
             this.onCreateOffert(eventObj);
         } else if (eventObj.event === GAME_CONSTANTS.EVENT_OFFERT_REMOVE) {
@@ -41,7 +44,8 @@ class GameEventsHandler {
         }
     }
 
-    onStartTurn() {
+    onStartTurn(eventObj) {
+        gameManager.refreshAllData(eventObj.data.turnData);
         gameManager.startTurn();
     }
 
@@ -53,35 +57,49 @@ class GameEventsHandler {
 
 
     onPlayerAction(eventObj) {
-        if (eventObj.data.source.publicKey !== gameManager.player.account.publicKey) {
+        //if (eventObj.data.source.publicKey !== gameManager.player.account.publicKey) {
             if (eventObj.data.action === GAME_CONSTANTS.ACTION_ELEMENT_BUY) {
-                gameManager.players[eventObje.data.source.publicKey].removeMoney(eventObj.data.actionData.price);
+                if (eventObj.data.source.publicKey !== gameManager.player.account.publicKey)
+                    gameManager.players[eventObj.data.source.publicKey].removeMoney(eventObj.data.actionData.price);
                 if (eventObj.data.actionData.targetPublicKey === gameManager.townHall.account.publicKey) {
-                    onMarketBuy(eventObj);
+                    this.onMarketBuy(eventObj);
                 }
             }
-        }
+        //}
     }
 
     onMarketBuy(eventObj) {
         gameManager.townHall.money = gameManager.townHall.money + eventObj.data.actionData.price;
         gameManager.removeMarketElementByProductIndexAndType(eventObj.data.actionData.elementIndex, eventObj.data.actionData.elementType);
-
+        console.log(" jugador: " + eventObj.data.source.publicKey);
+        var targetIsClient = eventObj.data.source.publicKey == gameManager.player.account.publicKey;
         if (eventObj.data.actionData.elementType === GAME_CONSTANTS.TYPE_PRODUCT) {
-            var product = gameManager.townHall.products.find((pr) => pr.index === eventObj.data.actionData.elementIndex);
+            var product = gameManager.townHall.products.find((pr) => pr.index == eventObj.data.actionData.elementIndex);
 
-            gameManager.players[eventObje.data.source.publicKey].addProduct(product)
-            gameManager.townHall.products.filter((pr) => pr.index != index);
-        } else if (actionData.elementType === GAME_CONSTANTS.TYPE_TERRAIN) {
-            var terrain = gameManager.townHall.terrains.find((tr) => tr.index === eventObj.data.actionData.elementIndex);
+            if(targetIsClient)
+                gameManager.player.addProduct(product)
+            else
+                gameManager.players[eventObj.data.source.publicKey].addProduct(product)
 
-            gameManager.players[eventObje.data.source.publicKey].addTerrain(terrain)
-            gameManager.townHall.terrains.filter((tr) => tr.index != index);
-        } else if (actionData.elementType === GAME_CONSTANTS.TYPE_TOOL) {
-            var tool = gameManager.townHall.tools.find((tl) => tl.index === eventObj.data.actionData.elementIndex);
+                gameManager.townHall.products = gameManager.townHall.products.filter((pr) => pr.index != eventObj.data.actionData.elementIndex);
+        } else if (eventObj.data.actionData.elementType === GAME_CONSTANTS.TYPE_TERRAIN) {
+            var terrain = gameManager.townHall.terrains.find((tr) => tr.index == eventObj.data.actionData.elementIndex);
 
-            gameManager.players[eventObje.data.source.publicKey].addTool(tool)
-            gameManager.townHall.tools.filter((tl) => tl.index != index);
+            if(targetIsClient)
+                gameManager.player.addTerrain(terrain)
+            else
+                gameManager.players[eventObj.data.source.publicKey].addTerrain(terrain)
+
+                gameManager.townHall.terrains = gameManager.townHall.terrains.filter((tr) => tr.index != eventObj.data.actionData.elementIndex);
+        } else if (eventObj.data.actionData.elementType === GAME_CONSTANTS.TYPE_TOOL) {
+            var tool = gameManager.townHall.tools.find((tl) => tl.index == eventObj.data.actionData.elementIndex);
+            
+            if(targetIsClient)
+                gameManager.player.addTool(tool)
+            else
+                gameManager.players[eventObj.data.source.publicKey].addTool(tool)
+
+                gameManager.townHall.tools = gameManager.townHall.tools.filter((tl) => tl.index != eventObj.data.actionData.elementIndex);
         }
     }
 
@@ -118,31 +136,26 @@ class GameEventsHandler {
         // }
     }
 
-    onOffertBuy(eventObj) {
-        let buySource = eventObj.data.source;
+    onBuyOffert(eventObj) {
+        console.log("onBuy")
+        
+        let buyAccount = eventObj.data.source;
         let offertIndex = eventObj.data.offertIndex;
 
         var uiOffert = gameManager.playersOfferts.find((offert) => offert.index == offertIndex);
 
         if (uiOffert.owner === gameManager.player.account.publicKey) {
             let elementName = uiOffert.element.name ?? `terreno ${uiOffert.element.index}`;
-            gameManager.showNotification("Tu oferta ha sido comprada", "success", `Tu oferta de ${elementName} ha sido comprada por ${gameManager.players[buySource].name}`);
+            gameManager.showNotification("Tu oferta ha sido comprada", "success", `Tu oferta de ${elementName} ha sido comprada por ${gameManager.players[buyAccount.publicKey].name}`);
         }
 
-        uiOffert.remove();
-        gameManager.playersOfferts.filter((offert) => uiOffert.index != offert.index);
+        uiOffert.onBuy();
+        gameManager.playersOfferts = gameManager.playersOfferts.filter((offert) => uiOffert.index != offert.index);
     }
 
 
     onNewBlockchainLog(eventObj) {
-        let text = "";
-        let index = gameManager.blockchainLogs.length;
-        gameManager.blockchainLogs[gameManager.blockchainLogs.length] = eventObj;
-        if (eventObj.event === GAME_CONSTANTS.EVENT_NEW_BLOCK_LOG)
-            text = "Bloque";
-        else text = "Transacción"
-
-        gameManager.renderBlockchainLog(index, text);
+        gameManager.addBlockchainLog(eventObj);
     }
 
 }

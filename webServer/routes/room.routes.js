@@ -1,6 +1,4 @@
 
-const { Router } = require('express')
-
 module.exports = function (app, webService) {
 
     app.post("/room/join", function (req, res) {
@@ -21,6 +19,21 @@ module.exports = function (app, webService) {
             }
         } catch (e) {
             console.error(e.message);
+            res.status(500).send(e.message);
+        }
+    });
+
+
+    app.get("/room/create", function (req, res) {
+        try {
+            var playerId = req.session.playerId;
+            console.log("Saliiendo " + req.session.playerId);
+            if (playerId) {
+                var newRoom = webService.createPrivateRoom(playerId);
+                res.status(200).send(newRoom);
+            }
+        } catch (e) {
+            console.error(e.message)
             res.status(500).send(e.message);
         }
     });

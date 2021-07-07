@@ -1,10 +1,13 @@
+/*global  $,document,gameManager,URL_BASE */
+
+// eslint-disable-next-line no-unused-vars
 class UIPlayerOffert {
     constructor(index, price, element, ownerKey, isPlayerOwner) {
         this.index = index;
         this.owner = ownerKey;
         this.element = element;
         this.price = price;
-        this.isPlayerOwner = isPlayerOwner;
+        this.isPlayerOwner = isPlayerOwner; 
         console.log("ELEMENTO:" + JSON.stringify(this.element));
 
         this.onCreate();
@@ -44,7 +47,7 @@ class UIPlayerOffert {
 
         var h5 = document.createElement("h5");
         h5.className = "mb-1";
-        h5.textContent = "Oferta de " + ownerName;
+        h5.textContent = `Oferta de ${ownerName}(${this.price}€)`;
 
         var btn = document.createElement("button");
         btn.type = "button";
@@ -63,12 +66,13 @@ class UIPlayerOffert {
             }
         } else {
             btn.className = "btn btn-outline-success";
-            btn.textContent = "Comprar oferta";
+            btn.textContent = `Comprar (${this.price}€)`;
     
             btn.onclick = () => {
-                if (gameManager.player.money > this.money) {
+                if (gameManager.player.money > this.price) {
                     this.buy();
                 } else {
+                    gameManager.setNegotiationNotify("No tienes suficiente dinero")
                     gameManager.showNotification('Error', 'error', 'No tienes suficiente dinero.');
                 }
             }
@@ -82,7 +86,7 @@ class UIPlayerOffert {
         gameManager.modalNegociationElements.offertList.appendChild(itemElement);
     }
 
-    remove() {
+    onRemove() {
         if (this.isPlayerOwner) {
 
             var itemListElement = document.getElementById(`group-item-${this.element.type}-${this.element.index}`);
@@ -93,30 +97,50 @@ class UIPlayerOffert {
             itemCreateOffertBtn.disabled = false;
             itemPriceInput.disabled = false;
             itemListElement.classList.remove('list-group-item-secondary')
-
-            var elem = document.getElementById(`group-item-${this.index}`)
-            if(elem)
-                elem.parentNode.removeChild(elem);
         }
+
+        this.remove();
+    }
+
+    onBuy(){
+
+        var itemListElement = document.getElementById(`group-item-${this.element.type}-${this.element.index}`);
+        if(itemListElement)
+            itemListElement.parentNode.removeChild(itemListElement);
+        this.remove();
+    }
+
+    remove(){
+        var elem = document.getElementById(`group-item-${this.index}`)
+
+        if(elem)
+            elem.parentNode.removeChild(elem);
     }
 
     buy() {
+        let elementLabel = this.element.label;
         $.ajax({
             url: URL_BASE + "/game/offert/buy",
-            type: "GET",
+            type: "POST",
             data: {
                 index: this.index,
                 owner: this.owner,
                 element: this.element,
                 price: this.price,
-                source: gameManager.player.account.publicKey,
+                source: gameManager.player.account,
             },
             dataType: 'json',
-            success: function (response, textStatus, jqXHR) {
-                gameManager.showNotification('Oferta comprada', 'success', 'La oferta para ' + item.label + ' ha sido comprada');
-
+            // eslint-disable-next-line no-unused-vars
+            success: function (response, _textStatus, _jqXHR) {
+                gameManager.showNotification('Oferta comprada', 'success', `La oferta de ${elementLabel} ha sido comprada`);
+                gameManager.refreshAllData(response);
+                
+                this.onBuy();
             },
-            error: function (response, status, error) {
+            // eslint-disable-next-line no-unused-vars
+            error: function (response, _status, _error) {
+                console.error(response.responseText);
+                gameManager.setNegotiationNotify(response.responseText)
                 gameManager.showNotification('Ha ocurrido un error', 'error', response.responseText);
             }
         });

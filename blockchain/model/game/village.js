@@ -13,7 +13,6 @@ class Village {
 
         this.status = "PLAYING";
         this.turn = -1;
-        this.actualEvent = null;
 
         this.townHall = new Hall(config.max_money, hallAccount);
         this.players = [];
@@ -23,6 +22,7 @@ class Village {
         this.buildings = [];
 
         this.market = [];
+        this.actualEvent = null;
 
         this.playersWaiting = 0;
 
@@ -66,26 +66,35 @@ class Village {
     playerEndTurn(playerId){
         this.getPlayerFromId(playerId).isWaiting = true;
         this.playersWaiting++;
+
     }
 
     endTurn(){
         // TODO: añadir evento aleatorio al nuevo turno y su efecto -> this.selectRandomEvent();
+        for (var key in this.players) {
+            this.players[key].isWaiting = false;
+        }
+        this.playersWaiting=0;
         this.turn +=1
-        this.applyEfectsToTerrains();
+        this.updateClimaticEvent();
+        this.applyTaxesAndEfectsToAllTerrains();
         this.updateMarket();
 
         return this;
     }
 
     updateMarket(){
+        console.log("Actualizando tienda")
         var productSelling = this.getProductsFromOwner(this.townHall.account.publicKey);
         var toolsSelling = this.getToolsFromOwner(this.townHall.account.publicKey);
         var terrainSelling = this.getTerrainsFromOwner(this.townHall.account.publicKey);
+        
         this.market = [];
         var offertIndex = 0; 
-
+        
         for(let i=0; i<3; i++){
             var typeIndex = Math.floor(Math.random() * 3)
+
             var element;
             var elementIndex;
             if(typeIndex == 0){
@@ -104,9 +113,13 @@ class Village {
             }
             
             if(element){
-                var price = this.calculateMarketCost(element);
-                this.market.push({ index: offertIndex, price: price, item : element});
-                offertIndex ++;
+                if(this.market.some((e) => e.type == element.type && e.index == element.index ))
+                    i--
+                else{
+                    var price = this.calculateMarketCost(element);
+                    this.market.push({ index: offertIndex, price: price, item : element});
+                    offertIndex ++;
+                }
             }else i--;
             
         }
@@ -128,12 +141,34 @@ class Village {
         return Math.floor(Math.random() * max+1) + min;
     }
 
+    updateClimaticEvent(){
+        const rnd = Math.random();
+        console.log("RANDOM " + rnd)
+
+        var events = this.gameConfig.climaticEvents;
+
+        var aux = 0;
+        for(let key in events){
+            console.log(JSON.stringify(events[key]));
+            var auxSum = aux + parseFloat(events[key].percent);
+            if(rnd >= aux && rnd < auxSum) {
+                this.actualEvent = events[key];
+                return;
+            }
+            aux = auxSum;
+        }
+        
+        this.actualEvent = null;
+        
+    }
+
     getPlayerFromId(playerId){
         for(var key in this.players){
             if(this.players[key].id === playerId) 
                 return this.players[key];
         }
     }
+
     getToolsFromOwner(ownerKey){
         var toolsList = [];
         for(let tool of this.tools){
@@ -163,18 +198,52 @@ class Village {
         }
         return productList;
     }
+    getNumberOfPlayers(){
+        return Object.keys(this.players).length
+    }
+    getWaterConsume(productName){
+        let productConfig = this.gameConfig.products.productsList.get(productName);
+        if(this.actualEvent == null)
+            return productConfig.water_consume_per_turn;
+        else{
+            return productConfig.water_consume_per_turn + this.actualEvent.waterEffect;
+        }
+    }
+    applyTaxesAndEfectsToAllTerrains(){
+        this.terrains.forEach(terrain => {
 
-    applyEfectsToAllTerrains(){
-        terrains.forEach(terrain => {
-            if(terrain.status === GAME_CONSTANTS.TERRAIN_STATUS_EMPTY){
+            if(terrain.owner != this.townHall.account.publicKey){
+                this.players[terrain.owner].money -= this.gameConfig.terrain_tax;
+            }
+
+            if(terrain.status === GAME_CONSTANTS.TERRAIN_STATUS_PLANTED && this.products[terrain.contentIndex]){
+
+                var productConfig = this.gameConfig.products.productsList.get(this.products[terrain.contentIndex].name);
+                //desgaste del terreno
                 terrain.addSoilUse(this.products[terrain.contentIndex]);
+                //desgaste del producto
                 if(terrain.getSoilUse(this.products[terrain.contentIndex].productType) > 50){
-                    this.products[terrain.contentIndex].setStatus(GAME_CONSTANTS.PRODUCT_STATUS_ROTTEN);
+                    this.products[terrain.contentIndex].health -= productConfig.exhaustion_health_loss;
+                    
+                    if(this.products[terrain.contentIndex].health <=0)
+                        this.products[terrain.contentIndex].status = GAME_CONSTANTS.PRODUCT_STATUS_ROTTEN;
                 }else
                 {   
-                    this.products[terrain.contentIndex].water -= this.gameConfig.products.get(this.products[terrain.contentIndex].name).watter_consume_per_week;
+                    this.products[terrain.contentIndex].water -= this.getWaterConsume(this.products[terrain.contentIndex].name);
                 }
+
+                var water = this.products[terrain.contentIndex].water
+                if(water >= productConfig.min_water_to_grow){
+                    this.products[terrain.contentIndex].growPrecent += productConfig.growth_per_week;
+                }else if(water < productConfig.min_water_to_survive){
+                    this.products[terrain.contentIndex] -= productConfig.dehydration_health_loss;
+
+                    if(this.products[terrain.contentIndex].health <=0)
+                        this.products[terrain.contentIndex].status = GAME_CONSTANTS.PRODUCT_STATUS_DRY;
+                }
+
             }
+
         });
     }
 
@@ -195,6 +264,7 @@ class Village {
             players : this.players,
             status : this.status,
             turn : this.turn,
+            climaticEvent : this.actualEvent,
             hall : this.townHall,
             terrains : this.terrains,
             toolsList : this.toolsList,
