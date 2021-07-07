@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "startmon": "nodemon ./bin/www",
-    "test" : "mocha",
+    "test": "mocha",
     "testnya": "mocha --reporter nyan"
   },
   "engines": {
