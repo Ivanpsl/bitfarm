@@ -29,6 +29,7 @@ module.exports =  class NodeP2PService {
 
         process.on('SIGINT', ()=>  {
             this.serverInstance.close();
+            process.exit(0);
         });
 
         this.serverInstance  = this.httpServer.listen(this.nodePort, () => {
@@ -37,6 +38,7 @@ module.exports =  class NodeP2PService {
 
             this.serverInstance.on('close', ()=> {
                 this.disconectNode();
+                
             });
             
             

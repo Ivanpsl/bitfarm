@@ -3,15 +3,13 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "run " :  "node ./bin/www",
     "start": "node ./bin/www",
     "startmon": "nodemon ./bin/www",
     "test": "mocha",
     "testnya": "mocha --reporter nyan"
   },
-  "engines": {
-    "node": "16.x",
-    "npm": "7.x"
-  },
+
   "dependencies": {
     "all": "^0.0.0",
     "awilix": "^4.3.4",

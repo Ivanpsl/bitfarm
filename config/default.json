@@ -11,7 +11,7 @@
         "node_port" : 4005,
         "node_host" : "http://localhost:",
         "logger" : ">>>>> [P2P] :method :url :status",
-        "nodes_request_target" : "https://localhost:3002"
+        "nodes_request_target" : "https://localhost:3000"
     },
 
     "Game" : {
