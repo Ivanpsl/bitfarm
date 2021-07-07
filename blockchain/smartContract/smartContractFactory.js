@@ -2,7 +2,7 @@ const {GAME_CONSTANTS} = require("../../common/constants");
 
 const PlantSmartContract = require("./plantSmartContract")
 const BuyElementSmartContract = require("./buyElementSmartContract");
-const StartGameSmartContract = require("./StartGameSmartContract");
+const StartGameSmartContract = require("./startGameSmartContract");
 const BuildSmartContract = require("./buildSmartContract.js");
 const DemolishSmartContract = require("./demolishSmartContract");
 const WatetingSmartContract = require("./watetingSmartContract");
