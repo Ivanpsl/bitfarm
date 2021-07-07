@@ -1,5 +1,5 @@
 const {GAME_CONSTANTS} = require('./../common/constants')
-const smFactory = require("./smartContracts/smartContractFactory")
+const smFactory = require("./smartContract/smartContractFactory")
 const cryptoUtils = require("./utils/cryptoUtils");
 const config = require('config');
 
