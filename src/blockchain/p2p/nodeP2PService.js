@@ -29,6 +29,11 @@ module.exports =  class NodeP2PService {
 
         process.on('SIGINT', ()=>  {
             this.serverInstance.close();
+            setTimeout(()=> {
+                this.log("Ya es seguro cerrar el proceso...")
+                process.exit()
+                
+            },1000);
           
         });
 
@@ -37,8 +42,8 @@ module.exports =  class NodeP2PService {
             this.requestSuscriptionToP2P();
 
             this.serverInstance.on('close', ()=> {
+                this.log("Enviando cierre a los nodos. Espere")
                 this.disconectNode();
-                
             });
             
             

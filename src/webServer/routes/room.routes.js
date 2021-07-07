@@ -3,12 +3,11 @@ module.exports = function (app, webService) {
 
     app.post("/room/join", function (req, res) {
         try {
-            console.log(`[POST] [JOINROOM] Jugador [${req.session.playerId}][${req.session.user}] solicitando unirse a sala [${req.body.rType} | ${req.body.rId}]`)
             if (req.session.playerId && req.body.rId != null) {
                 var response = webService.joinRoom(req.session.playerId, req.session.user, req.body.rId);
                 if (response.error) {
                     console.error(response.error);
-                    res.status(500).send(response.error);
+                    res.status(400).send(response.error);
                 } else {
                     req.session.room = response.roomInfo.roomId
                     req.session.inRoom = true;
@@ -18,8 +17,7 @@ module.exports = function (app, webService) {
                 throw new Error("Sesión no iniciada o sala no existente");
             }
         } catch (e) {
-            console.error(e.message);
-            res.status(500).send(e.message);
+            res.status(400).send(e.message);
         }
     });
 
@@ -27,7 +25,7 @@ module.exports = function (app, webService) {
     app.get("/room/create", function (req, res) {
         try {
             var playerId = req.session.playerId;
-            console.log("Saliiendo " + req.session.playerId);
+
             if (playerId) {
                 var newRoom = webService.createPrivateRoom(playerId);
                 res.status(200).send(newRoom);
@@ -40,8 +38,7 @@ module.exports = function (app, webService) {
 
     app.get("/room/exit", function (req, res) {
         try {
-            console.log("Saliiendo " + req.session.playerId);
-            if (req.session.playerId && req.session.room != null && req.session.room != undefined) {
+            if (req.session.playerId != null && req.session.room != null && req.session.room != undefined) {
                 webService.exitRoom(req.session.playerId, req.session.room);
                 req.session.room = null;
                 res.redirect('/lobby');
@@ -75,17 +72,16 @@ module.exports = function (app, webService) {
     });
 
     app.post("/room/sendMessage", function (req, res) {
-        console.log(`[POST] [SENDMESSAGE] Jugador [${req.session.token} - ${req.session.playerId}][${req.session.user}] enviando [${req.body.rId} | ${req.body.txt}]`)
-        if (req.session.token && req.session.playerId && req.body.rId == req.session.room && req.body.txt) {
+        if (req.session.token && req.session.playerId != null && req.body.txt) {
 
             const room = webService.getRoom(req.body.rId);
             if (room){
                 room.addMessage(req.session.playerId, req.body.txt);
-                res.send(true);
+                res.status(200).send(true);
             }
-            else res.status(500).send("Sala no identificada");
+            else res.status(400).send("Sala no identificada");
         } else {
-            res.status(500).send("Faltan datos en la petición");
+            res.status(400).send("Faltan datos en la petición");
         }
     });
 

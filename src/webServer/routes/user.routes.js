@@ -1,9 +1,10 @@
 
 const express = require('express');
+const routerUsuarioToken = express.Router();
 
 module.exports = function (app,webService) {
 
-    const routerUsuarioToken = express.Router();
+
     routerUsuarioToken.use(function (req, res, next) {
         var token = req.headers['token'] || req.body.token || req.query.token || req.session.token;
         if (token != null) {
@@ -56,12 +57,10 @@ module.exports = function (app,webService) {
                 req.session.playerId = playerToken;
                 req.session.inRoom = false;
                 req.session.inGame = false;
-                console.log(user + " se ha identificado correctamente " + " token = " + req.session.token);
                 res.status(200).redirect('/lobby');
             } else throw Error("El nombre de usuario no es un nombre valido")
         }
         catch(e){
-            console.error(e.message)
             res.redirect(`/game/login.html?mensaje=${e.message}&tipoMensaje=alert-danger`)
         }
     });

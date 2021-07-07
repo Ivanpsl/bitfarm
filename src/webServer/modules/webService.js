@@ -23,6 +23,12 @@ class WebService {
             (gameId, newBlock) => this.handleNewBlock(gameId, newBlock));
     }
 
+    getRoomService(){
+        return this.roomService;
+    }
+    getGameService(){
+        return this.gameService;
+    }
     getRoom(roomId) {
         return this.roomService.getRoom(roomId);
     }

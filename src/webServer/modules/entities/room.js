@@ -1,6 +1,6 @@
 const {ROOM_CONSTANTS} = require('../../../common/constants');
 
-module.exports = class Room {
+class Room {
     constructor(roomId,roomType, owner=null)
     {
         this.roomId = roomId;
@@ -12,6 +12,7 @@ module.exports = class Room {
             this.players.push(owner);
         }
         else this.ownerId = null;
+
         this.listeners = [];
         this.roomStatus = ROOM_CONSTANTS.STATUS_EMPTY;
         this.messages = [];
@@ -19,7 +20,6 @@ module.exports = class Room {
     }
 
     getPlayerById(id){
-                // -- console.log("Buscando jugador: " + JSON.stringify(player) + " ---- " + JSON.stringify(this.players))
         return this.players.find(player => player.id === id);
     }   
 
@@ -31,7 +31,7 @@ module.exports = class Room {
             this.playersReady++;
         else
             this.playersReady--;
-        console.log(`setReady ${this.playersReady} -->${this.players.length} `)
+
         if(this.players.length > 1 && this.playersReady == this.players.length)
             return true;
         else {
@@ -40,9 +40,7 @@ module.exports = class Room {
         }
     }
     addPlayer(player){
-        console.log("Añadiendo jugador a sala: " + player.id + "    " + player.name);
         this.players.push(player);
-        console.log(this.players)
 
         if ( this.players.length === 1){
             this.roomStatus = ROOM_CONSTANTS.STATUS_WAITING;
@@ -58,9 +56,6 @@ module.exports = class Room {
         var idx = this.players.indexOf(player);
         if (idx != -1) this.players.splice(idx, 1);
 
-        console.log("Players: " + JSON.stringify(this.players));
-        console.log("Eliminado jugador con id: "+ player.id);
-
         if ( this.players.length === 0){
             this.roomStatus = ROOM_CONSTANTS.STATUS_EMPTY;
         }
@@ -69,16 +64,13 @@ module.exports = class Room {
     }
 
     addListener(playerId, listener){
-        console.log("Añadiendo listener")
         if(this.status !==  ROOM_CONSTANTS.STATUS_RUNNING){
-            console.log("añadiendo listener "+ playerId);
 
             if(this.listeners.find(playerListener=> playerListener.id===playerId))
             {
                 this.listeners.find(playerListener=> playerListener.id===playerId).listener = listener;
             }else this.listeners.push({id:playerId, listener: listener });
 
-            console.log("Listeners "+this.listeners.length)
         }
     }
     removeListener(playerId){
@@ -93,11 +85,11 @@ module.exports = class Room {
     }
 
     sendEventToAll(sourceId,eventType, dta){
-        console.log("> Enviando evento: " + eventType);
-        console.log("-> Listeners: " + this.listeners.length);
+        if(process.env.NODE_ENV != 'test')
+            console.log("> Enviando evento: " + eventType);
+            
         for(let playerListener of this.listeners){
             if(playerListener && playerListener.listener && playerListener.id != sourceId){
-                console.log("-->> Enviado a " + playerListener.id);
                 const event = {source:sourceId, eType:eventType, data:dta}
                 playerListener.listener.send(event);
                 playerListener.listener.end();
@@ -112,6 +104,9 @@ module.exports = class Room {
         this.listeners = [];
     }
     
+    isRunning(){
+        return this.roomStatus === ROOM_CONSTANTS.STATUS_RUNNING;
+    }
     getData(){
         return {
             roomId : this.roomId,
@@ -124,3 +119,4 @@ module.exports = class Room {
     }
 
 }
+module.exports = Room;

@@ -53,8 +53,6 @@ class GameService {
             if(!existent){
                 gameListeners.playerListeners.push({playerId: playerId, listener: listener});
 
-                // this.sendEventToAll(gameId,"SUSCRIBE_PLAYER",{id :playerId},false);
-
                 listener.on("close", ()=> {
                     console.log(`*** Close. userId: ${playerId}`);
                     this.clientExit(gameId,playerId);
@@ -159,13 +157,11 @@ class GameService {
      * @param  {} data
      */
     sendEvent(gameId, playerId, event, data){
-        console.log("Enviando evento: " +event);
         var gameClient = this.getGames(gameId).playerListeners.find(client => {return client.playerId === playerId;});
         if(gameClient){
             
             var eventObj = {event:event, data: data};
             gameClient.listener.write(`data: ${JSON.stringify(eventObj)}\n\n`);
-            console.log("Se ha enviado")
         }
     }
     /**
@@ -175,11 +171,9 @@ class GameService {
      * @param  {} log=true
      */
     sendEventToAll(gameId,event,data,log=true){
-        console.log("Enviando evento a todos: "+gameId+" "  +event);
         if(this.getGames(gameId)){
             var eventObj = {event:event, data: data};
             this.getGames(gameId).playerListeners.forEach(client => {
-                console.log("Evento para: "+client.playerId);
                 if(client.listener)
                     client.listener.write(`data: ${JSON.stringify(eventObj)}\n\n`)
             });

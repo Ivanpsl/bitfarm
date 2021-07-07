@@ -28,6 +28,7 @@ module.exports =  class WebServer {
     configApp(){
         if(this.config.logger)
             this.app.use(logger(this.config.logger));
+            
         this.app.use(express.json());
         this.app.use(express.urlencoded({extended: true}));
         this.app.use(cookieParser());
@@ -44,7 +45,7 @@ module.exports =  class WebServer {
         this.app.set('jwt', require('jsonwebtoken'));
 
 
-        this.app.use('/game', express.static('./webServer/public'));
+        this.app.use('/game', express.static('./src/webServer/public'));
         require('./routes/index.routes')(this.app, this.service);
     }
     startServer(httpCert){

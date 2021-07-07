@@ -14,7 +14,7 @@ class RoomService {
      */
     initPublicRooms(){
         for (var i=0; i<20; i++){
-            this.gameRooms.push(new Room(i,ROOM_CONSTANTS.ROOM_TYPE_PUBLIC));
+            this.gameRooms.push(new Room(i,ROOM_CONSTANTS.TYPE_PUBLIC));
         }
     }
     /**
@@ -43,13 +43,16 @@ class RoomService {
     joinRoom(player,roomId){
         if(this.roomExist(roomId)){
             var gameRoom = this.getRoom(roomId);
-            
-            gameRoom.addPlayer(player);
-            this.log("RoomInfo " + JSON.stringify(gameRoom.getData()));
+            if(!gameRoom.isRunning()){
+          
+                
+                gameRoom.addPlayer(player);
+                this.log("RoomInfo " + JSON.stringify(gameRoom.getData()));
 
-            return {userId: player.id, userName : player.name ,roomInfo: gameRoom.getData(), error:null};
+                return {userId: player.id, userName : player.name ,roomInfo: gameRoom.getData(), error:null};
+            }else throw Error(`Sala ${roomId} ya esta jugando una partida`)
         }else{
-            throw Error(`Sala ${roomId} no encontrada `)
+            throw Error(`Sala ${roomId} no encontrada`)
         }
     }
     /**
@@ -93,11 +96,16 @@ class RoomService {
         var roomData = this.getRoom(roomId).getData();
         return roomData.roomPlayers;
     }
+
+    getPublicRooms(){
+        return this.gameRooms.filter((room) => room.roomType == ROOM_CONSTANTS.TYPE_PUBLIC);
+    }
+
     /**
      */
     getRoomsData(){
         var data = [];
-        this.gameRooms.forEach(gameRoom => {
+        this.getPublicRooms().forEach(gameRoom => {
             data.push(gameRoom.getData())
         });
         return data;
@@ -106,10 +114,13 @@ class RoomService {
      * @param  {} roomId
      */
     roomExist(roomId){
-        return (this.getRoom(roomId) !== null)
+        return (this.getRoom(roomId) != null && this.getRoom(roomId) != undefined )
     }
     
-    log(text){ console.log("\x1b[1m\x1b[32m%s\x1b[0m","[RoomService] "+ text); }
+    log(text){ 
+        if(process.env.NODE_ENV != 'test')
+            console.log("\x1b[1m\x1b[32m%s\x1b[0m","[RoomService] "+ text);
+     }
 }
 
 module.exports = RoomService;
