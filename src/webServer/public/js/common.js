@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 
 
-const URL_BASE = "https://localhost:3000";
-const HOME_URL = "https://localhost:3000";
+const URL_BASE =  window.location.protocol + "//" + window.location.host;//"https://localhost:3000";
+const HOME_URL =  window.location.protocol + "//" + window.location.host;//"https://localhost:3000";
 
 const ROOM_CONSTANTS = {
     //ESTADO

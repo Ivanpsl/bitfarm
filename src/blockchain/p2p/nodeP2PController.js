@@ -120,7 +120,7 @@ module.exports = {
         this.log("Enviando suscripcion a nodo: "+ targetHost+"/subscribeNode")
         axios.post(targetHost+"/p2p/subscribeNode", {
             host: service.getHost(),
-            ip:  "localhost",
+            ip:  service.nodeHost,
             port:  service.getPort(),
             // ca: caFile,
             rejectUnhauthorized : false
@@ -152,7 +152,7 @@ module.exports = {
         axios.post(requestUrl, {
             identifier : thisIdentifier,
             host: thisHost,
-            ip:  "localhost",
+            ip:  service.nodeHost,
             port:  thisPort,
             //ca: caFile,// fs.readFileSync('./certificates/key.pem')
             rejectUnhauthorized : false
@@ -178,7 +178,7 @@ module.exports = {
         axios.post(requestUrl, {
             identifier : thisIdentifier,
             host: thisHost,
-            ip:  "localhost",
+            ip: service.nodeHost,
             port:  thisPort,
             rejectUnhauthorized : false
         })
@@ -203,7 +203,7 @@ module.exports = {
         axios.post(targetHost+"/p2p/exitNode", {
             identifier : service.getId(),
             host: service.getHost(),
-            ip:  "localhost",
+            ip:  "http://"+service.nodeHost,
             port:  service.getPort(),
             // ca: caFile,
             rejectUnhauthorized : false

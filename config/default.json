@@ -9,7 +9,7 @@
     "Blockchain" : {
         "run_node" : true,
         "node_port" : 4005,
-        "node_host" : "http://localhost:",
+        "node_host" : "localhost:",
         "logger" : ">>>>> [P2P] :method :url :status",
         "nodes_request_target" : "https://localhost:3000"
     },
