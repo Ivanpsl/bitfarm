@@ -62,8 +62,8 @@ describe('Identificarse: ', () => {
 });
 
 
-describe('Identificarse: ', () => {
-    it('Debe identificarse correctamente', (done) => {
+describe('Mostrar lista de salas publicas: ', () => {
+    it('Debe obtener la lista de salas publicas correctamente', (done) => {
         agent.post('identificarse')
             .send({
                 username : "valid_name"

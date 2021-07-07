@@ -2,7 +2,7 @@ const RoomService = require('./roomService');
 const GameService = require('./gameService');
 const { GAME_CONSTANTS } = require('../../common/constants');
 
-module.exports = class WebService {
+class WebService {
     constructor(app) {
         this.app = app;
         this.nodes = [];
@@ -172,4 +172,6 @@ module.exports = class WebService {
         console.error("\x1b[1m\x1b[32m%s\x1b[0m\x1b[31m\x1b[1m[ERROR] %s\x1b[0m", "[WebService] ", msg);
     }
 
-};
+}
+
+module.exports =  WebService;
