@@ -1,29 +1,37 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
+  <meta charset="UTF-8">
+
     <title>FarmChain - Página principal</title>
+    <meta name="description" content="FarmChain juego basado en blockchain">
+    <meta name="keywords" content="HTML, CSS, JavaScript">
+    <meta name="author" content="Iván Pérez Santiago">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <!-- Bootstrap css-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
     <!-- bootstrap javascript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
-
+    <script src="./js/login.js"></script>
+    <link rel="stylesheet" href="./stylesheets/login.css">
+ 
 </head>
 <body>
   
-  <div class="container w-50 mw-50  mt-5 rounded shadow bgcontainer"> 
+  <div id="container1" class="container w-50 mw-50  mt-5 rounded shadow bgcontainer"> 
     
       <div class="row align-items-stretch"> 
         
-        <div class="col bg rounded d-none d-sd-3 d-lg-block col-md-5 col-lg-5 col-xl-5"></div>
+        <div class="col bg rounded d-none d-sd-3 d-lg-block col-md-5 col-lg-5 col-xl-5" alt="Terreno con granja"></div>
         
           <div class="col gb-whitesmoke pt-0 px-5 pb-2 rounded-end">
             <div class="text-end"> 
-              <img src="images/gratis-png-logo-tractor-agricultura-john-deere-farm-tambien-te-gustara.png" width="48" alt="Logotipo" >
+              <img src="images/gratis-png-logo-tractor-agricultura-john-deere-farm-tambien-te-gustara.png" width="48" alt="Pequeño logotipo de un tractor" >
             </div>
 
-            <h1 class="fw-bold text-center py-5 pb-3">Bienvenido a FarmChain</h1>
+            <h3 class="fw-bold text-center py-5 pb-3">Bienvenido a FarmChain</h3>
 
             <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
               <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
@@ -36,19 +44,17 @@
             <!-- Enter -->
             <div class="form-enter pr-form m-3 mb-2 p-4 " id ="log" >
 
-              <h5 class="text-center pb-3 ">Introduce un nombre y empieza a jugar</h5>
-              <form class="" action ="/identificarse" method="POST" > 
+              <h4 class="text-center pb-3 ">Introduce un nombre y empieza a jugar</h4>
+              <form action ="/identificarse" method="POST" > 
                 <div class="row g-2 pb-2 mx-auto ">
-                  <label form="username" class="form-label">Nombre para mostrar</label>
-                  <div class="input-group has-validation">
-                    <span class="input-group-text" id="inputGroupPrepend">@</span>
-                    <input type="text" class="form-control"  name="username"  id="user" aria-describedby="inputGroupPrepend" required placeholder="Nombre">
+                  <div class="form-group has-validation">
+                    <label for="user">Nombre de usuario</label>
+                    <input type="text" id="user" class="form-control"  name="username"   aria-describedby="inputGroupPrepend" required placeholder="Nombre">
                     <div class="invalid-feedback">
                       Introduzca un nombre.
                     </div>
                   </div>
                 </div>
-            
                 <div class="d-grid col-12 mx-auto">
                   <button class="btn btn-primary my-1">Entrar</button>
                 </div> 
@@ -83,87 +89,11 @@
           </div>
         </div> 
     </div> 
-
-  <script type="text/javascript" >
-
-    const params = new URLSearchParams(location.search);
-    console.log(JSON.stringify(params))
-    var mensaje = params.getAll("mensaje");
-    var tipoMensaje = params.get("tipoMensaje");
-    var iconElement =   `<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>`
-    console.log(JSON.stringify(mensaje));
-    if (mensaje.length >0) {
-      console.log("asdasd " + JSON.stringify(mensaje));
-        if (tipoMensaje === "" || !tipoMensaje) {
-            tipoMensaje = 'alert-danger';
-        }
-        
-        for (let i = 0; i < mensaje.length; i++) {
-            $("#msContainer")
-                .append(`<div class='alert ${tipoMensaje} m-0 d-flex align-items-center' role='alert'>${iconElement}<div>${mensaje[i]}</div></div>`);
-        }
-    }
-
-
-    function ShowSingUp(){
-      // alert('You clicked the bottom text');
-      var login = document.getElementById("log");
-      var singup = document.getElementById("reg");
-      login.classList.add("nodisplay");
-      singup.classList.remove("nodisplay");
-
-
+    <style>
+      .bg {
+        background-image: url(images/pngtree-eco-farm-farming-poster-background-image_158717.jpg);
+        background-position: center center;
       }
-    function ShowLoging(){
-      var login = document.getElementById("log");
-      var singup = document.getElementById("reg");
-      singup.classList.add("nodisplay");
-      login.classList.remove("nodisplay");
-
-    }
-
-
-  </script>
-  
-  <style>
-    body {
-      background: #FDAA64;
-      background: linear-gradient(to right,#f59f59,#f5c834e5)
-    }
-    .pr-form {
-      border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-    }
-
-    .btn-primary, .bg-primary {
-      background-color: #1fad83;
-      color:#fff;
-      border-color:#1fad83;
-    }
-    .btn-outline-primary {color:#018a61;border-color:#1fad83}
-    .btn-outline-primary:hover{
-      color:#fff;border-color:#018a61; 
-      background-color: #3dbb95;
-    }
-
-    .btn-link{color:#1fad83;}
-    .btn-primary:hover{background-color:#018a61;border-color:#018a61}
-    .bg {
-      background-image: url(images/pngtree-eco-farm-farming-poster-background-image_158717.jpg);
-      background-position: center center;
-    }
-    .bgcontainer {
-      background: #018a61;
-      transform: translate(0,25%);
-      /* border-radius: 25px;
-      padding: 15px; */
-    }
-    .gb-whitesmoke {
-      background: whitesmoke;
-    }
-    .nodisplay {
-      display: none;
-      transition:  all 3.5s ease;
-    }
-  </style>
+    </style>
 </body>
 </html>
