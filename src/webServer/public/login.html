@@ -31,8 +31,8 @@
               <img src="images/gratis-png-logo-tractor-agricultura-john-deere-farm-tambien-te-gustara.png" width="48" alt="Pequeño logotipo de un tractor" >
             </div>
 
-            <h3 class="fw-bold text-center py-5 pb-3">Bienvenido a FarmChain</h3>
-
+            <h1 class="fw-bold text-center py-5 pb-3">Bienvenido a FarmChain</h1>
+           
             <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
               <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
                 <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
@@ -42,14 +42,14 @@
             <div class="msContainer m-0 p-0" id="msContainer"></div>
 
             <!-- Enter -->
-            <div class="form-enter pr-form m-3 mb-2 p-4 " id ="log" >
+            <div class="form-enter pr-form m-3 mb p-4 " id ="log" >
 
-              <h4 class="text-center pb-3 ">Introduce un nombre y empieza a jugar</h4>
+              <div class="text-center pb-3 ">Introduce un nombre y empieza a jugar</div>
               <form action ="/identificarse" method="POST" > 
                 <div class="row g-2 pb-2 mx-auto ">
                   <div class="form-group has-validation">
-                    <label for="user">Nombre de usuario</label>
-                    <input type="text" id="user" class="form-control"  name="username"   aria-describedby="inputGroupPrepend" required placeholder="Nombre">
+                    <label id="userlabel" for="user">Nombre de usuario</label>
+                    <input type="text" id="user" class="form-control"  name="username"   aria-describedby="userlabel" required placeholder="Nombre">
                     <div class="invalid-feedback">
                       Introduzca un nombre.
                     </div>
