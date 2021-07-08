@@ -38,7 +38,7 @@ module.exports =  class NodeP2PService {
         });
 
         this.serverInstance  = this.httpServer.listen(this.nodePort, () => {
-            this.log("Nodo activo en: "+"http://localhost:"+this.nodePort);
+            this.log("Nodo activo en: "+"http://"+this.nodeHost+":"+this.nodePort);
             this.requestSuscriptionToP2P();
 
             this.serverInstance.on('close', ()=> {
@@ -58,8 +58,8 @@ module.exports =  class NodeP2PService {
         return this.nodePort;
     }
     
-    getHost(){
-        return this.nodeHost + this.getPort();
+    getHostAndPort(){
+        return "http://"+this.nodeHost + ":" +  this.getPort();
     }
 
     getChains(){
@@ -107,9 +107,7 @@ module.exports =  class NodeP2PService {
     }
 
     removeNode(host){
-        this.log(this.subscribedNodes.length)
         this.subscribedNodes = this.subscribedNodes.filter((node) => node.host != host);
-        this.log(this.subscribedNodes.length)
     }
 
     getNodeInfo(){

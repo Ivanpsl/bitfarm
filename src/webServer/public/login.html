@@ -2,53 +2,13 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>FarmChain</title>
+    <title>FarmChain - Página principal</title>
     <!-- Bootstrap css-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
     <!-- bootstrap javascript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
 
-    <style>
-      body {
-        background: #FDAA64;
-        background: linear-gradient(to right,#f59f59,#f5c834e5)
-      }
-      .pr-form {
-        border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-      }
-
-      .btn-primary, .bg-primary {
-        background-color: #1fad83;
-        color:#fff;
-        border-color:#1fad83;
-      }
-      .btn-outline-primary {color:#018a61;border-color:#1fad83}
-      .btn-outline-primary:hover{
-        color:#fff;border-color:#018a61; 
-        background-color: #3dbb95;
-      }
-
-      .btn-link{color:#1fad83;}
-      .btn-primary:hover{background-color:#018a61;border-color:#018a61}
-      .bg {
-        background-image: url(images/pngtree-eco-farm-farming-poster-background-image_158717.jpg);
-        background-position: center center;
-      }
-      .bgcontainer {
-        background: #018a61;
-        transform: translate(0,25%);
-        /* border-radius: 25px;
-        padding: 15px; */
-      }
-      .gb-whitesmoke {
-        background: whitesmoke;
-      }
-      .nodisplay {
-        display: none;
-        transition:  all 3.5s ease;
-      }
-    </style>
 </head>
 <body>
   
@@ -63,7 +23,7 @@
               <img src="images/gratis-png-logo-tractor-agricultura-john-deere-farm-tambien-te-gustara.png" width="48" alt="Logotipo" >
             </div>
 
-            <h2 class="fw-bold text-center py-5 pb-3">Bienvenido a FarmChain</h2>
+            <h1 class="fw-bold text-center py-5 pb-3">Bienvenido a FarmChain</h1>
 
             <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
               <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
@@ -78,11 +38,11 @@
 
               <h5 class="text-center pb-3 ">Introduce un nombre y empieza a jugar</h5>
               <form class="" action ="/identificarse" method="POST" > 
-
                 <div class="row g-2 pb-2 mx-auto ">
+                  <label form="username" class="form-label">Nombre para mostrar</label>
                   <div class="input-group has-validation">
                     <span class="input-group-text" id="inputGroupPrepend">@</span>
-                    <input type="text" class="form-control"  name="username"  id="user" aria-describedby="inputGroupPrepend" required placeholder="Nombre para mostrar">
+                    <input type="text" class="form-control"  name="username"  id="user" aria-describedby="inputGroupPrepend" required placeholder="Nombre">
                     <div class="invalid-feedback">
                       Introduzca un nombre.
                     </div>
@@ -94,61 +54,6 @@
                 </div> 
               </form>
             
-            </div>
-
-
-            <!-- LOGIN -->
-            <div class="form-login pr-form mb-2 p-5 nodisplay" id ="log" >
-              <form action ="#"> 
-                <div class="mb-4"> 
-                  <label form="email" class="form-label">Correo electrónico</label>
-                  <input type="emai" class="form-control" name="email">
-                </div>
-                <div class="mb-4"> 
-                  <label form="password" class="form-label">Contraseña</label>
-                  <input type="password" class="form-control" name="password">
-                </div>
-                <div class="mb-4"> 
-                  <input type="checkbox" name="connected" class="form-check-input">
-                  <label for="connected" class="form-check-label">Mantener la sesión iniciada</label>
-                </div>
-                <div class="d-grid">
-                  <div type="submit" class="btn btn-primary">Iniciar sesión</div>
-                </div>
-                <div class="my-3">
-                  <span>¿No estas registrado? <a href="#" onClick="ShowSingUp();">Registrate aquí</a></span>
-                  <br>
-                  <span><a href="#">Recuperar contraseña</a></span>
-                </div>
-              </form>
-            </div>
-
-            <!--Registro-->
-            <div class="form-login pr-form mb-0 pt-0 pb-0 p-5 nodisplay " id ="reg" >
-            <form class="singup" action ="#" oninput='password2.setCustomValidity(password.value != password2.value ? "Las contraseñas no coinciden." : "")'> 
-                <div class="mb-4"> 
-                  <label form="email" class="form-label">Correo electrónico</label>
-                  <input type="email" class="form-control" name="email">
-                </div>
-                <div class="mb-4"> 
-                  <label form="text" class="form-label">Nombre para mostrar</label>
-                  <input type="text" class="form-control" name="email">
-                </div>
-                <div class="mb-4"> 
-                  <label form="password" class="form-label">Contraseña</label>
-                  <input type="password"  class="form-control" name="password">
-                </div>
-                <div class="mb-4"> 
-                  <label form="password2" class="form-label">Repetir contraseña </label>
-                  <input type="password" class="form-control" name="password2">
-                </div>
-                <div class="d-grid">
-                  <div type="submit" class="btn btn-primary">Registrarse</div>
-                </div>
-                <div class="my-3">
-                  <span>¿Ya estas registrado? <a href="#" onClick="ShowLoging();">Inicia sesión</a></span>
-                </div>
-              </form> 
             </div>
 
 
@@ -219,5 +124,46 @@
 
 
   </script>
+  
+  <style>
+    body {
+      background: #FDAA64;
+      background: linear-gradient(to right,#f59f59,#f5c834e5)
+    }
+    .pr-form {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+    }
+
+    .btn-primary, .bg-primary {
+      background-color: #1fad83;
+      color:#fff;
+      border-color:#1fad83;
+    }
+    .btn-outline-primary {color:#018a61;border-color:#1fad83}
+    .btn-outline-primary:hover{
+      color:#fff;border-color:#018a61; 
+      background-color: #3dbb95;
+    }
+
+    .btn-link{color:#1fad83;}
+    .btn-primary:hover{background-color:#018a61;border-color:#018a61}
+    .bg {
+      background-image: url(images/pngtree-eco-farm-farming-poster-background-image_158717.jpg);
+      background-position: center center;
+    }
+    .bgcontainer {
+      background: #018a61;
+      transform: translate(0,25%);
+      /* border-radius: 25px;
+      padding: 15px; */
+    }
+    .gb-whitesmoke {
+      background: whitesmoke;
+    }
+    .nodisplay {
+      display: none;
+      transition:  all 3.5s ease;
+    }
+  </style>
 </body>
 </html>

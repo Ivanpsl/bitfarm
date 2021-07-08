@@ -125,7 +125,7 @@ var lobbyManager = {
 
     getToken : function() {
         $.ajax({
-            url: "https://localhost:3001/validar",
+            url: URL_BASE+"/validar",
             type: "GET",
             dataType: 'json',
             success: function (response) {

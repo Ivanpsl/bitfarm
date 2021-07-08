@@ -68,7 +68,7 @@ module.exports = {
         var caFile = fs.promises.readFile('./certificates/key.pem');
         service.subscribedNodes.forEach(node => {
             axios.post(node.host+"/p2p/block/new", {
-                host: service.getHost(),
+                host: service.getHostAndPort(),
                 gameIdentifier : gameId,
                 blockData : block,
 
@@ -92,7 +92,7 @@ module.exports = {
 
         service.subscribedNodes.forEach(node => {
             axios.post(node.host+"/p2p/transactions/new", {
-                host: service.getHost(),
+                host: service.getHostAndPort(),
                 gameIdentifier : gameId,
                 transactionData : transaction,
                 ca: caFile,
@@ -119,7 +119,7 @@ module.exports = {
     sendSuscriptionToNode : function (service,targetHost) {
         this.log("Enviando suscripcion a nodo: "+ targetHost+"/subscribeNode")
         axios.post(targetHost+"/p2p/subscribeNode", {
-            host: service.getHost(),
+            host: service.getHostAndPort(),
             ip:  service.nodeHost,
             port:  service.getPort(),
             // ca: caFile,
@@ -145,7 +145,7 @@ module.exports = {
     subscribeAndRequestNodes: function(service,url) {
         var requestUrl = url
         var thisIdentifier = service.getId();
-        var thisHost = service.getHost();
+        var thisHost = service.getHostAndPort();
         var thisPort = service.getPort();
         this.log("Enviando suscripción al servidor web")
 
@@ -171,7 +171,7 @@ module.exports = {
     requestExit: function(service,url) {
         var requestUrl = url
         var thisIdentifier = service.getId();
-        var thisHost = service.getHost();
+        var thisHost = service.getHostAndPort();
         var thisPort = service.getPort();
         this.log("Enviando petición de salida al servidor web")
 
@@ -202,7 +202,7 @@ module.exports = {
         this.log("Enviando peticion de cierre a nodo: "+ targetHost+"/exit")
         axios.post(targetHost+"/p2p/exitNode", {
             identifier : service.getId(),
-            host: service.getHost(),
+            host: service.getHostAndPort(),
             ip:  "http://"+service.nodeHost,
             port:  service.getPort(),
             // ca: caFile,
