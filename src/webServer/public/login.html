@@ -21,7 +21,7 @@
 </head>
   <div id="container1" class="container w-50 mw-50  mt-5 rounded shadow bgcontainer"> 
     
-      <div class="row align-items-stretch"> 
+      <div class="row align-items-stretch"  aria-labelledby="title-welcome" aria-describedby="description"> 
         
         <div class="col bg rounded d-none d-sd-3 d-lg-block col-md-5 col-lg-5 col-xl-5" alt="Terreno con granja"></div>
         
@@ -30,7 +30,8 @@
               <img src="images/gratis-png-logo-tractor-agricultura-john-deere-farm-tambien-te-gustara.png" width="48" alt="Pequeño logotipo de un tractor" >
             </div>
             <header>
-            <h1 class="fw-bold text-center py-5 pb-3">Bienvenido a FarmChain</h1>
+
+            <h1 id ="title-welcome" class="fw-bold text-center py-5 pb-3">Bienvenido a FarmChain</h1>
            
             <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
               <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
@@ -42,9 +43,9 @@
             <div class="msContainer m-0 p-0" id="msContainer"></div>
 
             <!-- Enter -->
-            <div class="form-enter pr-form m-3 mb p-4 " id ="log" >
+            <div class="form-enter pr-form m-3 mb p-4 " id ="log" aria-labelledby="description">
 
-              <div class="text-center pb-3 ">Introduce un nombre y empieza a jugar</div>
+              <div id="description" class="text-center pb-3 ">Introduce un nombre y empieza a jugar</div>
               <form action ="/identificarse" method="POST" > 
                 <div class="row g-2 pb-2 mx-auto ">
                   <div class="form-group has-validation">
@@ -66,18 +67,18 @@
 
 
             <!--info-->
-              <footer class="container w-100 my5 pt-1">
+              <footer class="container w-100 my5 pt-1" aria-labelledby="more-info" aria-describedby="more-info">
                 <div class="row text-center">
-                  <div class="col-12"> Más información</div>
+                  <div id="more-info" class="col-12"> Más información</div>
                 </div>
-                <div class="row">
+                <div class="row"  aria-labelledby="more-info" >
                   <div class="col">
                     <button id="btn-ifarmchain" class="btn btn-outline-primary w-100 my-1">
                         ¿Que es FarmChain?
                     </button>
                   </div>
                   
-                  <div class="col">
+                  <div class="col" aria-labelledby="btn-iblockchain">
                     <button id="btn-iblockchain" class="btn btn-outline-primary w-100 my-1">
                         ¿Que es Blockchain?
                     </button>

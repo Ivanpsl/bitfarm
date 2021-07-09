@@ -159,7 +159,7 @@ module.exports = {
         })
         .then(res => {
             res.data.forEach(newNode => {
-                service.addNewNode(newNode.identifier,newNode.host,newNode.ip,newNode.port);
+                service.addNewNode(newNode.host,newNode.ip,newNode.port);
                 this.sendSuscriptionToNode(service,newNode.host);
             });
         })
@@ -183,7 +183,9 @@ module.exports = {
             rejectUnhauthorized : false
         })
         .then(res => {
+            console.log("salida ")
             res.data.forEach(newNode => {
+               
                 this.sendCloseEventToNode(service,newNode.host);
             });
         })

@@ -33,7 +33,7 @@ module.exports =  class NodeP2PService {
                 this.log("Ya es seguro cerrar el proceso...")
                 process.exit()
                 
-            },1000);
+            },2000);
           
         });
 
@@ -102,7 +102,7 @@ module.exports =  class NodeP2PService {
 
     
     addNewNode(newHost,newIp,newPort) {
-        this.log("Añadiendo nodo a la red: " + newIp + ":"+newPort);
+        this.log(`[${newHost}]Añadiendo nodo a la red: ${newIp}`);
         this.subscribedNodes.push({host: newHost, ip:newIp, port: newPort});
     }
 

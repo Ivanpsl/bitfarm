@@ -13,7 +13,7 @@ module.exports = function (app,webService) {
     });
 
     app.post('/node/disconect', function (req, res) {
-
+        console.log("recibiendo desconexion")
         webService.removeNode({
             identifier: req.body.identifier,
             host: req.body.host, 
