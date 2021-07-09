@@ -9,6 +9,7 @@ module.exports = function (app, webService) {
                     console.error(response.error);
                     res.status(400).send(response.error);
                 } else {
+                    console.log(JSON.stringify(response))
                     req.session.room = response.roomInfo.roomId
                     req.session.inRoom = true;
                     res.status(200).send(response);

@@ -1,5 +1,4 @@
-/*global  GAME_CONSTANTS,$,document,gameManager,UITerrain,URL_BASE */
-
+/*global  GAME_CONSTANTS,$,document,gameManager,UITerrain,URL_BASE,removeAllChildNodes */
 // eslint-disable-next-line no-unused-vars
 class UIPlayer {
     constructor(playerData, isLocalPlayer = false) {
@@ -15,6 +14,7 @@ class UIPlayer {
         this.products = [];
         this.modifiers = [];
         this.buildings = [];
+        this.lost = false;
 
         this.isLocalPlayer = isLocalPlayer;
         this.playerWaiting =false ;
@@ -24,6 +24,13 @@ class UIPlayer {
     getMaxStorage(){
         return this.max_storage;
     }
+    getActualOcupation(){
+        return this.products.filter((product) => product != undefined && product.status != GAME_CONSTANTS.TERRAIN_STATUS_PLANTED).length; 
+    }
+    getActualStorage(){
+        return this.getMaxStorage() - this.getActualOcupation();
+    }
+
     
     getSeeds(){
         var seeds = [];
@@ -72,7 +79,7 @@ class UIPlayer {
             this.tools = this.tools.filter((tool)=> tool.index != index);
         }
         else if(type === GAME_CONSTANTS.TYPE_PRODUCT) {
-            this.products = this.products.filter((product)=> product.index != index);
+            this.products = this.products.filter((product)=> product != undefined && product.index != index);
         }
         else if(type === GAME_CONSTANTS.TYPE_BUILDING) {
             this.buildings = this.buildings.filter((building)=> building.index != index);
@@ -131,8 +138,47 @@ class UIPlayer {
         gameManager.showNotification('Error','error','No tienes ninguna herramienta.');
     }
 
+
     openStorageModal(){
-        gameManager.showNotification('Error','error','No tienes ninguna herramienta.');
+        $("#modal-content").load("wigets/modals/m-storage.html", ()=>  {
+            var listElement = document.getElementById("product-list");
+     
+            if(listElement){
+                document.getElementById("max-storage").textContent = this.getMaxStorage();
+                document.getElementById("actual-storage").textContent = this.getActualOcupation();
+                document.getElementById("storage").textContent = this.getActualStorage();
+
+                removeAllChildNodes(listElement)
+                this.products.forEach((product) => {
+                    if(product.status != GAME_CONSTANTS.PRODUCT_STATUS_PLANTED){
+                        let a = document.createElement("a");
+                        a.className = "list-group-item list-group-item-action";
+                        let flexContent = document.createElement("div");
+                        flexContent.className = "d-flex w-100 justify-content-between";
+                        let h5 = document.createElement("div");
+                        h5.className = "mb-1";
+                        h5.textContent = product.label;
+                        let small = document.createElement("small");
+                        small.className = "text-muted";
+                        if(product.status == GAME_CONSTANTS.PRODUCT_STATUS_SEED)
+                            small.textContent = "Semilla"
+                        else small.textContent = "Producto"
+                        
+                        let description = document.createElement("div");
+                        description.innerHTML = `<p class="mb-1">Producto vendible</p>`
+                        
+                        flexContent.appendChild(h5);
+                        flexContent.appendChild(small);
+                        a.appendChild(flexContent);
+                        a.appendChild(description);
+                        listElement.appendChild(a);
+                    }
+                });
+
+                gameManager.openModal();
+            }
+        });
+      
     }
 
     updatePlayerResume(){
@@ -142,8 +188,13 @@ class UIPlayer {
         // }else{
 
             this.UIPlayerElement.cash.textContent  = ` ${this.money}$`;
-            this.UIPlayerElement.storage.textContent  =` ${this.products.length}/${this.getMaxStorage()}`
+            this.UIPlayerElement.storage.textContent  =` ${this.getActualOcupation()}/${this.getMaxStorage()}`
             this.UIPlayerElement.terrain.textContent  =` ${this.terrains.length}`
+            if(this.money <= 0){
+                this.UIPlayerElement.cash.textContent  = `0$`;
+                this.UIPlayerElement.name.innerHTML = this.name + " <code>DERROTADO</code>" 
+                this.lost = true;
+            }
         // }
     }
 
@@ -167,7 +218,7 @@ class UIPlayer {
 
     updateLocalResume(){
         gameManager.toolsElement.textContent  = `${this.tools.length}`;
-        gameManager.storageElement.textContent  =`${this.products.length}/${this.max_storage}`;
+        gameManager.storageElement.textContent  =`${this.getActualOcupation()}/${this.getMaxStorage()}`;
         gameManager.moneyElement.textContent  =  `${this.money}€`;
         this.updatePlayerResume();
         
@@ -235,6 +286,7 @@ class UIPlayer {
         this.UIPlayerElement.cash = cashSpan;
         this.UIPlayerElement.storage = storageSpan;
         this.UIPlayerElement.terrain = terrainSpan;
+        this.UIPlayerElement.name = playerNameContainer;
 
         document.getElementById('player-list').appendChild(drawer);
         this.updatePlayerResume();

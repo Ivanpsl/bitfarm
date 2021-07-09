@@ -191,8 +191,9 @@ var lobbyManager = {
                     Cookies.set('userId',response.userId)
                     Cookies.set('actualRoomId',response.roomInfo)
                     Cookies.set('actualRoomType',response.roomType)
+                    
                     roomManager.initRoom(response.roomInfo);
-                    console.log("Uniendose a sala")
+                    console.log("Uniendose a sala " + response.roomType)
                 }
             },
             // eslint-disable-next-line no-unused-vars

@@ -8,7 +8,9 @@ var roomManager = {
     isPlaying: false,
     listeningEvents: true,
     initRoom: function (roomInfo) {
+        console.log(JSON.stringify(roomInfo));
         this.actualRoom = roomInfo;
+        
         this.renderRoom();
         this.subscribeChatRoom();
     },
@@ -17,7 +19,7 @@ var roomManager = {
         $("#gamecontainer").load("wigets/w-room.html", function () {
             roomManager.updateRoomPlayers(roomManager.actualRoom.roomPlayers);
             document.getElementById("roomId-spam").innerHTML = roomManager.actualRoom.roomId;
-            if (roomManager.actualRoom.roomType === "PRIVATE")
+            if (roomManager.actualRoom.roomType == ROOM_CONSTANTS.TYPE_PRIVATE)
                 document.getElementById("room-name").innerHTML = "Sala privada";
             else document.getElementById("room-name").innerHTML = "Sala " + roomManager.actualRoom.roomId;
         });

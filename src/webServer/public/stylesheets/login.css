@@ -9,20 +9,20 @@ body {
 
 .btn-primary,
 .bg-primary {
-    background-color: #1fad83;
+    background-color: #157A5C;
     color: #fff;
     border-color: #1fad83;
 }
 
 .btn-outline-primary {
-    color: #018a61;
+    color: #014632;
     border-color: #1fad83
 }
 
 .btn-outline-primary:hover {
     color: #fff;
     border-color: #018a61;
-    background-color: #3dbb95;
+    background-color: #014632;
 }
 
 .btn-link {

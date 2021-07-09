@@ -50,9 +50,7 @@ class GameEventsHandler {
     }
 
     onPlayerEndTurn(eventObj) {
-        gameManager.removeOffertsByOwner(eventObj.data.publicKey);
-        gameManager.playersWaiting++;
-        gameManager.modalNegociationElements.waitingNumberSpam.textContent = gameManager.playersWaiting
+        gameManager.onPlayerEndTurn(eventObj);
     }
 
 
@@ -80,8 +78,9 @@ class GameEventsHandler {
                 gameManager.player.addProduct(product)
             else
                 gameManager.players[eventObj.data.source.publicKey].addProduct(product)
-
-                gameManager.townHall.products = gameManager.townHall.products.filter((pr) => pr.index != eventObj.data.actionData.elementIndex);
+            
+            gameManager.townHall.products = gameManager.townHall.products.filter((pr) => pr.index != eventObj.data.actionData.elementIndex);
+            
         } else if (eventObj.data.actionData.elementType === GAME_CONSTANTS.TYPE_TERRAIN) {
             var terrain = gameManager.townHall.terrains.find((tr) => tr.index == eventObj.data.actionData.elementIndex);
 
@@ -89,8 +88,8 @@ class GameEventsHandler {
                 gameManager.player.addTerrain(terrain)
             else
                 gameManager.players[eventObj.data.source.publicKey].addTerrain(terrain)
-
-                gameManager.townHall.terrains = gameManager.townHall.terrains.filter((tr) => tr.index != eventObj.data.actionData.elementIndex);
+            gameManager.townHall.terrains = gameManager.townHall.terrains.filter((tr) => tr.index != eventObj.data.actionData.elementIndex);
+            
         } else if (eventObj.data.actionData.elementType === GAME_CONSTANTS.TYPE_TOOL) {
             var tool = gameManager.townHall.tools.find((tl) => tl.index == eventObj.data.actionData.elementIndex);
             
@@ -99,7 +98,7 @@ class GameEventsHandler {
             else
                 gameManager.players[eventObj.data.source.publicKey].addTool(tool)
 
-                gameManager.townHall.tools = gameManager.townHall.tools.filter((tl) => tl.index != eventObj.data.actionData.elementIndex);
+            gameManager.townHall.tools = gameManager.townHall.tools.filter((tl) => tl.index != eventObj.data.actionData.elementIndex);
         }
     }
 

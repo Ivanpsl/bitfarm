@@ -1,5 +1,5 @@
 const Room = require('./entities/room');
-const {ROOM_CONSTANTS} = require("../../common/constants");
+const { ROOM_CONSTANTS } = require("../../common/constants");
 const { v4: uuidv4 } = require('uuid');
 class RoomService {
     constructor(app){
@@ -31,7 +31,7 @@ class RoomService {
         var identifier = uuidv4();
         this.log("Creando sala privada con identificador "+identifier)
 
-        var newRoom = new Room(identifier,ROOM_CONSTANTS.ROOM_TYPE_PRIVATE,owner);
+        var newRoom = new Room(identifier, ROOM_CONSTANTS.TYPE_PRIVATE, owner);
         this.gameRooms.push(newRoom);
 
         return newRoom;

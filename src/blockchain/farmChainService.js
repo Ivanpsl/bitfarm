@@ -125,7 +125,7 @@ class FarmChainService {
     playerEndTurn(gameId,userId){
         if(this.villages[gameId]){
             this.villages[gameId].playerEndTurn(userId);
-            if(this.villages[gameId].playersWaiting === this.villages[gameId].getNumberOfPlayers()){
+            if(this.villages[gameId].isTurnEnded()){
                 var newTurn = this.gameEndTurn(gameId);
                 return {allPlayersReady : true, newTurnData : newTurn};
             }else return { allPlayersReady : false, newTurnData : null};   

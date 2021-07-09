@@ -35,6 +35,8 @@ var gameManager = {
 
     modalNegociationElements: {},
 
+    modalFinalGame : {},
+
     gameEventsHandler: null,
 
     initGame: function (gameData) {
@@ -130,16 +132,112 @@ var gameManager = {
     loadBuildings: function (dataBuilding) {
         for (let building of dataBuilding) {
             if (building != null) {
+                var terrain;
                 let owner = building.owner;
-                if (owner === this.player.account.publicKey)
-                    this.player.getElementByTypeAndIndex(GAME_CONSTANTS.TYPE_TERRAIN, building.terrainIndex).setContent(building);
+                if (owner === this.player.account.publicKey){
+                    terrain= this.player.getElementByTypeAndIndex(GAME_CONSTANTS.TYPE_TERRAIN, building.terrainIndex);
+                    if(terrain)
+                        terrain.setContent(building);
+                }
                 else if (this.players[owner])
-                    var build = this.players[owner].getElementByTypeAndIndex(GAME_CONSTANTS.TYPE_TERRAIN, building.terrainIndex);
-                    if(build)
-                        this.players[owner].getElementByTypeAndIndex(GAME_CONSTANTS.TYPE_TERRAIN, building.terrainIndex).setContent(building);
+                    terrain = this.players[owner].getElementByTypeAndIndex(GAME_CONSTANTS.TYPE_TERRAIN, building.terrainIndex);
+                    if(terrain)
+                        terrain.setContent(building);
             }
         }
     },
+
+    renderGameWindow: function () {
+        $("#gamecontainer").load("wigets/w-game.html", function () {
+            gameManager.weekElement = document.getElementById("week-number");
+            gameManager.climaticElement = document.getElementById("climatic-text");
+            gameManager.climaticIcon = document.getElementById("climatic-icon");
+            gameManager.timeRemainingElement = document.getElementById("time-remaining");
+            gameManager.timeBarElement = document.getElementById("progress");
+            gameManager.timeIconElement = document.getElementById("crono-icon");
+            gameManager.toolsElement = document.getElementById("tools-num");
+            gameManager.storageElement = document.getElementById("storage-num");
+            gameManager.moneyElement = document.getElementById("money-num");
+
+            gameManager.terrainsElement = document.getElementById("terrains-resume");
+            gameManager.blockchainLogContainer = document.getElementById("chain-log-container");
+            gameManager.modalContainerElement = document.getElementById("modal-content");
+            gameManager.modalElement = document.getElementById("modal-window");
+
+
+            gameManager.modalNegociationElements.parent = document.getElementById("negociation-modal-window");
+            gameManager.modalNegociationElements.playerItems = document.getElementById("item-element-list");
+            gameManager.modalNegociationElements.offertList = document.getElementById("offert-list");
+            gameManager.modalNegociationElements.endTurnBtn = document.getElementById("end-turn");
+            gameManager.modalNegociationElements.waitingNumberSpam = document.getElementById("players-waiting");
+            gameManager.modalNegociationElements.notificationContainer = document.getElementById("offerts-notifications");
+
+            gameManager.modalFinalGame.parent = document.getElementById("end-modal-window");
+            gameManager.modalFinalGame.exit = document.getElementById("btn-exit");
+            gameManager.modalFinalGame.title = document.getElementById("end-modal-title");
+            gameManager.modalFinalGame.text = document.getElementById("end-modal-desc");
+
+            gameManager.modalNegociationElements.parent.style.display = "none";
+            gameManager.modalFinalGame.parent.style.display = "none";
+
+            removeAllChildNodes(gameManager.blockchainLogContainer);
+
+            gameManager.polipop = new Polipop('mypolipop', {
+                layout: 'popups',
+                insert: 'before',
+                pool: 20,
+                sticky: false,
+                closeText: 'Cerrar',
+                progressbar: true,
+                life: 3000
+            });
+
+            $('#btn-open-storage').click(function () {
+                gameManager.player.openStorageModal();
+            });
+            $('#btn-open-inventory').click(function () {
+                gameManager.player.openInventoryModal();
+            });
+            $('#btn-open-money').click(function () {
+                gameManager.openMarket();
+            });
+
+            $('#end-turn').click(function () {
+                gameManager.endTurn();
+            });
+
+            $('#btn-exit').click(function(){
+                Cookies.remove('userId');
+                Cookies.remove('actualRoomId');
+                Cookies.remove('actualRoomType');
+            
+                var mensaje = "La partida ha finalizado";
+                // eslint-disable-next-line no-undef
+                window.location.href = HOME_URL+`/game/login.html?mensaje=${mensaje}&tipoMensaje=alert-info` ; 
+                if(gameManager.gameEventsHandler && gameManager.gameEventsHandler.listening){
+                    gameManager.gameEventsHandler.disconect();
+                }
+            });
+
+            gameManager.renderPlayers();
+            gameManager.renderTerrains();
+
+            gameManager.gameEventsHandler = new GameEventsHandler();
+            gameManager.gameEventsHandler.suscribeToGameEvents();
+
+            gameManager.startTurn();
+      
+        });
+    },
+
+    onPlayerEndTurn(eventObj){
+        gameManager.removeOffertsByOwner(eventObj.data.publicKey);
+        gameManager.playersWaiting++;
+        gameManager.modalNegociationElements.waitingNumberSpam.textContent = gameManager.playersWaiting
+    },
+
+
+
     turnTick: function () {
         gameManager.milisecondsRemaining -= 1000;
         gameManager.updateSecondsRemaining();
@@ -187,6 +285,8 @@ var gameManager = {
             gameManager.showNotification('Turno finalizado','info',msg);
             console.log(msg)
         }
+
+        gameManager.checkWinCondition();
 
     },
 
@@ -251,9 +351,30 @@ var gameManager = {
     },
 
     closeNegotiationMenu: function () {
+        gameManager.removeNegotiationNotify();
+        gameManager.modalNegociationElements.waitingNumberSpam.textContent = 0;
         gameManager.modalNegociationElements.parent.style.display = "none";
 
     },
+
+    
+    openEndModal: function (isWin) {
+        if(isWin){
+            gameManager.modalFinalGame.title.textContent  = "¡Has ganado!"
+            gameManager.modalFinalGame.text.innerHTML = "<strong>¡Felicidades!</strong><p>Has sido la granja que más ha aguantado</p> "
+
+        }
+        else{
+            gameManager.modalFinalGame.title.textContent = "Has perdido";
+            gameManager.modalFinalGame.text.textContent = "Te has quedado sin dinero suficiente para seguir jugando";
+        }
+        
+        
+        gameManager.modalFinalGame.parent.style.display = "block";
+
+    },
+
+
     removeNegotiationNotify : function(){
         removeAllChildNodes(gameManager.modalNegociationElements.notificationContainer);
     },
@@ -298,7 +419,25 @@ var gameManager = {
         gameManager.updateTurnInfo();
         gameManager.renderTerrains();
     },
- 
+
+    checkWinCondition(){
+        console.log("Checking win condition")
+        if(gameManager.player.money<=0){
+            gameManager.openEndModal(false);
+        }
+        var playersLost = 0;
+        for (let key in this.players){
+            console.log(this.players[key].money)
+            if(this.players[key].money> 0){
+                return;
+            }else{
+                playersLost++;
+            }
+        }
+        if(playersLost == this.players.length)
+            gameManager.openEndModal(true);
+    },
+
     buyOnMarket: function () {
         for (var offert of this.market) {
             if (offert.select) {
@@ -426,67 +565,7 @@ var gameManager = {
         this.player.updateLocalResume();
     },
 
-    renderGameWindow: function () {
-        $("#gamecontainer").load("wigets/w-game.html", function () {
-            gameManager.weekElement = document.getElementById("week-number");
-            gameManager.climaticElement = document.getElementById("climatic-text");
-            gameManager.climaticIcon = document.getElementById("climatic-icon");
-            gameManager.timeRemainingElement = document.getElementById("time-remaining");
-            gameManager.timeBarElement = document.getElementById("progress");
-            gameManager.timeIconElement = document.getElementById("crono-icon");
-            gameManager.toolsElement = document.getElementById("tools-num");
-            gameManager.storageElement = document.getElementById("storage-num");
-            gameManager.moneyElement = document.getElementById("money-num");
-
-            gameManager.terrainsElement = document.getElementById("terrains-resume");
-            gameManager.blockchainLogContainer = document.getElementById("chain-log-container");
-            gameManager.modalContainerElement = document.getElementById("modal-content");
-            gameManager.modalElement = document.getElementById("modal-window");
-
-
-            gameManager.modalNegociationElements.parent = document.getElementById("negociation-modal-window");
-            gameManager.modalNegociationElements.playerItems = document.getElementById("item-element-list");
-            gameManager.modalNegociationElements.offertList = document.getElementById("offert-list");
-            gameManager.modalNegociationElements.endTurnBtn = document.getElementById("end-turn");
-            gameManager.modalNegociationElements.waitingNumberSpam = document.getElementById("players-waiting");
-            gameManager.modalNegociationElements.notificationContainer = document.getElementById("offerts-notifications");
-
-            gameManager.modalNegociationElements.parent.style.display = "none";
-
-            removeAllChildNodes(gameManager.blockchainLogContainer);
-
-            gameManager.polipop = new Polipop('mypolipop', {
-                layout: 'popups',
-                insert: 'before',
-                pool: 20,
-                sticky: false,
-                closeText: 'Cerrar',
-                progressbar: true,
-                life: 3000
-            });
-
-            $('#btn-open-storage').click(function () {
-                gameManager.player.openStorageModal();
-            });
-            $('#btn-open-inventory').click(function () {
-                gameManager.player.openInventoryModal();
-            });
-            $('#btn-open-money').click(function () {
-                gameManager.openMarket();
-            });
-            $('#end-turn').click(function () {
-                gameManager.endTurn();
-            });
-
-            gameManager.renderPlayers();
-            gameManager.renderTerrains();
-
-            gameManager.gameEventsHandler = new GameEventsHandler();
-            gameManager.gameEventsHandler.suscribeToGameEvents();
-
-            gameManager.startTurn();
-        });
-    },
+   
 
 
     renderTerrains: function () {

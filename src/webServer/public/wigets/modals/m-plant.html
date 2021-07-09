@@ -21,6 +21,7 @@
     </div>
 </div>
 
+
 <script>
     $(document).ready(function () {
         var span = document.getElementsByClassName("btn-close")[0];
@@ -30,9 +31,12 @@
         span.onclick = function() {
             gameManager.closeModal();
         }
-        cancelBtn.onclick = function(){
-            gameManager.closeModal();
-        }
+        
+        if(cancelBtn)
+            cancelBtn.onclick = function(){
+                gameManager.closeModal();
+            }
+
         window.onclick = function(event) {
             if (event.target == gameManager.modalElement) {
                 gameManager.closeModal();

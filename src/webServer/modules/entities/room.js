@@ -1,7 +1,7 @@
 const {ROOM_CONSTANTS} = require('../../../common/constants');
 
 class Room {
-    constructor(roomId,roomType, owner=null)
+    constructor(roomId, roomType, owner=null)
     {
         this.roomId = roomId;
         this.roomType = roomType;
@@ -9,7 +9,6 @@ class Room {
 
         if(owner !==null){
             this.ownerId = owner.id;
-            this.players.push(owner);
         }
         else this.ownerId = null;
 

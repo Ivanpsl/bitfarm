@@ -25,6 +25,7 @@ class Village {
         this.actualEvent = null;
 
         this.playersWaiting = 0;
+        this.playersLost = 0;
 
         this.initPlayers(playerList);
         this.initTerrains(config.game_max_terrains);
@@ -66,19 +67,27 @@ class Village {
     playerEndTurn(playerId){
         this.getPlayerFromId(playerId).isWaiting = true;
         this.playersWaiting++;
-
     }
 
+    isTurnEnded(){
+        return this.playersWaiting === this.getNumberOfPlayers() - this.playersLost;
+    }    
+    
     endTurn(){
         // TODO: añadir evento aleatorio al nuevo turno y su efecto -> this.selectRandomEvent();
-        for (var key in this.players) {
-            this.players[key].isWaiting = false;
-        }
         this.playersWaiting=0;
         this.turn +=1
         this.updateClimaticEvent();
         this.applyTaxesAndEfectsToAllTerrains();
         this.updateMarket();
+
+        for (var key in this.players) {
+            this.players[key].isWaiting = false;
+            if(this.players[key].money <= 0){
+                this.players[key].lost = true;
+                this.playersLost++;
+            }
+        }
 
         return this;
     }
