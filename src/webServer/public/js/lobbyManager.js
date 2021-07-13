@@ -1,3 +1,4 @@
+// @ts-nocheck
 
 /*global Cookies, URL_BASE,$,document,removeAllChildNodes, restartSesion,ROOM_CONSTANTS,roomManager */
 var lobbyManager = {
@@ -13,6 +14,9 @@ var lobbyManager = {
                 document.getElementById("lobby-screen").classList.remove("nodisplay");
                 document.getElementById("joinbtn").disabled = true;
                 document.getElementById("update-spin").classList.add("nodisplay");
+
+                var btnJoinPrivate = document.getElementById("btn-join-private");
+                btnJoinPrivate.addEventListener("click",()=>lobbyManager.joinPrivate());
                 lobbyManager.requestUpdate(false);
         });
     },
@@ -48,7 +52,7 @@ var lobbyManager = {
             docRooms[i].classList.remove("selected");
         }
 
-        if(index !== this.selectedRoomId){
+        if(index !== this.selectedRoomId && this.rooms[index].roomStatus != ROOM_CONSTANTS.STATUS_RUNNING){
             docRooms[index].classList.add("selected");
             this.selectedRoomId = index;
             joinBtn.disabled = false;
@@ -62,6 +66,8 @@ var lobbyManager = {
     createPrivateRoom: function(){
         this.createPrivateRoomRequest();
     },
+
+
 
     renderRoomList: function(){
         var rooms = this.rooms;
@@ -111,6 +117,10 @@ var lobbyManager = {
                 this.startRoomsInterval();
             }
         }
+    },
+    joinPrivate: function(){
+        var imput = document.getElementById("recipient-ident");
+        this.joinRoomRequest(ROOM_CONSTANTS.TYPE_PRIVATE,imput.value);
     },
 
     joinPublic: function(){

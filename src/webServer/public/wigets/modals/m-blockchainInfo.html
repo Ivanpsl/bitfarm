@@ -27,7 +27,7 @@
                 data-bs-parent="#accordionExample">
                 <div class="accordion-body">
                     <p>Las <strong>transacciones</strong> son los elementos que guardan la información que nos interesa
-                        mantener segura. </p>
+                        mantener segura. En nuestro caso es la información de la partida. </p>
 
                     <p>Cada <strong>transacción</strong> tiene contiene los <code>datos</code> a guardar, el
                         <code>momento en el que fue creada</code> la transaccion y una <code>firma digital</code>.</p>
@@ -48,7 +48,12 @@
             <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
                 data-bs-parent="#accordionExample">
                 <div class="accordion-body">
+                    <p>Los <strong>bloques</strong> almacenan una lista de transacciones. </p>
 
+                    <p>Caeda bloque <strong>almacena 5 transacciones</strong>, cuando el jugador realiza una acción se genera una transacción. Una vez que se han generado 
+                    5 trasnacciones se crea un nuevo bloque y se añade a una lista, encadenando este bloque al anterior.</p>
+
+                    <p>Cuando se crea un bloque se crea el hash a partir de su contenido. Si el contenido cambia el valor del hash cambia, y el bloque dejara de ser valido.</p>
                 </div>
             </div>
         </div>
@@ -62,36 +67,50 @@
             <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
                 data-bs-parent="#accordionExample">
                 <div class="accordion-body">
-
+                    <p><strong>La blockchain es distribuida</strong>, esto quiere decir que no hay solo una copia, si no que existen multitud de copias de la información del juego.
+                    Existe una en cada nodo de la blockchain.</p>
+                    <p>Cuando se crea un bloque se envia al resto de nodos participantes en la red, manteniendo siempre una version identica, permitiendo que, si un nodo falla, la información
+                        siga accesible en el resto de nodos.
+                    </p>
                 </div>
             </div>
         </div>
     </div>
 </div>
 <div id="modal-footer" class="modal-footer">
-    <button type="button" id="accept" class="btn btn-primary ">¿Y Que es FarmChain?</button>
+    <button type="button" id="btn-footer-close" class="btn btn-secondary ">Salir</button>
+    <button type="button" id="btn-farmchain" class="btn btn-primary ">Como se juega</button>
 
 
 </div>
 <script>
     $(document).ready(function(){
         var span = document.getElementsByClassName("btn-close")[0];
+        var btnClose = document.getElementById("btn-footer-close");
+        var parent = document.getElementById("modal-window");
+
         span.onclick = function() {
-            loginManager.showModal(false);
+            parent.style.display = "none";
+        }
+
+        btnClose.onclick = function() {
+            parent.style.display = "none";
         }
         
         window.onclick = function(event) {
-            if (event.target == gameManager.modalElement) {
-                loginManager.showModal(false);
+            if (event.target == parent) {
+                // loginManager.showModal(false);
+                parent.style.display = "none";
             }
         }
 
         var btn = document.getElementById("btn-farmchain");
-    
-        btn.onclick = function() {
-            loginManager.showModal(false);
-            loginManager.openCloseInfoModal(true,"farmchain");
 
+        btn.onclick = function() {
+            parent.style.display = "none";
+            $("#modal-content").load("wigets/modals/m-farmchainInfo.html",()=> {
+                parent.style.display = "block";
+            });
         }
     });
 </script>

@@ -1,3 +1,4 @@
+// @ts-nocheck
 
 /*global  gameManager,EventSource,GAME_CONSTANTS,UIPlayerOffert*/
 // eslint-disable-next-line no-unused-vars
@@ -103,16 +104,10 @@ class GameEventsHandler {
     }
 
 
-    onRemoveOffert(eventObj) {
-        var offertIndex = eventObj.data.offertIndex;
-        var uiOffert = gameManager.playersOfferts.find((offert) => offert.index == offertIndex);
-
-        uiOffert.remove();
-    }
+  
 
     onCreateOffert(eventObj) {
         // source : sourceAccount, offertIndex: offertIndex, itemType : itemType, itemIndex : itemIndex, price : price
-        console.log("Create offer: " + JSON.stringify(eventObj))
         var offertIndex = eventObj.data.offertIndex;
         var offertOwner = eventObj.data.source.publicKey;
         var offertPrice = eventObj.data.price;
@@ -136,7 +131,6 @@ class GameEventsHandler {
     }
 
     onBuyOffert(eventObj) {
-        console.log("onBuy")
         
         let buyAccount = eventObj.data.source;
         let offertIndex = eventObj.data.offertIndex;
@@ -152,6 +146,12 @@ class GameEventsHandler {
         gameManager.playersOfferts = gameManager.playersOfferts.filter((offert) => uiOffert.index != offert.index);
     }
 
+    onRemoveOffert(eventObj) {
+        var offertIndex = eventObj.data.offertIndex;
+        var uiOffert = gameManager.playersOfferts.find((offert) => offert.index == offertIndex);
+
+        uiOffert.remove();
+    }
 
     onNewBlockchainLog(eventObj) {
         gameManager.addBlockchainLog(eventObj);

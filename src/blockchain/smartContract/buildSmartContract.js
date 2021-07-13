@@ -4,6 +4,7 @@ const {
 const  Building = require("../model/game/negociable/building")
 const ISmartContract = require("./iSmartContract")
 
+/** SmartContract que se ejecuta al construir en un terreno  */
 class BuildSmartContract extends ISmartContract {
 
     constructor() {

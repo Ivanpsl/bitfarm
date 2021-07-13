@@ -19,12 +19,16 @@ module.exports =  class NodeP2PService {
     
 
     init(){
+        // @ts-ignore
         this.httpServer = new express();
-        this.httpServer.use(express.json());
+        // this.httpServer.use(express.json());
         this.httpServer.use(express.urlencoded({extended: true}));
+        this.httpServer.use(express.json({limit: '50mb'}));
+        this.httpServer.use(express.urlencoded({limit: '50mb',extended: true, parameterLimit:50000}));
+        
         this.httpServer.use(logger(this.loggerConfig));
         this.httpServer.set("nodeService",this);
-        
+
         this.httpServer.use("/p2p",require('./p2p.routes')(this.httpServer,p2pController));
 
         process.on('SIGINT', ()=>  {
@@ -85,6 +89,10 @@ module.exports =  class NodeP2PService {
             this.farmChainService.processedRecievedBlock(identifier,block);
         else
             console.log("Se ha recibido peticion de nuevo bloque pero el nodo no tiene farmChainService")
+    }
+
+    parseBlockchains(blockchainData){
+        this.farmChainService.parseAllBlockchains(blockchainData);
     }
 
     requestSuscriptionToP2P(){

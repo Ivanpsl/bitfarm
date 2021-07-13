@@ -1,5 +1,7 @@
 const cryptoUtils = require('../utils/cryptoUtils')
 const SHA256 = require('crypto-js/sha256');
+
+/** Clase que representra las transacciones de la blockchain */
 class Transaction{
     constructor(sender, data){
         this.sender = sender;
@@ -30,9 +32,9 @@ class Transaction{
     }
 
     getInfo(){
-        const { sender,receiver, data,timestamp } = this;
+        const { sender, data,timestamp, signature } = this;
         return { 
-            sender : sender,receiver : receiver, transactionData : data, timestamp: timestamp };
+            sender : sender,signature : signature, transactionData : data, timestamp: timestamp };
     }
     
     parseTransaction(transaction){

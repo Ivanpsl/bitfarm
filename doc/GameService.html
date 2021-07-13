@@ -30,6 +30,8 @@
     
         <h2><span class="attribs"><span class="type-signature"></span></span>GameService<span class="signature">(app)</span><span class="type-signature"></span></h2>
         
+            <div class="class-description">Servicio GameService que coordina el envio de eventos entre jugadores en la aplicación</div>
+        
     
 </header>
 
@@ -38,6 +40,8 @@
     
         
 
+    
+    <h2>Constructor</h2>
     
 
     
@@ -86,13 +90,18 @@
 
             <td class="type">
             
+                
+<span class="param-type">Object</span>
+
+
+            
             </td>
 
             
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Objeto app de express.js</td>
         </tr>
 
     
@@ -133,7 +142,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="webServer_modules_gameService.js.html">webServer/modules/gameService.js</a>, <a href="webServer_modules_gameService.js.html#line8">line 8</a>
+        <a href="webServer_modules_gameService.js.html">webServer/modules/gameService.js</a>, <a href="webServer_modules_gameService.js.html#line4">line 4</a>
     </li></ul></dd>
     
 
@@ -196,6 +205,10 @@
 
 
 
+<div class="description">
+    Metodo por el cual desvincula a un jugador y su listener de una partida
+</div>
+
 
 
 
@@ -234,13 +247,18 @@
 
             <td class="type">
             
+                
+<span class="param-type">string</span>
+
+
+            
             </td>
 
             
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Identificador del juego</td>
         </tr>
 
     
@@ -252,13 +270,18 @@
 
             <td class="type">
             
+                
+<span class="param-type">string</span>
+
+
+            
             </td>
 
             
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Identificador del jugador</td>
         </tr>
 
     
@@ -299,7 +322,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="webServer_modules_gameService.js.html">webServer/modules/gameService.js</a>, <a href="webServer_modules_gameService.js.html#line81">line 81</a>
+        <a href="webServer_modules_gameService.js.html">webServer/modules/gameService.js</a>, <a href="webServer_modules_gameService.js.html#line87">line 87</a>
     </li></ul></dd>
     
 
@@ -380,13 +403,18 @@
 
             <td class="type">
             
+                
+<span class="param-type">string</span>
+
+
+            
             </td>
 
             
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Identificador del juego</td>
         </tr>
 
     
@@ -427,7 +455,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="webServer_modules_gameService.js.html">webServer/modules/gameService.js</a>, <a href="webServer_modules_gameService.js.html#line36">line 36</a>
+        <a href="webServer_modules_gameService.js.html">webServer/modules/gameService.js</a>, <a href="webServer_modules_gameService.js.html#line40">line 40</a>
     </li></ul></dd>
     
 
@@ -452,6 +480,16 @@
 
 
 
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - lista de logs de eventos registrados en la aplicación
+</div>
+
+
+
+    
 
 
 
@@ -469,6 +507,10 @@
     
 
 
+
+<div class="description">
+    Obtiene el objeto que contiene los jugadores y sus listeners de una ID pasada como parametro
+</div>
 
 
 
@@ -508,13 +550,18 @@
 
             <td class="type">
             
+                
+<span class="param-type">string</span>
+
+
+            
             </td>
 
             
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Identificador del juego</td>
         </tr>
 
     
@@ -555,7 +602,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="webServer_modules_gameService.js.html">webServer/modules/gameService.js</a>, <a href="webServer_modules_gameService.js.html#line28">line 28</a>
+        <a href="webServer_modules_gameService.js.html">webServer/modules/gameService.js</a>, <a href="webServer_modules_gameService.js.html#line30">line 30</a>
     </li></ul></dd>
     
 
@@ -640,13 +687,18 @@
 
             <td class="type">
             
+                
+<span class="param-type">string</span>
+
+
+            
             </td>
 
             
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Identificador del juego</td>
         </tr>
 
     
@@ -687,7 +739,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="webServer_modules_gameService.js.html">webServer/modules/gameService.js</a>, <a href="webServer_modules_gameService.js.html#line18">line 18</a>
+        <a href="webServer_modules_gameService.js.html">webServer/modules/gameService.js</a>, <a href="webServer_modules_gameService.js.html#line19">line 19</a>
     </li></ul></dd>
     
 
@@ -730,6 +782,10 @@
 
 
 
+<div class="description">
+    Función que envia un evento a un jugador en concreto
+</div>
+
 
 
 
@@ -768,13 +824,18 @@
 
             <td class="type">
             
+                
+<span class="param-type">string</span>
+
+
+            
             </td>
 
             
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Identificador del juego</td>
         </tr>
 
     
@@ -786,13 +847,18 @@
 
             <td class="type">
             
+                
+<span class="param-type">string</span>
+
+
+            
             </td>
 
             
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Identificador del jugador</td>
         </tr>
 
     
@@ -804,13 +870,18 @@
 
             <td class="type">
             
+                
+<span class="param-type">string</span>
+
+
+            
             </td>
 
             
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Nombre del evento</td>
         </tr>
 
     
@@ -822,13 +893,18 @@
 
             <td class="type">
             
+                
+<span class="param-type">object</span>
+
+
+            
             </td>
 
             
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Data que contiene información adicional para el evento</td>
         </tr>
 
     
@@ -869,7 +945,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="webServer_modules_gameService.js.html">webServer/modules/gameService.js</a>, <a href="webServer_modules_gameService.js.html#line161">line 161</a>
+        <a href="webServer_modules_gameService.js.html">webServer/modules/gameService.js</a>, <a href="webServer_modules_gameService.js.html#line185">line 185</a>
     </li></ul></dd>
     
 
@@ -912,6 +988,10 @@
 
 
 
+<div class="description">
+    Función que envia un evento a todos los jugadores
+</div>
+
 
 
 
@@ -952,6 +1032,11 @@
 
             <td class="type">
             
+                
+<span class="param-type">string</span>
+
+
+            
             </td>
 
             
@@ -962,7 +1047,7 @@
                 </td>
             
 
-            <td class="description last"></td>
+            <td class="description last">Identificador del juego</td>
         </tr>
 
     
@@ -974,6 +1059,11 @@
 
             <td class="type">
             
+                
+<span class="param-type">string</span>
+
+
+            
             </td>
 
             
@@ -984,7 +1074,7 @@
                 </td>
             
 
-            <td class="description last"></td>
+            <td class="description last">Nombre del evento</td>
         </tr>
 
     
@@ -996,6 +1086,11 @@
 
             <td class="type">
             
+                
+<span class="param-type">object</span>
+
+
+            
             </td>
 
             
@@ -1006,7 +1101,7 @@
                 </td>
             
 
-            <td class="description last"></td>
+            <td class="description last">Data que contiene información adicional para el evento</td>
         </tr>
 
     
@@ -1017,6 +1112,11 @@
             
 
             <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
             
             </td>
 
@@ -1071,7 +1171,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="webServer_modules_gameService.js.html">webServer/modules/gameService.js</a>, <a href="webServer_modules_gameService.js.html#line177">line 177</a>
+        <a href="webServer_modules_gameService.js.html">webServer/modules/gameService.js</a>, <a href="webServer_modules_gameService.js.html#line201">line 201</a>
     </li></ul></dd>
     
 
@@ -1114,6 +1214,10 @@
 
 
 
+<div class="description">
+    Función que envia evento de log de un nuevo bloque en la blockchain
+</div>
+
 
 
 
@@ -1152,13 +1256,18 @@
 
             <td class="type">
             
+                
+<span class="param-type">string</span>
+
+
+            
             </td>
 
             
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Identificador del juego</td>
         </tr>
 
     
@@ -1170,13 +1279,18 @@
 
             <td class="type">
             
+                
+<span class="param-type">object</span>
+
+
+            
             </td>
 
             
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Objeto que contiene la infomacion del nuevo bloque</td>
         </tr>
 
     
@@ -1217,7 +1331,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="webServer_modules_gameService.js.html">webServer/modules/gameService.js</a>, <a href="webServer_modules_gameService.js.html#line143">line 143</a>
+        <a href="webServer_modules_gameService.js.html">webServer/modules/gameService.js</a>, <a href="webServer_modules_gameService.js.html#line163">line 163</a>
     </li></ul></dd>
     
 
@@ -1260,6 +1374,10 @@
 
 
 
+<div class="description">
+    Función que envia evento de log de una nueva transacción en la blockchain
+</div>
+
 
 
 
@@ -1298,13 +1416,18 @@
 
             <td class="type">
             
+                
+<span class="param-type">string</span>
+
+
+            
             </td>
 
             
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Identificador del juego</td>
         </tr>
 
     
@@ -1316,13 +1439,18 @@
 
             <td class="type">
             
+                
+<span class="param-type">object</span>
+
+
+            
             </td>
 
             
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Objeto que contiene la infomacion de la nueva transacción</td>
         </tr>
 
     
@@ -1363,7 +1491,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="webServer_modules_gameService.js.html">webServer/modules/gameService.js</a>, <a href="webServer_modules_gameService.js.html#line152">line 152</a>
+        <a href="webServer_modules_gameService.js.html">webServer/modules/gameService.js</a>, <a href="webServer_modules_gameService.js.html#line174">line 174</a>
     </li></ul></dd>
     
 
@@ -1406,6 +1534,10 @@
 
 
 
+<div class="description">
+    Envia evento de compra de una oferta de jugador a todos los jugadores
+</div>
+
 
 
 
@@ -1444,13 +1576,18 @@
 
             <td class="type">
             
+                
+<span class="param-type">string</span>
+
+
+            
             </td>
 
             
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Identificador del juego</td>
         </tr>
 
     
@@ -1462,13 +1599,18 @@
 
             <td class="type">
             
+                
+<span class="param-type">object</span>
+
+
+            
             </td>
 
             
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Objeto cuenta del emisor, con clave privada y publica</td>
         </tr>
 
     
@@ -1480,133 +1622,10 @@
 
             <td class="type">
             
-            </td>
+                
+<span class="param-type">number</span>
 
-            
 
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="webServer_modules_gameService.js.html">webServer/modules/gameService.js</a>, <a href="webServer_modules_gameService.js.html#line108">line 108</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="sendOnPlayerAction"><span class="type-signature"></span>sendOnPlayerAction<span class="signature">(gameId, actionName, account, actionData)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>gameId</code></td>
-            
-
-            <td class="type">
             
             </td>
 
@@ -1614,279 +1633,7 @@
 
             
 
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>actionName</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>account</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>actionData</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="webServer_modules_gameService.js.html">webServer/modules/gameService.js</a>, <a href="webServer_modules_gameService.js.html#line136">line 136</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="sendOnPlayerCreateOffert"><span class="type-signature"></span>sendOnPlayerCreateOffert<span class="signature">(gameId, sourceAccount, offertIndex, itemType, itemIndex, price)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>gameId</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>sourceAccount</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>offertIndex</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>itemType</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>itemIndex</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>price</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
+            <td class="description last">Indice de la oferta</td>
         </tr>
 
     
@@ -1963,12 +1710,16 @@
     
 
     
-    <h4 class="name" id="sendOnPlayerRemoveOffert"><span class="type-signature"></span>sendOnPlayerRemoveOffert<span class="signature">(gameId, offertIndex)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="sendOnPlayerAction"><span class="type-signature"></span>sendOnPlayerAction<span class="signature">(gameId, actionName, account, actionData)</span><span class="type-signature"></span></h4>
     
 
     
 
 
+
+<div class="description">
+    Función que envia información de una acción de un jugador
+</div>
 
 
 
@@ -2008,23 +1759,33 @@
 
             <td class="type">
             
+                
+<span class="param-type">string</span>
+
+
+            
             </td>
 
             
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Identificador del juego</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>offertIndex</code></td>
+                <td class="name"><code>actionName</code></td>
             
 
             <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
             
             </td>
 
@@ -2032,7 +1793,53 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Nombre de la accion</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>account</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Objeto cuenta del emisor, con clave privada y publica</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>actionData</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Datos que acompañan a la accion</td>
         </tr>
 
     
@@ -2073,7 +1880,419 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="webServer_modules_gameService.js.html">webServer/modules/gameService.js</a>, <a href="webServer_modules_gameService.js.html#line127">line 127</a>
+        <a href="webServer_modules_gameService.js.html">webServer/modules/gameService.js</a>, <a href="webServer_modules_gameService.js.html#line154">line 154</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="sendOnPlayerCreateOffert"><span class="type-signature"></span>sendOnPlayerCreateOffert<span class="signature">(gameId, sourceAccount, offertIndex, itemType, itemIndex, price)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Función que envia una nueva oferta creada por un jugador
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>gameId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Identificador del juego</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>sourceAccount</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Objeto cuenta del emisor, con clave privada y publica</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>offertIndex</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Indice de la oferta</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>itemType</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Tipo del objeto que se oferta</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>itemIndex</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Indice del objeto que se oferta</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>price</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Precio del item que se oferta</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="webServer_modules_gameService.js.html">webServer/modules/gameService.js</a>, <a href="webServer_modules_gameService.js.html#line134">line 134</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="sendOnPlayerRemoveOffert"><span class="type-signature"></span>sendOnPlayerRemoveOffert<span class="signature">(gameId, offertIndex)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Función que envia evento que informa de la eliminación de una oferta por parte de un jugador
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>gameId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Identificador del juego</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>offertIndex</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Indice de la oferta</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="webServer_modules_gameService.js.html">webServer/modules/gameService.js</a>, <a href="webServer_modules_gameService.js.html#line143">line 143</a>
     </li></ul></dd>
     
 
@@ -2116,6 +2335,10 @@
 
 
 
+<div class="description">
+    Envia evento de finalización de turno a los jugadores
+</div>
+
 
 
 
@@ -2154,13 +2377,18 @@
 
             <td class="type">
             
+                
+<span class="param-type">string</span>
+
+
+            
             </td>
 
             
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Identificador del juego</td>
         </tr>
 
     
@@ -2172,133 +2400,10 @@
 
             <td class="type">
             
-            </td>
+                
+<span class="param-type">string</span>
 
-            
 
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="webServer_modules_gameService.js.html">webServer/modules/gameService.js</a>, <a href="webServer_modules_gameService.js.html#line91">line 91</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="sendStartTurnEvent"><span class="type-signature"></span>sendStartTurnEvent<span class="signature">(gameId, turnData)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>gameId</code></td>
-            
-
-            <td class="type">
             
             </td>
 
@@ -2306,25 +2411,7 @@
 
             
 
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>turnData</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
+            <td class="description last">Identificador del jugador</td>
         </tr>
 
     
@@ -2401,12 +2488,16 @@
     
 
     
-    <h4 class="name" id="suscribeClient"><span class="type-signature"></span>suscribeClient<span class="signature">(gameId, playerId, listener)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="sendStartTurnEvent"><span class="type-signature"></span>sendStartTurnEvent<span class="signature">(gameId, turnData)</span><span class="type-signature"></span></h4>
     
 
     
 
 
+
+<div class="description">
+    Envia evento de inicio de turno a los jugadores
+</div>
 
 
 
@@ -2446,23 +2537,33 @@
 
             <td class="type">
             
+                
+<span class="param-type">string</span>
+
+
+            
             </td>
 
             
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Identificador del juego</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>playerId</code></td>
+                <td class="name"><code>turnData</code></td>
             
 
             <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
             
             </td>
 
@@ -2470,25 +2571,7 @@
 
             
 
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>listener</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
+            <td class="description last">Estado actual de la partida</td>
         </tr>
 
     
@@ -2529,7 +2612,190 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="webServer_modules_gameService.js.html">webServer/modules/gameService.js</a>, <a href="webServer_modules_gameService.js.html#line49">line 49</a>
+        <a href="webServer_modules_gameService.js.html">webServer/modules/gameService.js</a>, <a href="webServer_modules_gameService.js.html#line109">line 109</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="suscribeClient"><span class="type-signature"></span>suscribeClient<span class="signature">(gameId, playerId, listener)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Metodo que vincula una id de un jugador y su listener a una partida
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>gameId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Identificador del juego</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>playerId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Identificador del jugador</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>listener</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Objeto a traves del que se envian datos del servidor al cliente</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="webServer_modules_gameService.js.html">webServer/modules/gameService.js</a>, <a href="webServer_modules_gameService.js.html#line55">line 55</a>
     </li></ul></dd>
     
 
@@ -2575,13 +2841,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="GameService.html">GameService</a></li><li><a href="PlantSmartContract.html">PlantSmartContract</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Block.html">Block</a></li><li><a href="Building.html">Building</a></li><li><a href="BuildSmartContract.html">BuildSmartContract</a></li><li><a href="BuyElementSmartContract.html">BuyElementSmartContract</a></li><li><a href="DemolishSmartContract.html">DemolishSmartContract</a></li><li><a href="FarmChainFacade.html">FarmChainFacade</a></li><li><a href="FarmChainService.html">FarmChainService</a></li><li><a href="GameService.html">GameService</a></li><li><a href="Hall.html">Hall</a></li><li><a href="module.exports.html">exports</a></li><li><a href="PlantSmartContract.html">PlantSmartContract</a></li><li><a href="Player.html">Player</a></li><li><a href="Product.html">Product</a></li><li><a href="RecollectSmartContract.html">RecollectSmartContract</a></li><li><a href="Room.html">Room</a></li><li><a href="RoomService.html">RoomService</a></li><li><a href="StartGameSmartContract.html">StartGameSmartContract</a></li><li><a href="Terrain.html">Terrain</a></li><li><a href="Transaction.html">Transaction</a></li><li><a href="Village.html">Village</a></li><li><a href="WateringSmartContract.html">WateringSmartContract</a></li><li><a href="WebController.html">WebController</a></li><li><a href="WebService.html">WebService</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Jul 07 2021 21:28:51 GMT+0200 (hora de verano de Europa central)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Tue Jul 13 2021 18:48:58 GMT+0200 (hora de verano de Europa central)
 </footer>
 
 <script> prettyPrint(); </script>

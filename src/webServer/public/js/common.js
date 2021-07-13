@@ -95,8 +95,11 @@ function removeAllChildNodes(parent) {
 
 /*global  Cookies,window,gameManager*/
 function restartSesion() {
+    // @ts-ignore
     Cookies.remove('userId');
+    // @ts-ignore
     Cookies.remove('actualRoomId');
+    // @ts-ignore
     Cookies.remove('actualRoomType');
 
     var mensaje = "Se ha perdido la conexión con el servidor";

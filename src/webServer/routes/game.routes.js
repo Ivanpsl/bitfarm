@@ -1,7 +1,7 @@
-module.exports = function (app, webService) {
+module.exports = function (app, controller) {
 
     app.post("/game/start", function (req, res) {
-        var game = webService.startGame(req.body.rId);
+        var game = controller.getWebService().startGame(req.body.rId);
         if (game) res.send(JSON.stringify(game))
     });
 
@@ -10,7 +10,7 @@ module.exports = function (app, webService) {
         var playerId = req.session.playerId
         console.log(`Player endTurn: ${gameId} ${playerId}`)
         if (gameId !== null && playerId !== null) {
-            webService.playerEndTurn(gameId, playerId);
+            controller.getWebService().playerEndTurn(gameId, playerId);
         }
         res.status(200).send(true);
         res.end();
@@ -24,7 +24,7 @@ module.exports = function (app, webService) {
             var itemType = req.body.itemType;
             var itemIndex= req.body.itemIndex;
             var price = req.body.price;
-            webService.playerCreateOffert(gameId,sourceAccount,offertIndex,itemType,itemIndex,price);
+            controller.getWebService().playerCreateOffert(gameId,sourceAccount,offertIndex,itemType,itemIndex,price);
 
             res.status(200).send(true);
             res.end();
@@ -37,7 +37,9 @@ module.exports = function (app, webService) {
     app.post("/game/offert/remove", function (req,res) {
         try{
             var gameId = req.session.room;
-            webService.playerRemoveOffert(gameId,);
+            var index =req.body.index;
+            console.log(req.session.index)
+            controller.getWebService().playerRemoveOffert(gameId,index);
 
             res.status(200).send(true);
             res.end();
@@ -60,7 +62,7 @@ module.exports = function (app, webService) {
             var playerId = req.session.playerId;
 
             if (gameId !== null && playerId !== null) {
-                var response = webService.playerBuyOffert(gameId, offertIndex, offertOwner, offertElement, offerPrice, buySource);
+                var response = controller.getWebService().playerBuyOffert(gameId, offertIndex, offertOwner, offertElement, offerPrice, buySource);
                 res.status(201).send(response);
                 res.end();
             } else {
@@ -87,11 +89,11 @@ module.exports = function (app, webService) {
 
         res.writeHead(200, headers);
 
-        webService.joinGame(gameId, userId, res);
+        controller.getWebService().joinGame(gameId, userId, res);
 
         req.on('close', () => {
             console.log(`${userId} Connection closed`);
-            webService.exitGame(gameId, userId);
+            controller.getWebService().exitGame(gameId, userId);
         });
     }
 
@@ -103,7 +105,7 @@ module.exports = function (app, webService) {
             var actionData = req.body.data;
             console.log(gameId + " " + sourceAccount + " " + actioName + " " + JSON.stringify(actionData))
             if (gameId !=null && sourceAccount !=null && actioName != null && actionData != null) {
-                var response = await webService.sendGameAction(gameId, actioName, sourceAccount, actionData);
+                var response = await controller.getWebService().sendGameAction(gameId, actioName, sourceAccount, actionData);
                 if (response instanceof Error)
                     throw response;
                 res.status(201).send(response);

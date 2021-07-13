@@ -1,3 +1,4 @@
+// @ts-nocheck
 /*global Cookies, URL_BASE,$,document,removeAllChildNodes, restartSesion,ROOM_CONSTANTS,window,HOME_URL,gameManager*/
 
 var roomManager = {
@@ -22,6 +23,20 @@ var roomManager = {
             if (roomManager.actualRoom.roomType == ROOM_CONSTANTS.TYPE_PRIVATE)
                 document.getElementById("room-name").innerHTML = "Sala privada";
             else document.getElementById("room-name").innerHTML = "Sala " + roomManager.actualRoom.roomId;
+
+            if(Cookies.get('tutorialChecked') == null || !Cookies.get('tutorialChecked')){
+                roomManager.openModalInfo();
+            }
+
+
+        });
+    },
+    openModalInfo(){
+        $("#modal-content").load("wigets/modals/m-farmchainInfo.html",()=> {
+            console.log("Renderizando")
+            document.getElementById("modal-window").style.display = "block";
+
+            Cookies.set('tutorialChecked',true)
         });
     },
 

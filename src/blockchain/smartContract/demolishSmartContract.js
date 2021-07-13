@@ -1,6 +1,7 @@
 const {
     GAME_CONSTANTS} = require("../../common/constants");
 const ISmartContract = require("./iSmartContract")
+/** SmartContract que se ejecuta al demoler una construccion */
 
 class DemolishSmartContract extends ISmartContract {
     constructor() {

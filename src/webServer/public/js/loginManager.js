@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 
@@ -34,8 +36,6 @@ var loginManager = {
 }
 
 $(document).ready(function(){
- 
-
     loginManager.modalElement = document.getElementById("modal-window");
     var btn_blockchainInfo = document.getElementById("btn-iblockchain");
     var btn_farmhainInfo = document.getElementById("btn-ifarmchain");
@@ -45,6 +45,7 @@ $(document).ready(function(){
     }
 
     btn_farmhainInfo.onclick = function() {
+        
         loginManager.openCloseInfoModal(true,"farmchain");
     }
 

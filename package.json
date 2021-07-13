@@ -7,7 +7,9 @@
     "start": "node ./bin/www",
     "startmon": "nodemon ./bin/www",
     "test": "mocha",
-    "testnya": "mocha --reporter nyan"
+    "testnya": "mocha --reporter nyan",
+    "artillery" : "artillery run ./test/loadTests/loadTest.yml",
+    "doc" : "npx jsdoc -c jsdoc.json"                
   },
 
   "dependencies": {

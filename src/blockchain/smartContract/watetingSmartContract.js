@@ -2,7 +2,7 @@ const {
     GAME_CONSTANTS
 } = require("../../common/constants");
 const ISmartContract = require("./iSmartContract")
-
+/** SmartContract que se ejecuta al regar una tierra */
 class WateringSmartContract extends ISmartContract {
 
     constructor() {

@@ -1,22 +1,8 @@
-
-module.exports = function (app, webService) {
+module.exports = function (app, controller) {
 
     app.post("/room/join", function (req, res) {
         try {
-            if (req.session.playerId && req.body.rId != null) {
-                var response = webService.joinRoom(req.session.playerId, req.session.user, req.body.rId);
-                if (response.error) {
-                    console.error(response.error);
-                    res.status(400).send(response.error);
-                } else {
-                    console.log(JSON.stringify(response))
-                    req.session.room = response.roomInfo.roomId
-                    req.session.inRoom = true;
-                    res.status(200).send(response);
-                }
-            } else {
-                throw new Error("Sesión no iniciada o sala no existente");
-            }
+            controller.joinRoom(req,res);
         } catch (e) {
             res.status(400).send(e.message);
         }
@@ -25,12 +11,7 @@ module.exports = function (app, webService) {
 
     app.get("/room/create", function (req, res) {
         try {
-            var playerId = req.session.playerId;
-
-            if (playerId) {
-                var newRoom = webService.createPrivateRoom(playerId);
-                res.status(200).send(newRoom);
-            }
+            controller.createRoom(req,res);
         } catch (e) {
             console.error(e.message)
             res.status(500).send(e.message);
@@ -39,11 +20,7 @@ module.exports = function (app, webService) {
 
     app.get("/room/exit", function (req, res) {
         try {
-            if (req.session.playerId != null && req.session.room != null && req.session.room != undefined) {
-                webService.exitRoom(req.session.playerId, req.session.room);
-                req.session.room = null;
-                res.redirect('/lobby');
-            }
+            controller.exitRoom(req,res);
         } catch (e) {
             console.error(e.message)
             res.status(500).send(e.message);
@@ -51,20 +28,16 @@ module.exports = function (app, webService) {
     });
 
     app.get('/room/subscribeChatRoom', function (req, res) {
-        if (req.session.token != null && req.session.room != null) {
-            var room = webService.getRoom(req.session.room);
-            if (room) room.addListener(req.session.playerId, res);
+        try{
+            controller.subscribeToRoomEvents(req,res);
+        }catch(e){
+            res.status(500).send(e.message);
         }
     });
 
     app.post("/room/setReady", function (req, res) {
         try {
-            if (req.session.token && req.session.playerId && req.body.roomId == req.session.room && req.body.isReady) {
-                webService.setReadyStatus(req.session.playerId,req.body.roomId,req.body.isReady);
-                res.status(200).send(true);
-            } else {
-                res.status(500).send("Faltan datos en la petición");
-            }
+            controller.setPlayerRoomStatus(req,res);
         }
         catch (e) {
             console.error(e.message)
@@ -73,16 +46,12 @@ module.exports = function (app, webService) {
     });
 
     app.post("/room/sendMessage", function (req, res) {
-        if (req.session.token && req.session.playerId != null && req.body.txt) {
-
-            const room = webService.getRoom(req.body.rId);
-            if (room){
-                room.addMessage(req.session.playerId, req.body.txt);
-                res.status(200).send(true);
-            }
-            else res.status(400).send("Sala no identificada");
-        } else {
-            res.status(400).send("Faltan datos en la petición");
+        try {
+            controller.responseSendMessage(req,res)
+        }
+        catch (e) {
+            console.error(e.message)
+            res.status(500).send(e.message);
         }
     });
 

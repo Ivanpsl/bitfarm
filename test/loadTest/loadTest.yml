@@ -1,0 +1,29 @@
+config:
+  target: "https://localhost:3000"
+  tls:
+    rejectUnauthorized: false
+  phases:
+    - duration: 60
+      arrivalRate: 50
+      name: Warm up
+    - duration: 120
+      arrivalRate: 5
+      rampTo: 2000
+      name: Ramp up
+    - duration: 120
+      arrivalRate: 2000
+      name: Load Test
+scenarios:
+  - name: "Menu, acceso a la lista de salas y solicitud de una sala"
+    flow:
+        - get:
+            url: "/game/login.html"
+        - post: 
+            url: "/identificarse"
+            json: 
+              username: "testUser"
+        - get: 
+            url: "/lobby"
+        - get: 
+            url: "/roomList"
+            

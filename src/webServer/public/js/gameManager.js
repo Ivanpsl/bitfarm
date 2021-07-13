@@ -1,3 +1,4 @@
+// @ts-nocheck
 /*global window,Cookies, GAME_CONSTANTS,UIPlayer,URL_BASE,$,document,removeAllChildNodes, Polipop,GameEventsHandler */
 var gameManager = {
 
@@ -19,11 +20,14 @@ var gameManager = {
     milisecondsRemaining: 0,
     climaticEvent : null,
 
-
+    numPlayers: 0,
     playersWaiting: 0,
     weekElement: null,
     climaticElement : null,
     climaticIcon : null,
+    climaticLabelElement :null,
+    effectElement : null,
+    effectSizeElement : null,
     timeRemainingElement: null,
     toolsElement: null,
     storageElement: null,
@@ -76,18 +80,20 @@ var gameManager = {
     loadPlayers: function (dataPlayers) {
         this.players = {};
         for (var key in dataPlayers) {
+            
             var player = new UIPlayer(dataPlayers[key]);
-
+            
             if (dataPlayers[key].id === Cookies.get('userId')) {
                 console.log("Jugador reconocido")
                 this.player = player;
             } else {
                 console.log("Añadiendi jugador " + player.name);
+                this.numPlayers++;
                 this.players[key] = player;
             }
         }
     },
-    loadClimaticEvent : function (climaticData) {
+    loadClimaticEvent : function (climaticData) { 
         this.climaticEvent = climaticData;
     },
 
@@ -104,8 +110,8 @@ var gameManager = {
         for (let product of dataProducts) {
             if (product && product.owner) {
                 let owner = product.owner;
-                if (owner === this.townHall.account.publicKey) this.townHall.products.push(product);
-                else if (owner === this.player.account.publicKey) {
+                if (owner == this.townHall.account.publicKey) this.townHall.products.push(product);
+                else if (owner == this.player.account.publicKey) {
                     this.player.addProduct(product);
                     if (product.status === GAME_CONSTANTS.PRODUCT_STATUS_PLANTED) {
                         console.log(JSON.stringify(product))
@@ -152,6 +158,9 @@ var gameManager = {
             gameManager.weekElement = document.getElementById("week-number");
             gameManager.climaticElement = document.getElementById("climatic-text");
             gameManager.climaticIcon = document.getElementById("climatic-icon");
+            gameManager.effectElement  = document.getElementById("effect-text");
+            gameManager.climaticLabelElement = document.getElementById("climatic-label");
+            gameManager.effectSizeElement = document.getElementById("effect-size");
             gameManager.timeRemainingElement = document.getElementById("time-remaining");
             gameManager.timeBarElement = document.getElementById("progress");
             gameManager.timeIconElement = document.getElementById("crono-icon");
@@ -364,7 +373,7 @@ var gameManager = {
             gameManager.modalFinalGame.text.innerHTML = "<strong>¡Felicidades!</strong><p>Has sido la granja que más ha aguantado</p> "
 
         }
-        else{
+        else{ 
             gameManager.modalFinalGame.title.textContent = "Has perdido";
             gameManager.modalFinalGame.text.textContent = "Te has quedado sin dinero suficiente para seguir jugando";
         }
@@ -425,6 +434,7 @@ var gameManager = {
         if(gameManager.player.money<=0){
             gameManager.openEndModal(false);
         }
+
         var playersLost = 0;
         for (let key in this.players){
             console.log(this.players[key].money)
@@ -434,7 +444,8 @@ var gameManager = {
                 playersLost++;
             }
         }
-        if(playersLost == this.players.length)
+        console.log(playersLost  + "   " + this.numPlayers)
+        if(playersLost == this.numPlayers)
             gameManager.openEndModal(true);
     },
 
@@ -443,7 +454,6 @@ var gameManager = {
             if (offert.select) {
 
                 var actionData = {
-
                     targetPublicKey: this.townHall.account.publicKey,
                     elementType: offert.item.type,
                     elementIndex: offert.item.index,
@@ -502,27 +512,31 @@ var gameManager = {
     },
 
     sendNewOffert: function (item, price) {
-        console.log("Enviando oferta: " + price)
-        $.ajax({
-            url: URL_BASE + "/game/offert/create",
-            type: "POST",
-            data: {
-                sourceAcc: gameManager.player.account,
-                offertIndex: gameManager.playersOfferts.length,
-                itemType: item.type,
-                itemIndex: item.index,
-                price: price
-            },
-            dataType: 'json',
-            // eslint-disable-next-line no-unused-vars
-            success: function (_response, _textStatus, _jqXHR) {
-                gameManager.showNotification('Oferta creada', 'success', 'La oferta para ' + item.label + ' ha sido creada');
-            },
-            // eslint-disable-next-line no-unused-vars
-            error: function (response, _status, _error) {
-                gameManager.showNotification('Ha ocurrido un error', 'error', response.responseText);
-            }
-        });
+        if(parseInt(price) > 1){
+            console.log("Enviando oferta: " + price)
+            $.ajax({
+                url: URL_BASE + "/game/offert/create",
+                type: "POST",
+                data: {
+                    sourceAcc: gameManager.player.account,
+                    offertIndex: gameManager.playersOfferts.length,
+                    itemType: item.type,
+                    itemIndex: item.index,
+                    price: price
+                },
+                dataType: 'json',
+                // eslint-disable-next-line no-unused-vars
+                success: function (_response, _textStatus, _jqXHR) {
+                    gameManager.showNotification('Oferta creada', 'success', 'La oferta para ' + item.label + ' ha sido creada');
+                },
+                // eslint-disable-next-line no-unused-vars
+                error: function (response, _status, _error) {
+                    gameManager.showNotification('Ha ocurrido un error', 'error', response.responseText);
+                }
+            });
+        }else{
+            gameManager.setNegotiationNotify("Debes introducir un valor correcto.");
+        }
     },
 
 
@@ -533,19 +547,33 @@ var gameManager = {
     },
 
     updateTurnInfo: function () {
+        // name":"rain","label":"Lluvia","percent":0.25,"waterEffect":25} g
         this.weekElement.textContent = this.turn;
         console.warn("Climatic event " + JSON.stringify(this.climaticEvent) )
         if(this.climaticEvent){
-            this.climaticElement.textContent = this.climaticEvent.label;
-            if(this.climaticEvent == 'rain')
-                this.climaticIcon.className = 'bi bi-cloud-rain-heavy';
-            else if(this.climaticEvent == 'drought')
-                this.climaticIcon.className = 'bi bi-thermometer-sun';
+            this.climaticLabelElement.textContent = this.climaticEvent.label;
+            if(this.climaticEvent.name == 'rain')
+                this.climaticIcon.className = 'bi bi-cloud-rain shadow climatic-icon-b';
+            else if(this.climaticEvent.name == 'drought')
+                this.climaticIcon.className = 'bi bi-sun shadow climatic-icon-r';
+
+            
+            if(this.climaticEvent.waterEffect > 0){
+                this.effectElement.className = "effect-text-g"
+                this.effectSizeElement.textContent = `+${this.climaticEvent.waterEffect}`;
+            }else{
+                this.effectElement.className = "effect-text-r"
+                this.effectSizeElement.textContent = `${this.climaticEvent.waterEffect}`;
+            }
         }
         else{
-            this.climaticElement.textContent = 'Sol con nubes';
-            this.climaticIcon.className = 'bi bi-cloud-sun'
+            this.climaticLabelElement.textContent = 'Sol con nubes';
+            this.climaticIcon.className = 'bi bi-cloud-sun shadow climatic-icon-g'
+            this.effectSizeElement.textContent = "+0";
+            this.effectElement.className = "effect-text-g"
         }
+
+
     },
     updateSecondsRemaining: function () {
         var timePercent = (((this.milisecondsRemaining) * 100) / parseInt(this.maxMilisecondsPerTurn))
@@ -796,7 +824,7 @@ var gameManager = {
                     container.appendChild(spamDescription);
 
                     var priceSpan = document.createElement("span");
-                    priceSpan.className = "badge bg-success rounded-pill";
+                    priceSpan.className = "market-price badge bg-success rounded-pill";
                     priceSpan.textContent = `${offert.price}€`;
 
                     liContainer.appendChild(container);

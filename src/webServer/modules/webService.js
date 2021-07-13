@@ -2,6 +2,7 @@ const RoomService = require('./roomService');
 const GameService = require('./gameService');
 const { GAME_CONSTANTS } = require('../../common/constants');
 
+/** Servicio WebService que coordina eventos generales, servicios y blockchain de la aplicación   */
 class WebService {
     constructor(app) {
         this.app = app;
@@ -12,57 +13,50 @@ class WebService {
         this.farmChainFacade = null
     }
 
+    /**
+     * Establece la interfaz a traves de la cual se comunica con la blockchain y se suscribe a sus eventos
+     * 
+     * @param {any} farmChainFacade - Interfaz de acceso a la blockchain
+     * @returns {any}
+     */
     setChainFacade(farmChainFacade){
         this.farmChainFacade = farmChainFacade;
         this.suscribeToBlockchain();
     }
     
+    /**
+     * Suscribe observers a la blockchain para poder detectar la creación de bloques 
+     */
     suscribeToBlockchain() {
         this.farmChainFacade.suscribeToChainLog(
             (gameId, newTransaction) => this.handleNewTransaction(gameId, newTransaction),
             (gameId, newBlock) => this.handleNewBlock(gameId, newBlock));
     }
 
+    /**
+     * Metodo que devuelve el servicio que gestiona las salas
+     * 
+     * @returns {any} - RoomService
+     */
     getRoomService(){
         return this.roomService;
     }
+
+    /**
+     * Metodo que devuelve el servicio que gestiona las salas
+     * 
+     * @returns {any}
+     */
     getGameService(){
         return this.gameService;
     }
-    getRoom(roomId) {
-        return this.roomService.getRoom(roomId);
-    }
 
-    getRoomsData() {
-        return this.roomService.getRoomsData();
-    }
-    
-    createPrivateRoom(playerId){
-        return this.roomService.createRoom(playerId);
-    }
 
-    joinRoom(playerId, userName, roomId) {
-        var player = {
-            id: playerId,
-            name: userName,
-            isReady: false
-        }
-        return this.roomService.joinRoom(player, roomId);
-    }
 
     exitRoom(playerId, roomId) {
         return this.roomService.exitRoom(playerId, roomId);
     }
 
-    setReadyStatus(playerId, roomId, status) {
-        var room = this.getRoom(roomId);
-        if (room){
-            var allReady = room.setPlayerStatus(playerId, status);
-            if(allReady)
-                this.startGame(roomId);
-        }
-        else throw new Error("Sala no identificada");
-    }
 
     startGame(roomId) {
         var roomPlayers = this.roomService.getRoomPlayers(roomId)
@@ -80,9 +74,11 @@ class WebService {
         }
     }
 
+
     joinGame(gameId, userId, listener) {
         this.gameService.suscribeClient(gameId, userId, listener);
     }
+
 
     playerEndTurn(gameId, userId) {
         
@@ -101,12 +97,16 @@ class WebService {
 
     }
 
+    
     playerCreateOffert(gameId, sourceAccount, offertIndex, itemType, itemIndex, price) {
         this.gameService.sendOnPlayerCreateOffert(gameId, sourceAccount, offertIndex, itemType, itemIndex, price);
     }
+
     playerRemoveOffert(gameId,offertIndex){
-        this.gameService.sendOnPlayerRemoveOffert(gameId,offertIndex );
+        this.gameService.sendOnPlayerRemoveOffert(gameId,offertIndex);
     }
+
+
     playerBuyOffert(gameId, offertIndex, offertOwner, offertElement, offerPrice, buySource) {
         var actionData = {
             targetPublicKey: offertOwner,

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /*global  $,document,gameManager,URL_BASE */
 
 // eslint-disable-next-line no-unused-vars
@@ -62,7 +63,7 @@ class UIPlayerOffert {
             btn.className = "btn btn-outline-success";
             btn.textContent = "Cancelar oferta";
             btn.onclick = () => {
-                this.remove(); 
+                this.sendRemove(); 
             }
         } else {
             btn.className = "btn btn-outline-success";
@@ -97,6 +98,7 @@ class UIPlayerOffert {
             itemCreateOffertBtn.disabled = false;
             itemPriceInput.disabled = false;
             itemListElement.classList.remove('list-group-item-secondary')
+            
         }
 
         this.remove();
@@ -108,6 +110,28 @@ class UIPlayerOffert {
         if(itemListElement)
             itemListElement.parentNode.removeChild(itemListElement);
         this.remove();
+    }
+
+    sendRemove(){
+        $.ajax({
+            url: URL_BASE + "/game/offert/remove",
+            type: "POST",
+            data: {
+                index: this.index,
+                owner: this.owner,
+            },
+            dataType: 'json',
+            // eslint-disable-next-line no-unused-vars
+            succes : ()=>{
+                this.remove();
+            },
+            // eslint-disable-next-line no-unused-vars
+            error: function (response, _status, _error) {
+                console.error(response.responseText);
+                gameManager.setNegotiationNotify(response.responseText)
+                gameManager.showNotification('Ha ocurrido un error', 'error', response.responseText);
+            }
+        });
     }
 
     remove(){

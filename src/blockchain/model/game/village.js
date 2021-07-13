@@ -4,6 +4,8 @@ const Terrain = require("./negociable/terrain");
 const Tool = require("./negociable/tool");
 const Product = require("./negociable/product");
 
+/** Clase que contiene el estado actual de la partida */
+
 class Village {
 
     constructor(identifier, hallAccount, playerList, config)
@@ -93,7 +95,6 @@ class Village {
     }
 
     updateMarket(){
-        console.log("Actualizando tienda")
         var productSelling = this.getProductsFromOwner(this.townHall.account.publicKey);
         var toolsSelling = this.getToolsFromOwner(this.townHall.account.publicKey);
         var terrainSelling = this.getTerrainsFromOwner(this.townHall.account.publicKey);
@@ -152,13 +153,11 @@ class Village {
 
     updateClimaticEvent(){
         const rnd = Math.random();
-        console.log("RANDOM " + rnd)
 
         var events = this.gameConfig.climaticEvents;
 
         var aux = 0;
         for(let key in events){
-            console.log(JSON.stringify(events[key]));
             var auxSum = aux + parseFloat(events[key].percent);
             if(rnd >= aux && rnd < auxSum) {
                 this.actualEvent = events[key];
@@ -229,23 +228,23 @@ class Village {
 
                 var productConfig = this.gameConfig.products.productsList.get(this.products[terrain.contentIndex].name);
                 //desgaste del terreno
-                terrain.addSoilUse(this.products[terrain.contentIndex]);
+                terrain.addSoilUse(productConfig.productType,5);
                 //desgaste del producto
                 if(terrain.getSoilUse(this.products[terrain.contentIndex].productType) > 50){
                     this.products[terrain.contentIndex].health -= productConfig.exhaustion_health_loss;
                     
                     if(this.products[terrain.contentIndex].health <=0)
                         this.products[terrain.contentIndex].status = GAME_CONSTANTS.PRODUCT_STATUS_ROTTEN;
-                }else
-                {   
-                    this.products[terrain.contentIndex].water -= this.getWaterConsume(this.products[terrain.contentIndex].name);
                 }
+
+                this.products[terrain.contentIndex].water -= this.getWaterConsume(this.products[terrain.contentIndex].name);
+                
 
                 var water = this.products[terrain.contentIndex].water
                 if(water >= productConfig.min_water_to_grow){
                     this.products[terrain.contentIndex].growPrecent += productConfig.growth_per_week;
                 }else if(water < productConfig.min_water_to_survive){
-                    this.products[terrain.contentIndex] -= productConfig.dehydration_health_loss;
+                    this.products[terrain.contentIndex].health -= productConfig.dehydration_health_loss;
 
                     if(this.products[terrain.contentIndex].health <=0)
                         this.products[terrain.contentIndex].status = GAME_CONSTANTS.PRODUCT_STATUS_DRY;

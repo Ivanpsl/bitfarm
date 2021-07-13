@@ -3,11 +3,7 @@ const fs = require('fs');
 
 module.exports = {
 
-    /**
-     * @param  {} server
-     * @param  {} req
-     * @param  {} res
-     */
+  
     manageSubscriptionRequest : function (server,req,res) {
         if(req.body.host && req.body.ip && req.body.port)
         {
@@ -67,6 +63,7 @@ module.exports = {
     propagateBlock: function(service, gameId, block){
         var caFile = fs.promises.readFile('./certificates/key.pem');
         service.subscribedNodes.forEach(node => {
+            // @ts-ignore
             axios.post(node.host+"/p2p/block/new", {
                 host: service.getHostAndPort(),
                 gameIdentifier : gameId,
@@ -91,6 +88,7 @@ module.exports = {
         var caFile = fs.promises.readFile('./certificates/key.pem');
 
         service.subscribedNodes.forEach(node => {
+            // @ts-ignore
             axios.post(node.host+"/p2p/transactions/new", {
                 host: service.getHostAndPort(),
                 gameIdentifier : gameId,
@@ -111,13 +109,10 @@ module.exports = {
         });
     },
 
-    /**
-     * Envia confirmacion de suscripción a un nodo de la red
-     * @param  {} service
-     * @param  {} targetHost
-     */
+    
     sendSuscriptionToNode : function (service,targetHost) {
         this.log("Enviando suscripcion a nodo: "+ targetHost+"/subscribeNode")
+        // @ts-ignore
         axios.post(targetHost+"/p2p/subscribeNode", {
             host: service.getHostAndPort(),
             ip:  service.nodeHost,
@@ -126,8 +121,11 @@ module.exports = {
             rejectUnhauthorized : false
         })
         .then(res => {
-            if(res.status === 202)
+            if(res.status === 202){
                 this.log(`Suscripción correcta al nodo ${targetHost}`)
+                console.log(res.data)
+                service.parseBlockchains(res.data);
+            }
         })
         .catch(error => {
             if(error.response != null)
@@ -137,11 +135,7 @@ module.exports = {
         })
     },
     
-    /**
-     * Suscripción al servidor web y solicitud de la lista de nodos activos
-     * @param  {} service
-     * @param  {} url
-     */
+
     subscribeAndRequestNodes: function(service,url) {
         var requestUrl = url
         var thisIdentifier = service.getId();
@@ -149,6 +143,7 @@ module.exports = {
         var thisPort = service.getPort();
         this.log("Enviando suscripción al servidor web")
 
+        // @ts-ignore
         axios.post(requestUrl, {
             identifier : thisIdentifier,
             host: thisHost,
@@ -175,6 +170,7 @@ module.exports = {
         var thisPort = service.getPort();
         this.log("Enviando petición de salida al servidor web")
 
+        // @ts-ignore
         axios.post(requestUrl, {
             identifier : thisIdentifier,
             host: thisHost,
@@ -183,9 +179,7 @@ module.exports = {
             rejectUnhauthorized : false
         })
         .then(res => {
-            console.log("salida ")
             res.data.forEach(newNode => {
-               
                 this.sendCloseEventToNode(service,newNode.host);
             });
         })
@@ -195,13 +189,10 @@ module.exports = {
     },
     
     
-   /**
-     * Envia confirmacion de suscripción a un nodo de la red
-     * @param  {} service
-     * @param  {} targetHost
-     */
+
     sendCloseEventToNode : function (service,targetHost) {
         this.log("Enviando peticion de cierre a nodo: "+ targetHost+"/exit")
+        // @ts-ignore
         axios.post(targetHost+"/p2p/exitNode", {
             identifier : service.getId(),
             host: service.getHostAndPort(),

@@ -1,6 +1,15 @@
 const {ROOM_CONSTANTS} = require('../../../common/constants');
+/**Clase auxiliar que representa una sala de juego */
 
 class Room {
+    
+    /**
+     * Objeto constructor
+     * 
+     * @param {string | number} roomId - identificador de la sala
+     * @param {string} roomType - tipo de sala publica/privada
+     * @param {object} owner - objeto que representa al jugador que la ha creado
+     */
     constructor(roomId, roomType, owner=null)
     {
         this.roomId = roomId;
@@ -20,7 +29,15 @@ class Room {
 
     getPlayerById(id){
         return this.players.find(player => player.id === id);
+    }
+
+    arePlayersReady(){
+        var playerNotReady = this.players.find(player => player.isReady == null || player.isReady == undefined || !player.isReady);
+        return playerNotReady == null;
     }   
+    getNumPlayers(){
+        return this.players.length;
+    }
 
     
     setPlayerStatus(playerId,status){
@@ -38,6 +55,7 @@ class Room {
             return false;
         }
     }
+
     addPlayer(player){
         this.players.push(player);
 
@@ -47,31 +65,26 @@ class Room {
 
         this.sendEventToAll(player.id, ROOM_CONSTANTS.EVENT_PLAYER_JOIN, player)
     }
-
-
     removePlayerById(playerId){
-        var player = this.getPlayerById(playerId)
+        var player = this.getPlayerById(playerId);
         this.removeListener(playerId);
-        var idx = this.players.indexOf(player);
-        if (idx != -1) this.players.splice(idx, 1);
+        
+        this.players = this.players.filter((pl) => pl.id !=playerId);
 
         if ( this.players.length === 0){
             this.roomStatus = ROOM_CONSTANTS.STATUS_EMPTY;
         }
-        this.sendEventToAll(playerId, ROOM_CONSTANTS.EVENT_PLAYER_EXIT, player)
-
+        this.sendEventToAll(playerId, ROOM_CONSTANTS.EVENT_PLAYER_EXIT, player);
     }
 
     addListener(playerId, listener){
-        if(this.status !==  ROOM_CONSTANTS.STATUS_RUNNING){
-
+        console.log("añadiendo listener " + playerId)
             if(this.listeners.find(playerListener=> playerListener.id===playerId))
             {
                 this.listeners.find(playerListener=> playerListener.id===playerId).listener = listener;
             }else this.listeners.push({id:playerId, listener: listener });
-
-        }
     }
+
     removeListener(playerId){
         this.listeners = this.listeners.filter(playerListener => playerListener.id !== playerId);
     }
@@ -89,6 +102,7 @@ class Room {
             
         for(let playerListener of this.listeners){
             if(playerListener && playerListener.listener && playerListener.id != sourceId){
+                console.log("Enviando a "+sourceId)
                 const event = {source:sourceId, eType:eventType, data:dta}
                 playerListener.listener.send(event);
                 playerListener.listener.end();
@@ -100,7 +114,8 @@ class Room {
     startGame(gameData){
         this.roomStatus = ROOM_CONSTANTS.STATUS_RUNNING;
         this.sendEventToAll(-1, ROOM_CONSTANTS.EVENT_GAME_START,gameData)
-        this.listeners = [];
+        setTimeout(function(){  this.listeners = [] }, 3000);
+
     }
     
     isRunning(){

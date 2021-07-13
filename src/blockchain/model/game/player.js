@@ -1,3 +1,4 @@
+/** Clase que almacena la información de un jugador  */
 class Player{
     constructor(id,playerName, account){
         this.id = id;

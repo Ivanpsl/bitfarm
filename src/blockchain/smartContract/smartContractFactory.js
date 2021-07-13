@@ -6,6 +6,7 @@ const StartGameSmartContract = require("./startGameSmartContract");
 const BuildSmartContract = require("./buildSmartContract.js");
 const DemolishSmartContract = require("./demolishSmartContract");
 const WatetingSmartContract = require("./watetingSmartContract");
+const RecollectSmartContract = require('./recollectSmartContract');
 
 module.exports = {
 
@@ -18,7 +19,7 @@ module.exports = {
         smartContracts[GAME_CONSTANTS.ACTION_TERRAIN_BUILD] = new BuildSmartContract();
         smartContracts[GAME_CONSTANTS.ACTION_PLANT_WATERING] = new WatetingSmartContract();
         smartContracts[GAME_CONSTANTS.ACTION_BUILD_DEMOLISH] = new DemolishSmartContract();
-        
+        smartContracts[GAME_CONSTANTS.ACTION_PLANT_RECOLLECT] = new RecollectSmartContract();
         return smartContracts;
     }
 

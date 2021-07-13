@@ -1,17 +1,15 @@
 <div class="modal-header">
-    <h4 class="modal-title">Que es FarmChain</h4>
+    <h4 class="modal-title">Que es FarmChain y como jugar</h4>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 <div class="modal-body">
     <spam id="description">
-        <p>Una blockchain es una tecnología que permite almacenar información de forma <strong>segura</strong> y
-            <strong>distribuida</strong>. Almacena la información
-            dentro del elementos llamados <strong>transacciones</strong>, y estas transacciones se guardan en
-            <strong>bloques</strong>, que se encadenan uno a otro. </p>
-        <p>Si un bloque se modifica se convierte en un bloque invalido y la cadena se rompe.</p>
-        <p>Además, al estar distribuida, la información se guarda por la red en multiples sitios llamados
-            <strong>nodos</strong>, lo que permite mantener la información accesible cuando, por lo menos, un nodo este
-            conectado a internet</p>
+        <p>FarmChain es un juego multijugador de gestión de una granja. </p>
+        <p>Durante el juego deberas enfrentarte a otros jugadores cultivando, regando, recogiendo, construyendo, comprando y negociando productos, herramientas y terrenos</p>
+        <p>Ganara el jugador que más tiempo aguante con dinero.</p>
+        <p>El juego se divide en <strong>turnos</strong> que representan las semanas. Cada semana o turno se divide en dos <strong>fases</strong>, una de acción y otra de negociación</p>
+        <p>Una vez que el turno finaliza, el clima cambia, los cultivos crecen si tienen suficiente agua y el ayuntamiento cobra <strong>tasas de propietad</strong></p>
+        <p>Toda la información de la partida se guarda en una red blockchain.</p>
     </spam>
     <hr>
     <h5>Para saber mas: </h5>
@@ -20,12 +18,13 @@
             <h2 class="accordion-header" id="headingOne">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                     data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                    Objetivo del juego
+                    Terrenos
                 </button>
             </h2>
             <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
                 data-bs-parent="#accordionExample">
                 <div class="accordion-body">
+                    En los terrenos es posible plantar o constuir. A cada terreno se le aplica un impuesto por propiedad, y se ve afectado por los efectos climatologicos.
                 </div>
             </div>
         </div>
@@ -33,13 +32,14 @@
             <h2 class="accordion-header" id="headingTwo">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                     data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                    Terrenos
+                    Productos
                 </button>
             </h2>
             <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
                 data-bs-parent="#accordionExample">
                 <div class="accordion-body">
-
+                    <p>Los productos empiezan siendo semillas, las semillas se pueden plantar en los terrenos vacíos.</p>
+                    <p>Una vez plantada la semilla, es necesario regarla, si finaliza la semana con suficiente agua la semilla crecerá</p>
                 </div>
             </div>
         </div>
@@ -47,40 +47,64 @@
             <h2 class="accordion-header" id="headingThree">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                     data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                    Productos
+                    Eventos climatológicos
                 </button>
             </h2>
             <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
                 data-bs-parent="#accordionExample">
                 <div class="accordion-body">
-
+                    <p>Cada semana el clima puede cambiar, generando efectos climatologicos aleatorios que pueden afectar a los cultivos</p>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    La tienda
+                </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
+                data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    Cada semana la tienda se reinicia y es posible comprar nuevos productos, terrenos o herramientas
                 </div>
             </div>
         </div>
     </div>
 </div>
 <div id="modal-footer" class="modal-footer">
-    <button type="button" id="btn-farmchain" class="btn btn-primary ">¿Y Que es Blockchain?</button>
+    <button type="button" id="btn-footer-close" class="btn btn-secondary ">Cerrar</button>
+    <button type="button" id="btn-blockchain" class="btn btn-primary ">¿Y Que es Blockchain?</button>
 </div>
 <script>
     $(document).ready(function(){
         var span = document.getElementsByClassName("btn-close")[0];
+        var btnClose = document.getElementById("btn-footer-close");
+        var parent = document.getElementById("modal-window");
 
         span.onclick = function() {
-            loginManager.showModal(false);
+            parent.style.display = "none";
+            // loginManager.showModal(false);
         }
-        
+        btnClose.onclick = function() {
+            parent.style.display = "none";
+            // loginManager.showModal(false);
+        }
         window.onclick = function(event) {
-            if (event.target == loginManager.modalElement) {
-                loginManager.showModal(false);
+            if (event.target == parent) {
+                // loginManager.showModal(false);
+                parent.style.display = "none";
             }
         }
 
         var btn = document.getElementById("btn-blockchain");
 
         btn.onclick = function() {
-            loginManager.showModal(false);
-            loginManager.openCloseInfoModal(true,"blockchain");
+            parent.style.display = "none";
+            $("#modal-content").load("wigets/modals/m-blockchainInfo.html",()=> {
+                parent.style.display = "block";
+            });
         }
     });
 </script>

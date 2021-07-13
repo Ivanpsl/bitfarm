@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: blockchain/smartContract/buyElementSmartContract.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: blockchain/smartContract/buyElementSmartContract.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const {GAME_CONSTANTS} =require("../../common/constants");
+const ISmartContract = require("./iSmartContract")
+/** SmartContract que se ejecuta al comprar */
+class BuyElementSmartContract extends ISmartContract {
+    constructor(){
+        super();
+        this.action = this.buyElement;
+    }
+
+    buyElement(village, account, config, actionData){
+        if(actionData.elementType &amp;&amp; actionData.elementIndex &amp;&amp; actionData.targetPublicKey &amp;&amp; actionData.price){
+            
+            if(village.players[account.publicKey].money > parseInt(actionData.price)){
+                if(actionData.elementType === GAME_CONSTANTS.TYPE_PRODUCT){
+                    return this.buyProduct(village, account, config, actionData);
+                }else if(actionData.elementType === GAME_CONSTANTS.TYPE_TERRAIN){
+                    return this.buyTerrain(village, account, config, actionData);
+                }else if(actionData.elementType === GAME_CONSTANTS.TYPE_TOOL){
+                    return this.buyTool(village, account, config, actionData);
+                }
+            }else{
+                throw new Error(`Comprador no tiene dinero suficiente`);
+            }
+        }else{
+            throw new Error(`No se han completado todos los datos para realizar la transacción`);
+        }
+    }
+
+    buyProduct(village, account, config, actionData){
+      
+        if(village.products[actionData.elementIndex]){
+            if(village.products[actionData.elementIndex].status != GAME_CONSTANTS.TERRAIN_STATUS_PLANTED){
+
+                if(!this.isOwner(village.products[actionData.elementIndex], actionData.targetPublicKey)) 
+                    throw new Error("El receptor no es propietario del producto");
+                
+
+
+                if(village.players[actionData.targetPublicKey]) 
+                    village.players[actionData.targetPublicKey].money += parseInt(actionData.price);
+                else if(village.townHall.account.publicKey == actionData.targetPublicKey) 
+                    village.townHall.money += parseInt(actionData.price);
+                else 
+                {
+                    throw new Error("No se ha localizado receptor")
+                }
+                village.players[account.publicKey].money -= parseInt(actionData.price)
+                village.products[actionData.elementIndex].owner = account.publicKey;
+
+                return village;
+            }else{
+                throw new Error("No se puede vender un producto plantado")
+            }
+        }else{
+            throw new Error("El producto que se intenta comprar no existe")
+        }
+    }
+
+    buyTerrain(village, account, config, actionData){
+        if(village.terrains[actionData.elementIndex]){
+            if(!this.isOwner(village.terrains[actionData.elementIndex], actionData.targetPublicKey))
+                throw new Error("El receptor no es propietario del terreno");
+            
+
+            if(village.players[actionData.targetPublicKey]) 
+                village.players[actionData.targetPublicKey].money += parseInt(actionData.price);
+            else if(village.townHall.account.publicKey == actionData.targetPublicKey) 
+                village.townHall.money += parseInt(actionData.price)
+            else 
+                throw new Error("No se ha localizado receptor");
+    
+            if(village.terrains[actionData.elementIndex].planted == true){
+                let index = village.terrains[actionData.elementIndex].contentIndex;
+                village.products[index].owner = actionData.targetPublicKey;
+            }else if(village.terrains[actionData.elementIndex].builded == true){
+                let index = village.terrains[actionData.elementIndex].contentIndex;
+                village.builds[index].owner = actionData.targetPublicKey;
+            }
+
+            village.players[account.publicKey].money -= parseInt(actionData.price);
+            village.terrains[actionData.elementIndex].owner = account.publicKey;
+
+            return village;
+        }else{
+            throw new Error("El producto que se intenta comprar no existe \n" + JSON.stringify(actionData))
+        }
+    }
+
+    buyTool(village, account, config, actionData){
+        if(village.tools[actionData.elementIndex]){
+            if(!this.isOwner(village.tools[actionData.elementIndex], actionData.targetPublicKey)) 
+                throw new Error("El receptor no es propietario de la herramienta");
+
+
+            if(village.players[actionData.targetPublicKey]) {
+                village.players[actionData.targetPublicKey].money += parseInt(actionData.price);
+
+                village.players[actionData.targetPublicKey] = village.tools[actionData.elementIndex].removeModifier(village.players[actionData.targetPublicKey]);
+            }
+            else if(village.townHall.account.publicKey == actionData.targetPublicKey) 
+                village.townHall.money += parseInt(actionData.price);
+            else{
+                throw new Error("No se ha localizado receptor")
+            }
+
+            village.players[account.publicKey].money -= parseInt(actionData.price);
+            village.tools[actionData.elementIndex].owner = account.publicKey;
+
+            village.players[account.publicKey] = village.tools[actionData.elementIndex].addModifier(village.players[account.publicKey]);
+
+            return village;
+        }else{
+            throw new Error("El producto que se intenta comprar no existe")
+        }
+    }
+
+    isOwner(item, publicKey){
+        return item.owner === publicKey;
+    }
+
+}
+
+module.exports = BuyElementSmartContract;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Block.html">Block</a></li><li><a href="Building.html">Building</a></li><li><a href="BuildSmartContract.html">BuildSmartContract</a></li><li><a href="BuyElementSmartContract.html">BuyElementSmartContract</a></li><li><a href="DemolishSmartContract.html">DemolishSmartContract</a></li><li><a href="FarmChainFacade.html">FarmChainFacade</a></li><li><a href="FarmChainService.html">FarmChainService</a></li><li><a href="GameService.html">GameService</a></li><li><a href="Hall.html">Hall</a></li><li><a href="module.exports.html">exports</a></li><li><a href="PlantSmartContract.html">PlantSmartContract</a></li><li><a href="Player.html">Player</a></li><li><a href="Product.html">Product</a></li><li><a href="RecollectSmartContract.html">RecollectSmartContract</a></li><li><a href="Room.html">Room</a></li><li><a href="RoomService.html">RoomService</a></li><li><a href="StartGameSmartContract.html">StartGameSmartContract</a></li><li><a href="Terrain.html">Terrain</a></li><li><a href="Transaction.html">Transaction</a></li><li><a href="Village.html">Village</a></li><li><a href="WateringSmartContract.html">WateringSmartContract</a></li><li><a href="WebController.html">WebController</a></li><li><a href="WebService.html">WebService</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Tue Jul 13 2021 18:48:58 GMT+0200 (hora de verano de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

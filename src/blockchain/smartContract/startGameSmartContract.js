@@ -1,5 +1,6 @@
 const ISmartContract = require("./iSmartContract")
 
+/** SmartContract que se ejecuta al iniciar una partida */
 class StartGameSmartContract extends ISmartContract {
     constructor(){
         super();

@@ -22,6 +22,41 @@
   background: #FCE6C2;
   vertical-align: middle;
 }
+#climatic-icon{
+  width: 50px;
+  margin : auto !important;
+  border-radius:30px;
+  border:solid;
+  align-items: center;
+  align-content: center;
+  color:#FCF7F1;
+  border-color:#0000;
+  border-width: 1px 1px 2px 1px;
+  padding:0;
+  margin:0;
+}
+.market-price{
+  font-size: 1rem !important;
+}
+.climatic-icon-g{
+background: #3B996D;
+}
+.climatic-icon-b{
+background:#554999;
+}
+.climatic-icon-r{
+background:#993A2C;
+}
+
+#effect-text{
+font-size:0.7rem;
+}
+.effect-text-g{
+  color:#3B996D;
+}
+.effect-text-r{
+  color:#D60000;
+}
 
 #week-container {
   padding-top: 4px;

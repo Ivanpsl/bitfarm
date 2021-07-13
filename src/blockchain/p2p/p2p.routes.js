@@ -19,7 +19,7 @@ module.exports = function (server, nodeP2PController) {
 
     router.get('/chains',function (req,res){
         var noderService = server.get("nodeService");
-        res.send(JSON.stringify(noderService.getChains()));
+        res.send(noderService.getChains());
     });
     
     router.post('/block/new',function (req,res){

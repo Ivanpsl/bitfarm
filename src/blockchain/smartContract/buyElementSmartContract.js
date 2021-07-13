@@ -1,6 +1,6 @@
 const {GAME_CONSTANTS} =require("../../common/constants");
 const ISmartContract = require("./iSmartContract")
-
+/** SmartContract que se ejecuta al comprar */
 class BuyElementSmartContract extends ISmartContract {
     constructor(){
         super();
@@ -27,7 +27,7 @@ class BuyElementSmartContract extends ISmartContract {
     }
 
     buyProduct(village, account, config, actionData){
-        console.log(`${actionData.elementIndex} \n` + JSON.stringify(village.products[actionData.elementIndex]))
+      
         if(village.products[actionData.elementIndex]){
             if(village.products[actionData.elementIndex].status != GAME_CONSTANTS.TERRAIN_STATUS_PLANTED){
 
@@ -42,8 +42,6 @@ class BuyElementSmartContract extends ISmartContract {
                     village.townHall.money += parseInt(actionData.price);
                 else 
                 {
-                    console.log(village.products[actionData.elementIndex].owner + "\n"+console.log(JSON.stringify(village.products[actionData.elementIndex])))
-
                     throw new Error("No se ha localizado receptor")
                 }
                 village.players[account.publicKey].money -= parseInt(actionData.price)

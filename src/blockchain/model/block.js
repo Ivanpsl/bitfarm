@@ -1,6 +1,6 @@
 const SHA256 = require('crypto-js/sha256');
 const Transaction = require('./transaction');
-
+/** Clase que representra un bloque de la blockchain */
 class Block {
     constructor(index,transactions,previousHash,nonce=0){
         this.index = index;
@@ -35,10 +35,10 @@ class Block {
     }
 
     getInfo() {
-        const { index, previousProof, previousHash, data, timestamp } = this;
+        const { index,  previousHash, data, timestamp } = this;
 
         return { 
-            index, previousProof, previousHash, timestamp,
+            index, previousHash, timestamp,
             data : data.map(dt=> dt.getInfo()),
         };
     }
@@ -47,16 +47,20 @@ class Block {
         this.index = block.index;
         this.previousHash = block.previousHash;
         this.timestamp = block.timestamp;
-
-        this.data = block.data.map(transaction => {
-            const pT = new Transaction();
-            pT.parseTransaction(transaction);
-            return pT
-        });
+        console.log(block.data)
+        if(block.data == "GENESIS") {
+            this.data = block.data;
+        }else{
+            this.data = block.data.map(transaction => {
+                const pT = new Transaction();
+                pT.parseTransaction(transaction);
+                return pT
+            });
+        }
     }
 
     printTransactions(){
-        this.transactions.array.forEach(element => {
+        this.data.array.forEach(element => {
             console.log(element);
         });
     }

@@ -1,4 +1,5 @@
 const Block = require('./block');
+/** Clase que representra la blockchain y sus funciones */
 module.exports = class Blockchain {
 
     constructor(identifier,blocks=null){
@@ -31,7 +32,7 @@ module.exports = class Blockchain {
 
     getTransactionPoolSize(){ return this.transactionsPool.length; }
 
-    startGenesisBlock(){  return new Block(0,"GENESIS",0,[]); }
+    startGenesisBlock(){  return new Block(0,"GENESIS",0,0); }
 
 
     async mineBlock(){
@@ -63,6 +64,7 @@ module.exports = class Blockchain {
       
             return true;
         }
+        this.chainLog("Intentando añadir una transaccion invalida")
         return false;
     }
 
@@ -105,7 +107,7 @@ module.exports = class Blockchain {
     
     getInfo(){
         return {
-            id : this.id,
+            id : this.identifier,
             num_blocks : this.chain.length,
             num_pool: this.transactionsPool.length,
             last_block_info : this.getLastBlock().getInfo()

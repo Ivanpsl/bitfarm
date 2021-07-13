@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="./stylesheets/modal.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://unpkg.com/polipop/dist/polipop.min.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/polipop/dist/css/polipop.core.min.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/polipop/dist/css/polipop.core.min.css" />
     <link rel="stylesheet" href="https://unpkg.com/polipop/dist/css/polipop.default.min.css" />
 </head>
 
@@ -23,10 +23,15 @@
                     </div>
                     <div class="col-8 shadow" id="week-container">
                         <h4 id="week">Semana <span id="week-number">0</span></h4>
-                    <h4 class="bi bi-cloud-sun p-0 m-0" id="climatic-icon"> </h4><span id="climatic-text" class="p-0 m-0">Sol con nubes</span>
+                        <div class="climatic-content">
+                            <h3 class="bi bi-cloud-rain shadow climatic-icon-b" id="climatic-icon"> </h3>
+                            <span id="climatic-text" class="p-0 m-0"><span id="climatic-label">Sol con nubes</span>
+                                <strong class="effect-text-g" id="effect-text">(<span id="effect-size">+20</span><span class="bi bi-droplet"></span>)</strong>
+                                </span>
+                        </div>
                     </div>
                     <div class="col-2" id="time-container">
-                    </div> 
+                    </div>
                 </div>
             </div>
             <div class="col-md-3 col-sm-0"></div>
@@ -200,7 +205,7 @@
                 <h5 id="end-modal-title" class="modal-title"></h5>
             </div>
             <div class="modal-body">
-                <spam id= "end-modal-desc"></spam>
+                <spam id="end-modal-desc"></spam>
             </div>
             <div class="modal-footer">
                 <button type="button" id="btn-exit" class="btn btn-primary ">Salir</button>

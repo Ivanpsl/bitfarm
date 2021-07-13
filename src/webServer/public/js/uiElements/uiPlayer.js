@@ -1,3 +1,4 @@
+// @ts-nocheck
 /*global  GAME_CONSTANTS,$,document,gameManager,UITerrain,URL_BASE,removeAllChildNodes */
 // eslint-disable-next-line no-unused-vars
 class UIPlayer {
@@ -25,6 +26,7 @@ class UIPlayer {
         return this.max_storage;
     }
     getActualOcupation(){
+        // @ts-ignore
         return this.products.filter((product) => product != undefined && product.status != GAME_CONSTANTS.TERRAIN_STATUS_PLANTED).length; 
     }
     getActualStorage(){
@@ -35,6 +37,7 @@ class UIPlayer {
     getSeeds(){
         var seeds = [];
         for(let product of this.products){
+            // @ts-ignore
             if(product && product.status === GAME_CONSTANTS.PRODUCT_STATUS_SEED){
                 seeds.push(product);
             }
@@ -44,15 +47,19 @@ class UIPlayer {
 
     getElementByTypeAndIndex(type,index){
         var result = null;
+        // @ts-ignore
         if(type === GAME_CONSTANTS.TYPE_TERRAIN) {
             result = this.terrains.find((terrain)=> terrain.index == index);
         }
+        // @ts-ignore
         else if(type === GAME_CONSTANTS.TYPE_TOOL) {
             result = this.tools.find((tool)=> tool.index == index);
         }
+        // @ts-ignore
         else if(type === GAME_CONSTANTS.TYPE_PRODUCT) {
             result = this.products.find((product)=> product.index == index);
         }
+        // @ts-ignore
         else if(type === GAME_CONSTANTS.TYPE_BUILDING) {
             result = this.buildings.find((building)=> building.index == index);
         }
@@ -60,9 +67,13 @@ class UIPlayer {
         if(result == null) {
             console.error(`${type} No encontrado con indice ${index} para el jugador ${this.name}`)
             var list = null;
+            // @ts-ignore
             if(type === GAME_CONSTANTS.TYPE_TERRAIN ) list = this.terrains;
+            // @ts-ignore
             else if(type === GAME_CONSTANTS.TYPE_TOOL) list = this.tools;
+            // @ts-ignore
             else if(type === GAME_CONSTANTS.TYPE_PRODUCT) list = this.products;
+            // @ts-ignore
             else if(type === GAME_CONSTANTS.TYPE_BUILDING) list = this.buildings;
 
             console.error(JSON.stringify(list));
@@ -72,15 +83,19 @@ class UIPlayer {
     }
 
     removeElemenyByTypeAndIndex(type,index){
+        // @ts-ignore
         if(type === GAME_CONSTANTS.TYPE_TERRAIN) {
             this.terrains = this.terrains.filter((terrain)=> terrain.index != index);
         }
+        // @ts-ignore
         else if(type === GAME_CONSTANTS.TYPE_TOOL) {
             this.tools = this.tools.filter((tool)=> tool.index != index);
         }
+        // @ts-ignore
         else if(type === GAME_CONSTANTS.TYPE_PRODUCT) {
             this.products = this.products.filter((product)=> product != undefined && product.index != index);
         }
+        // @ts-ignore
         else if(type === GAME_CONSTANTS.TYPE_BUILDING) {
             this.buildings = this.buildings.filter((building)=> building.index != index);
         }
@@ -125,6 +140,7 @@ class UIPlayer {
 
     openPlayerModal(){
         var playerData = this;
+        // @ts-ignore
         $("#modal-content").load("wigets/modals/m-account.html", function () {
             document.getElementById("modal-title").textContent = "Cuenta de "+playerData.name;
             document.getElementById("public-text-area").textContent = playerData.account.publicKey;
@@ -140,16 +156,21 @@ class UIPlayer {
 
 
     openStorageModal(){
+        // @ts-ignore
         $("#modal-content").load("wigets/modals/m-storage.html", ()=>  {
             var listElement = document.getElementById("product-list");
      
             if(listElement){
                 document.getElementById("max-storage").textContent = this.getMaxStorage();
+                // @ts-ignore
                 document.getElementById("actual-storage").textContent = this.getActualOcupation();
+                // @ts-ignore
                 document.getElementById("storage").textContent = this.getActualStorage();
 
+                // @ts-ignore
                 removeAllChildNodes(listElement)
                 this.products.forEach((product) => {
+                    // @ts-ignore
                     if(product.status != GAME_CONSTANTS.PRODUCT_STATUS_PLANTED){
                         let a = document.createElement("a");
                         a.className = "list-group-item list-group-item-action";
@@ -160,6 +181,7 @@ class UIPlayer {
                         h5.textContent = product.label;
                         let small = document.createElement("small");
                         small.className = "text-muted";
+                        // @ts-ignore
                         if(product.status == GAME_CONSTANTS.PRODUCT_STATUS_SEED)
                             small.textContent = "Semilla"
                         else small.textContent = "Producto"
@@ -199,7 +221,9 @@ class UIPlayer {
     }
 
     sendReadyToEndTurn(){
+        // @ts-ignore
         $.ajax({
+            // @ts-ignore
             url: URL_BASE + "/game/player/endTurn",
             type: "GET",
             data: {},

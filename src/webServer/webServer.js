@@ -5,14 +5,19 @@ const cookieParser = require('cookie-parser');
 const expressSession = require('express-session');
 const {errorHandler, headers} = require('./middleware')
 const https = require('https');
-const WebService = require('./modules/webService')
+const WebService = require('./modules/webService');
+const webController = require('./modules/webController');
 
+/** Clase WebServer que configura e inicializa el servidor web, servicio web y controladores de la API  */
 module.exports =  class WebServer { 
     constructor(config){
         this.app = express();
-        this.config = config
+        this.config = config;
 
-        this.service = new WebService(this);
+        this.app.set('jwt', require('jsonwebtoken'));
+
+        this.service = new WebService(this.app);
+        this.controller = new webController(this.app,this.service);
     }
 
     init(httpCert, chainFacade){
@@ -42,19 +47,18 @@ module.exports =  class WebServer {
         this.app.use(headers);
         this.app.use(errorHandler);
         //Módulo para la encriptación de token en la API.
-        this.app.set('jwt', require('jsonwebtoken'));
-
 
         this.app.use('/game', express.static('./src/webServer/public'));
-        require('./routes/index.routes')(this.app, this.service);
+        require('./routes/index.routes')(this.app, this.controller);
     }
+    
     startServer(httpCert){
         const httpsServer = https.createServer(httpCert, this.app);
         httpsServer.listen(this.config.port, ()=> {
+            // @ts-ignore
             this.log("Servidor web activo en: "+"https://localhost:" + httpsServer.address().port)
         });
     }
-
     log(msg){
         console.log("\x1b[33m%s\x1b[0m","[WebServer] " +msg);
     }
