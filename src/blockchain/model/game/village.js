@@ -214,7 +214,7 @@ class Village {
         if(this.actualEvent == null)
             return productConfig.water_consume_per_turn;
         else{
-            return productConfig.water_consume_per_turn + this.actualEvent.waterEffect;
+            return productConfig.water_consume_per_turn + (this.actualEvent.waterEffect*-1);
         }
     }
     applyTaxesAndEfectsToAllTerrains(){
@@ -239,6 +239,8 @@ class Village {
 
                 this.products[terrain.contentIndex].water -= this.getWaterConsume(this.products[terrain.contentIndex].name);
                 
+                if(this.products[terrain.contentIndex].water<0)
+                    this.products[terrain.contentIndex].water = 0;
 
                 var water = this.products[terrain.contentIndex].water
                 if(water >= productConfig.min_water_to_grow){

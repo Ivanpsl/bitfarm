@@ -27,7 +27,7 @@ class UIPlayer {
     }
     getActualOcupation(){
         // @ts-ignore
-        return this.products.filter((product) => product != undefined && product.status != GAME_CONSTANTS.TERRAIN_STATUS_PLANTED).length; 
+        return this.products.filter((product) => product != undefined && product.status != GAME_CONSTANTS.PRODUCT_STATUS_PLANTED).length; 
     }
     getActualStorage(){
         return this.getMaxStorage() - this.getActualOcupation();

@@ -115,12 +115,14 @@ var gameManager = {
                     this.player.addProduct(product);
                     if (product.status === GAME_CONSTANTS.PRODUCT_STATUS_PLANTED) {
                         console.log(JSON.stringify(product))
-                        this.player.terrains.find((terrain) => terrain.index == product.terrainIndex).setContent(product);
+                        if(this.player.terrains.find((terrain) => terrain.index == product.terrainIndex))
+                            this.player.terrains.find((terrain) => terrain.index == product.terrainIndex).setContent(product);
                     }
                 } else if (this.players[owner]) {
                     this.players[owner].addProduct(product);
                     if (product.status === GAME_CONSTANTS.PRODUCT_STATUS_PLANTED)
-                        this.players[owner].terrains.find((terrain) => terrain.index == product.terrainIndex).setContent(product);
+                        if(this.players[owner].terrains.find((terrain) => terrain.index == product.terrainIndex))
+                            this.players[owner].terrains.find((terrain) => terrain.index == product.terrainIndex).setContent(product);
                 }
             }
         }
@@ -512,7 +514,7 @@ var gameManager = {
     },
 
     sendNewOffert: function (item, price) {
-        if(parseInt(price) > 1){
+        if(parseInt(price) > 0){
             console.log("Enviando oferta: " + price)
             $.ajax({
                 url: URL_BASE + "/game/offert/create",
@@ -657,7 +659,7 @@ var gameManager = {
     },
 
     removeOffertsByOwner: function (ownerKey) {
-        this.playersOfferts.forEach((offert) => offert.remove());
+        this.playersOfferts.forEach((offert) =>{ if(offert.owner == ownerKey) offert.onRemove()});
         this.playersOfferts = this.playersOfferts.filter((offert) => offert.owner != ownerKey);
     },
 

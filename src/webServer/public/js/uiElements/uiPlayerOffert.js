@@ -123,7 +123,7 @@ class UIPlayerOffert {
             dataType: 'json',
             // eslint-disable-next-line no-unused-vars
             succes : ()=>{
-                this.remove();
+                this.onRemove();
             },
             // eslint-disable-next-line no-unused-vars
             error: function (response, _status, _error) {
